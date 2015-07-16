@@ -1,11 +1,11 @@
 package rollercoasterteam.rollercoaster2.core.api.block;
 
 
-public class Block {
+public class RCBlock {
 
     String name;
 
-    public Block(String name) {
+    public RCBlock(String name) {
         this.name = name;
     }
 
