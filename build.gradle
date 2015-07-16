@@ -1,0 +1,78 @@
+buildscript {
+  repositories{
+    mavenCentral()
+  }
+  dependencies {
+    classpath group: 'com.github.rodionmoiseev.gradle.plugins', name: 'idea-utils', version: '0.2'
+  }
+}
+
+repositories {
+	mavenLocal()
+	jcenter()
+	maven {
+		name "nova"
+		url 'http://maven.novaapi.net/'
+	}
+}
+
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'idea-utils'
+
+version = "1.0"
+group = 'AbLayer'
+
+idea {
+  project {
+    runConfigurations {
+       client1710 {
+         type = 'Application'
+         name = 'Minecraft Client 1.7.10'
+         folderName = '1.7.10'
+         mainClass = 'GradleStart'
+         vmOptions = '-Xincgc -Xmx1024M -Xms1024M'
+         programArguments = ''
+         module = project(':1.7.10')
+         workingDirectory = new File(project(':1.7.10').projectDir, "run")
+         isDefault = false
+       }
+	   
+	    client1d8{
+         type = 'Application'
+         name = 'Minecraft Client 1.8'
+         folderName = '1.8'
+         mainClass = 'GradleStart'
+         vmOptions = '-Xincgc -Xmx1024M -Xms1024M'
+         programArguments = ''
+         module = project(':1.8')
+         workingDirectory = new File(project(':1.8').projectDir, "run")
+         isDefault = false
+       }
+	
+	server1710 {
+         type = 'Application'
+         name = 'Minecraft Server 1.7.10'
+         folderName = '1.7.10'
+         mainClass = 'GradleStartServer'
+         vmOptions = '-Xincgc -Dfml.ignoreInvalidMinecraftCertificates=true'
+         programArguments = ''
+         module = project(':1.7.10')
+         workingDirectory = new File(project(':1.7.10').projectDir, "run")
+         isDefault = false
+       }
+	   
+	    server18{
+         type = 'Application'
+         name = 'Minecraft Server 1.8'
+         folderName = '1.8'
+         mainClass = 'GradleStartServer'
+         vmOptions = '-Xincgc -Dfml.ignoreInvalidMinecraftCertificates=true'
+         programArguments = ''
+         module = project(':1.8')
+         workingDirectory = new File(project(':1.8').projectDir, "run")
+         isDefault = false
+       }
+    }
+  }
+}
