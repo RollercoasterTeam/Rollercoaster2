@@ -1,8 +1,8 @@
-package me.modmuss50.abLayer;
+package rollercoasterteam.rollercoaster2.core;
 
 
-import me.modmuss50.abLayer.api.AbLayerAPI;
-import me.modmuss50.abLayer.api.IXMod;
+import rollercoasterteam.rollercoaster2.core.api.BaseAPIProxy;
+import rollercoasterteam.rollercoaster2.core.api.IXMod;
 
 import java.util.ArrayList;
 
@@ -12,13 +12,11 @@ public class ModRegistry {
 
     public static void registerMod(IXMod newMod) {
         mods.add(newMod);
-        AbLayerAPI.API.modContrcution(newMod);
+        BaseAPIProxy.API.modContrcution(newMod);
     }
 
 
     public static void scanMods() throws Exception{
-        //TODO scan for mods
-
         Class<IXMod> testMod = (Class<IXMod>) Class.forName("testmod.TestMod");
         registerMod(testMod.newInstance());
     }

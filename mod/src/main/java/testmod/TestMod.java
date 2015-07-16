@@ -1,6 +1,6 @@
 package testmod;
 
-import me.modmuss50.abLayer.api.IXMod;
+import rollercoasterteam.rollercoaster2.core.api.IXMod;
 
 public class TestMod implements IXMod {
     @Override

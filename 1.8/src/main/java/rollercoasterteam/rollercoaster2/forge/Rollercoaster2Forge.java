@@ -1,19 +1,19 @@
-package modmuss50;
+package rollercoasterteam.rollercoaster2.forge;
 
-import me.modmuss50.abLayer.AbLayerInfo;
-import me.modmuss50.abLayer.ModRegistry;
-import me.modmuss50.abLayer.api.AbLayerAPI;
+import rollercoasterteam.rollercoaster2.core.ModInfo;
+import rollercoasterteam.rollercoaster2.core.ModRegistry;
+import rollercoasterteam.rollercoaster2.core.api.BaseAPIProxy;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 //1.8
-@Mod(modid = AbLayerInfo.MODID)
-public class AbLayerForgeCore {
+@Mod(modid = ModInfo.MODID)
+public class Rollercoaster2Forge {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event){
-        AbLayerAPI.API = new APIHandler();
+        BaseAPIProxy.API = new APIHandler();
 
         try {
             ModRegistry.scanMods();

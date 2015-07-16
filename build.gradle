@@ -10,10 +10,6 @@ buildscript {
 repositories {
 	mavenLocal()
 	jcenter()
-	maven {
-		name "nova"
-		url 'http://maven.novaapi.net/'
-	}
 }
 
 apply plugin: 'eclipse'
@@ -21,7 +17,7 @@ apply plugin: 'idea'
 apply plugin: 'idea-utils'
 
 version = "1.0"
-group = 'AbLayer'
+group = 'Rollercoaster'
 
 idea {
   project {

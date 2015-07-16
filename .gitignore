@@ -1,1 +1,16 @@
 *.class
+*.iws
+*.ipr
+*.iml
+
+out/*
+.gradle/*
+
+
+1.8/run/*
+1.8/build/*
+1.8/.gradle/*
+
+1.7.10/run/*
+1.7.10/build/*
+1.7.10/.gradle/*

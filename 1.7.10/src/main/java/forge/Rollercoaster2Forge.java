@@ -1,19 +1,19 @@
-package me.modmuss50;
+package forge;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import me.modmuss50.abLayer.AbLayerInfo;
-import me.modmuss50.abLayer.ModRegistry;
-import me.modmuss50.abLayer.api.AbLayerAPI;
+import rollercoasterteam.rollercoaster2.core.ModInfo;
+import rollercoasterteam.rollercoaster2.core.ModRegistry;
+import rollercoasterteam.rollercoaster2.core.api.BaseAPIProxy;
 
-//1.8
-@Mod(modid = AbLayerInfo.MODID)
-public class AbLayerForgeCore {
+//1.7.10
+@Mod(modid = ModInfo.MODID)
+public class Rollercoaster2Forge {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event){
-        AbLayerAPI.API = new APIHandler();
+        BaseAPIProxy.API = new APIHandler();
 
         try {
             ModRegistry.scanMods();

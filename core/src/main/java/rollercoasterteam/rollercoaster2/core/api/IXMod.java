@@ -1,4 +1,4 @@
-package me.modmuss50.abLayer.api;
+package rollercoasterteam.rollercoaster2.core.api;
 
 public interface IXMod {
 
