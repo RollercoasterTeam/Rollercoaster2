@@ -34,7 +34,7 @@ idea {
          isDefault = false
        }
 	   
-	    client1d8{
+	    client18{
          type = 'Application'
          name = 'Minecraft Client 1.8'
          folderName = '1.8'
