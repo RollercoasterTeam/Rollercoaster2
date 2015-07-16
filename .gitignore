@@ -3,9 +3,18 @@
 *.ipr
 *.iml
 
+.metadata/*
+
+.project
+.classpath
+
+
 out/*
 .gradle/*
 
+
+1.7.10/.metadata/*
+1.8/.metadata/*
 
 1.8/run/*
 1.8/build/*
