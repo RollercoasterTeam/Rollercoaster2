@@ -2,8 +2,11 @@ package testmod;
 
 import rollercoasterteam.rollercoaster2.core.api.BaseAPIProxy;
 import rollercoasterteam.rollercoaster2.core.api.IXMod;
+import rollercoasterteam.rollercoaster2.core.api.block.RCBlock;
 
 public class TestMod implements IXMod {
+   public static RCBlock testBlock;
+
     @Override
     public String modID() {
         return "test";
@@ -23,8 +26,9 @@ public class TestMod implements IXMod {
     public void load() {
         System.out.println("Test mod loaded!");
 
+        testBlock = new TestBlock("TestBlock");
 
-        BaseAPIProxy.API.registerBlock(new TestBlock("TestBlock"));
+        BaseAPIProxy.API.registerBlock(testBlock);
         BaseAPIProxy.API.registerItem(new TestItem("TestItem"));
     }
 }

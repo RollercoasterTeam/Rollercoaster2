@@ -11,9 +11,12 @@ import rollercoasterteam.rollercoaster2.core.api.BaseAPIProxy;
 @Mod(modid = ModInfo.MODID)
 public class Rollercoaster2Forge {
 
+    public static APIHandler handler;
+
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event){
-        BaseAPIProxy.API = new APIHandler();
+        handler = new APIHandler();
+        BaseAPIProxy.API = handler;
 
         try {
             ModRegistry.scanMods();

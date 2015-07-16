@@ -23,3 +23,6 @@ out/*
 1.7.10/run/*
 1.7.10/build/*
 1.7.10/.gradle/*
+
+core/build/*
+mod/build/*
