@@ -1,8 +1,10 @@
 package rollercoasterteam.rollercoaster2.forge.client;
 
 import com.google.common.primitives.Ints;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -56,6 +58,10 @@ public class BlockRenderer {
         TextureAtlasSprite base = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(rcBlock.getTexture().replace(":", ":blocks/"));
         IBakedModel customModel = new CustomModel(base);
         event.modelRegistry.putObject(blockLocation, customModel);
+
+        ItemModelMesher itemModelMesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
+        event.modelRegistry.putObject(itemLocation, new CustomModel(base));
+        itemModelMesher.register(Item.getItemFromBlock(Rollercoaster2Forge.handler.blockHashMap.get(rcBlock)), 0, itemLocation);
     }
 
 
@@ -134,7 +140,7 @@ public class BlockRenderer {
 
         @Override
         public IBakedModel handleItemState(ItemStack stack) {
-            IExtendedBlockState itemState = ((IExtendedBlockState) Rollercoaster2Forge.handler.blockHashMap.get(rcBlock).getDefaultState());
+            IBlockState itemState = Block.getBlockFromItem(stack.getItem()).getDefaultState();
             return new CustomModel(base, itemState);
         }
     }
