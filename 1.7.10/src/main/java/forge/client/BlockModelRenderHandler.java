@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
+import org.lwjgl.opengl.GL11;
 import rollercoasterteam.rollercoaster2.core.api.textures.model.IModeledBlock;
 import rollercoasterteam.rollercoaster2.core.api.textures.model.ModelPart;
 import rollercoasterteam.rollercoaster2.core.api.textures.model.vecMath.Vecs3dCube;
@@ -22,12 +23,24 @@ public class BlockModelRenderHandler implements ISimpleBlockRenderingHandler {
 
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelId, RenderBlocks renderer) {
+        Tessellator tessellator = Tessellator.instance;
 
+        GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
+
+        tessellator.startDrawingQuads();
+        if(blockConverter.rcBlock instanceof IModeledBlock){
+            IModeledBlock modeledBlock = (IModeledBlock) blockConverter.rcBlock;
+            for(ModelPart cube : modeledBlock.getModel().cubes){
+                renderBox(cube.getCube(), block, Tessellator.instance, renderer, Blocks.cobblestone.getIcon(0, 0), 0, 0, 0);
+            }
+        }
+        tessellator.draw();
+        block.setBlockBoundsForItemRender();
+        renderer.setRenderBoundsFromBlock(block);
     }
 
     @Override
     public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer) {
-    //    Tessellator.instance.setBrightness(block.getMixedBrightnessForBlock(world, x, y, z));
         if(blockConverter.rcBlock instanceof IModeledBlock){
             IModeledBlock modeledBlock = (IModeledBlock) blockConverter.rcBlock;
             for(ModelPart cube : modeledBlock.getModel().cubes){
@@ -41,7 +54,7 @@ public class BlockModelRenderHandler implements ISimpleBlockRenderingHandler {
 
     @Override
     public boolean shouldRender3DInInventory(int modelId) {
-        return false;
+        return true;
     }
 
     @Override
