@@ -1,12 +1,15 @@
 package forge;
 
+import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
+import forge.client.BlockModelRenderHandler;
 import net.minecraft.block.Block;
 import net.minecraftforge.common.DimensionManager;
 import rollercoasterteam.rollercoaster2.core.api.IApiHandler;
 import rollercoasterteam.rollercoaster2.core.api.IXMod;
 import rollercoasterteam.rollercoaster2.core.api.block.RCBlock;
 import rollercoasterteam.rollercoaster2.core.api.item.RCItem;
+import rollercoasterteam.rollercoaster2.core.api.textures.model.IModeledBlock;
 import rollercoasterteam.rollercoaster2.core.api.world.RCWorld;
 
 import java.util.HashMap;
@@ -17,10 +20,15 @@ public class APIHandler implements IApiHandler {
 
     @Override
     public void registerBlock(RCBlock block) {
-        Block mcBlock = new BlockConverter(block);
+        BlockConverter mcBlock = new BlockConverter(block);
         GameRegistry.registerBlock(mcBlock, block.getName());
         if(!blockBlockHashMap.containsKey(block)){
             blockBlockHashMap.put(block, mcBlock);
+        }
+        if(block instanceof IModeledBlock){
+            int renderID = RenderingRegistry.getNextAvailableRenderId();
+            mcBlock.renderID = renderID;
+            RenderingRegistry.registerBlockHandler(renderID, new BlockModelRenderHandler(mcBlock));
         }
     }
 

@@ -16,7 +16,9 @@ import rollercoasterteam.rollercoaster2.core.api.block.RCBlock;
 
 public class BlockConverter extends Block {
 
-    RCBlock rcBlock;
+   public RCBlock rcBlock;
+
+    public int renderID = 0;
 
     public BlockConverter(RCBlock rcBlock) {
         super(Material.iron);
@@ -83,5 +85,10 @@ public class BlockConverter extends Block {
             return this.iconEast;
         }
         return super.getIcon(side, meta);
+    }
+
+    @Override
+    public int getRenderType() {
+        return renderID;
     }
 }
