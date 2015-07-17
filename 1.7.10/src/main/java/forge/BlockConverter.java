@@ -17,6 +17,7 @@ public class BlockConverter extends Block {
         super(Material.iron);
         setBlockName(rcBlock.getName());
         setCreativeTab(CreativeTabs.tabAllSearch);
+        setBlockTextureName(rcBlock.getTexture());
         this.rcBlock = rcBlock;
     }
 

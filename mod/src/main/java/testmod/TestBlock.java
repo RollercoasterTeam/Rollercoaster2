@@ -8,7 +8,7 @@ public class TestBlock extends RCBlock {
 
     public TestBlock(String name) {
         super(name);
-        setTexture("minecraft:blocks/cobblestone");
+        setTexture("minecraft:cobblestone");
     }
 
     @Override

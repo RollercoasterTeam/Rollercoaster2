@@ -53,7 +53,7 @@ public class BlockRenderer {
 
     @SubscribeEvent
     public void onModelBakeEvent(ModelBakeEvent event) {
-        TextureAtlasSprite base = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(rcBlock.getTexture());
+        TextureAtlasSprite base = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(rcBlock.getTexture().replace(":", ":blocks/"));
         IBakedModel customModel = new CustomModel(base);
         event.modelRegistry.putObject(blockLocation, customModel);
     }
