@@ -50,7 +50,10 @@ public class BlockConverter extends Block {
 
     @Override
     public boolean isFullCube() {
-        return !(rcBlock instanceof IModeledBlock);
+        if(rcBlock instanceof IModeledBlock){
+            return false;
+        }
+        return true;
     }
 
 
@@ -60,5 +63,11 @@ public class BlockConverter extends Block {
             return EnumWorldBlockLayer.CUTOUT;
         }
         return super.getBlockLayer();
+    }
+
+
+    @Override
+    public boolean isOpaqueCube() {
+        return !(rcBlock instanceof IModeledBlock);
     }
 }
