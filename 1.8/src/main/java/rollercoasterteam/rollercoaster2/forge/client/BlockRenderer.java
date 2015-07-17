@@ -3,27 +3,28 @@ package rollercoasterteam.rollercoaster2.forge.client;
 import com.google.common.primitives.Ints;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.resources.model.ModelRotation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.client.model.ISmartBlockModel;
-import net.minecraftforge.client.model.ISmartItemModel;
-import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.*;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import rollercoasterteam.rollercoaster2.core.ModInfo;
 import rollercoasterteam.rollercoaster2.core.api.block.RCBlock;
 import rollercoasterteam.rollercoaster2.forge.Rollercoaster2Forge;
+import sun.reflect.generics.scope.DummyScope;
 
+import javax.vecmath.Vector3f;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -58,15 +59,16 @@ public class BlockRenderer {
     }
 
 
-    public static class CustomModel implements IBakedModel, ISmartBlockModel, ISmartItemModel {
+    public static class CustomModel implements IFlexibleBakedModel, ISmartBlockModel, ISmartItemModel {
         private final TextureAtlasSprite base;
         private RCBlock rcBlock;
+        protected static FaceBakery faceBakery = new FaceBakery();
 
         public CustomModel(TextureAtlasSprite base) {
             this(base, null);
         }
 
-        public CustomModel(TextureAtlasSprite base, IExtendedBlockState state) {
+        public CustomModel(TextureAtlasSprite base, IBlockState state) {
             this.base = base;
         }
 
@@ -75,56 +77,28 @@ public class BlockRenderer {
             return Collections.emptyList();
         }
 
-        private int[] vertexToInts(float x, float y, float z, int color, TextureAtlasSprite texture, float u, float v) {
-            return new int[]{
-                    Float.floatToRawIntBits(x),
-                    Float.floatToRawIntBits(y),
-                    Float.floatToRawIntBits(z),
-                    color,
-                    Float.floatToRawIntBits(texture.getInterpolatedU(u)),
-                    Float.floatToRawIntBits(texture.getInterpolatedV(v)),
-                    0
-            };
-        }
+        @Override
+        public List<BakedQuad> getGeneralQuads() {
+            ArrayList<BakedQuad> list = new ArrayList<BakedQuad>();
+            BlockFaceUV uv = new BlockFaceUV(new float[]{0.0F, 0.0F, 16.0F, 16.0F}, 0);
+            BlockPartFace face = new BlockPartFace(null, 0, "", uv);
 
-        private BakedQuad createSidedBakedQuad(float x1, float x2, float z1, float z2, float y, TextureAtlasSprite texture, EnumFacing side) {
-            Vec3 v1 = rotate(new Vec3(x1 - .5, y - .5, z1 - .5), side).addVector(.5, .5, .5);
-            Vec3 v2 = rotate(new Vec3(x1 - .5, y - .5, z2 - .5), side).addVector(.5, .5, .5);
-            Vec3 v3 = rotate(new Vec3(x2 - .5, y - .5, z2 - .5), side).addVector(.5, .5, .5);
-            Vec3 v4 = rotate(new Vec3(x2 - .5, y - .5, z1 - .5), side).addVector(.5, .5, .5);
-            return new BakedQuad(Ints.concat(
-                    vertexToInts((float) v1.xCoord, (float) v1.yCoord, (float) v1.zCoord, -1, texture, 0, 0),
-                    vertexToInts((float) v2.xCoord, (float) v2.yCoord, (float) v2.zCoord, -1, texture, 0, 16),
-                    vertexToInts((float) v3.xCoord, (float) v3.yCoord, (float) v3.zCoord, -1, texture, 16, 16),
-                    vertexToInts((float) v4.xCoord, (float) v4.yCoord, (float) v4.zCoord, -1, texture, 16, 0)
-            ), -1, side);
-        }
+            ModelRotation modelRot = ModelRotation.X0_Y0;
+            boolean scale = true;
 
-        private static Vec3 rotate(Vec3 vec, EnumFacing side) {
-            switch (side) {
-                case DOWN:
-                    return new Vec3(vec.xCoord, -vec.yCoord, -vec.zCoord);
-                case UP:
-                    return new Vec3(vec.xCoord, vec.yCoord, vec.zCoord);
-                case NORTH:
-                    return new Vec3(vec.xCoord, vec.zCoord, -vec.yCoord);
-                case SOUTH:
-                    return new Vec3(vec.xCoord, -vec.zCoord, vec.yCoord);
-                case WEST:
-                    return new Vec3(-vec.yCoord, vec.xCoord, vec.zCoord);
-                case EAST:
-                    return new Vec3(vec.yCoord, -vec.xCoord, vec.zCoord);
-            }
-            return null;
+            list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 0.0F, 0.0F), new Vector3f(16.0F, 0.0F, 16.0F), face, base, EnumFacing.DOWN, modelRot, null, scale, true));
+            list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 16.0F, 0.0F), new Vector3f(16.0F, 16.0F, 16.0F), face, base, EnumFacing.UP, modelRot, null, scale, true));
+            list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 0.0F, 0.0F), new Vector3f(16.0F, 16.0F, 0.0F), face, base, EnumFacing.NORTH, modelRot, null, scale, true));
+            list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 0.0F, 16.0F), new Vector3f(16.0F, 16.0F, 16.0F), face, base, EnumFacing.SOUTH, modelRot, null, scale, true));
+            list.add(faceBakery.makeBakedQuad(new Vector3f(16.0F, 0.0F, 0.0F), new Vector3f(16.0F, 16.0F, 16.0F), face, base, EnumFacing.EAST, modelRot, null, scale, true));
+            list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 0.0F, 0.0F), new Vector3f(0.0F, 16.0F, 16.0F), face, base, EnumFacing.WEST, modelRot, null, scale, true));
+
+            return list;
         }
 
         @Override
-        public List<BakedQuad> getGeneralQuads() {
-            List<BakedQuad> ret = new ArrayList<BakedQuad>();
-            for (EnumFacing f : EnumFacing.values()) {
-                ret.add(createSidedBakedQuad(0, 1, 0, 1, 1, base, f));
-            }
-            return ret;
+        public VertexFormat getFormat() {
+            return Attributes.DEFAULT_BAKED_FORMAT;
         }
 
         @Override
@@ -147,14 +121,15 @@ public class BlockRenderer {
             return this.base;
         }
 
+        public static ItemTransformVec3f MovedUp = new ItemTransformVec3f(new Vector3f(0.0F, 0.0F, 0.0F), new Vector3f(-0.05F, 0.05F, -0.15F), new Vector3f(-0.5F, -0.5F, -0.5F));
         @Override
         public ItemCameraTransforms getItemCameraTransforms() {
-            return ItemCameraTransforms.DEFAULT;
+            return new ItemCameraTransforms(MovedUp, ItemTransformVec3f.DEFAULT, ItemTransformVec3f.DEFAULT, ItemTransformVec3f.DEFAULT);
         }
 
         @Override
         public IBakedModel handleBlockState(IBlockState state) {
-            return new CustomModel(base, (IExtendedBlockState) state);
+            return new CustomModel(base, state);
         }
 
         @Override
