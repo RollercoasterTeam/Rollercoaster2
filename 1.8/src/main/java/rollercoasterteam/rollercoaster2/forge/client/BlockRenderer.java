@@ -121,14 +121,14 @@ public class BlockRenderer {
             return list;
         }
 
-        //TODO draw block from the cube
+        //TODO draw correct textures
         public void addCube(ModelPart part, ArrayList<BakedQuad> list, BlockPartFace face, ModelRotation modelRotation){
-            list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 0.0F, 0.0F), new Vector3f(16.0F, 0.0F, 16.0F), face, down, EnumFacing.DOWN, modelRotation, null, true, true));//down
-            list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 16.0F, 0.0F), new Vector3f(16.0F, 16.0F, 16.0F), face, up, EnumFacing.UP, modelRotation, null, true, true));//up
-            list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 0.0F, 0.0F), new Vector3f(16.0F, 16.0F, 0.0F), face, north, EnumFacing.NORTH, modelRotation, null, true, true));//north
-            list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 0.0F, 16.0F), new Vector3f(16.0F, 16.0F, 16.0F), face, south, EnumFacing.SOUTH, modelRotation, null, true, true));//south
-            list.add(faceBakery.makeBakedQuad(new Vector3f(16.0F, 0.0F, 0.0F), new Vector3f(16.0F, 16.0F, 16.0F), face, east, EnumFacing.EAST, modelRotation, null, true, true));//east
-            list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 0.0F, 0.0F), new Vector3f(0.0F, 16.0F, 16.0F), face, west, EnumFacing.WEST, modelRotation, null, true, true));//west
+            list.add(faceBakery.makeBakedQuad(new Vector3f(part.getCube().getMinXF(), part.getCube().getMinYF(), part.getCube().getMinZF()), new Vector3f(part.getCube().getMaxXF(), part.getCube().getMinYF(), part.getCube().getMaxZF()), face, down, EnumFacing.DOWN, modelRotation, null, true, true));//down
+            list.add(faceBakery.makeBakedQuad(new Vector3f(part.getCube().getMinXF(), part.getCube().getMaxYF(), part.getCube().getMinZF()), new Vector3f(part.getCube().getMaxXF(), part.getCube().getMaxYF(), part.getCube().getMaxZF()), face, up, EnumFacing.UP, modelRotation, null, true, true));//up
+            list.add(faceBakery.makeBakedQuad(new Vector3f(part.getCube().getMinXF(), part.getCube().getMinYF(), part.getCube().getMinZF()), new Vector3f(part.getCube().getMaxXF(), part.getCube().getMaxYF(), part.getCube().getMaxZF()), face, north, EnumFacing.NORTH, modelRotation, null, true, true));//north
+            list.add(faceBakery.makeBakedQuad(new Vector3f(part.getCube().getMinXF(), part.getCube().getMinYF(), part.getCube().getMaxZF()), new Vector3f(part.getCube().getMaxZF(), part.getCube().getMaxYF(), part.getCube().getMaxZF()), face, south, EnumFacing.SOUTH, modelRotation, null, true, true));//south
+            list.add(faceBakery.makeBakedQuad(new Vector3f(part.getCube().getMaxXF(), part.getCube().getMinYF(), part.getCube().getMinZF()), new Vector3f(part.getCube().getMaxXF(), part.getCube().getMaxYF(), part.getCube().getMaxZF()), face, east, EnumFacing.EAST, modelRotation, null, true, true));//east
+            list.add(faceBakery.makeBakedQuad(new Vector3f(part.getCube().getMinXF(), part.getCube().getMinYF(), part.getCube().getMinZF()), new Vector3f(part.getCube().getMinXF(), part.getCube().getMaxYF(), part.getCube().getMaxZF()), face, west, EnumFacing.WEST, modelRotation, null, true, true));//west
         }
 
         @Override

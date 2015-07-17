@@ -10,6 +10,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
@@ -17,6 +18,7 @@ import net.minecraftforge.common.property.Properties;
 import rollercoasterteam.rollercoaster2.core.BlockPosition;
 import rollercoasterteam.rollercoaster2.core.api.BaseAPIProxy;
 import rollercoasterteam.rollercoaster2.core.api.block.RCBlock;
+import rollercoasterteam.rollercoaster2.core.api.textures.model.IModeledBlock;
 
 public class BlockConverter extends Block {
 
@@ -46,4 +48,17 @@ public class BlockConverter extends Block {
         return new ExtendedBlockState(this, new IProperty[0], properties);
     }
 
+    @Override
+    public boolean isFullCube() {
+        return !(rcBlock instanceof IModeledBlock);
+    }
+
+
+    @Override
+    public EnumWorldBlockLayer getBlockLayer() {
+        if(rcBlock instanceof IModeledBlock){
+            return EnumWorldBlockLayer.CUTOUT;
+        }
+        return super.getBlockLayer();
+    }
 }

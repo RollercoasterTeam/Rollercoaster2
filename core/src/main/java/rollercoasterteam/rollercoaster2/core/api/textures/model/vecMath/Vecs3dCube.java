@@ -168,7 +168,36 @@ public class Vecs3dCube {
 	@Override
 	public int hashCode()
 	{
-
 		return min.hashCode() << 8 + max.hashCode();
 	}
+
+    public float getMinXF()
+    {
+        return (float) min.getX();
+    }
+
+    public float getMinYF()
+    {
+        return (float) min.getY();
+    }
+
+    public float getMinZF()
+    {
+        return (float) min.getZ();
+    }
+
+    public float getMaxXF()
+    {
+        return (float) max.getX();
+    }
+
+    public float getMaxYF()
+    {
+        return (float) max.getY();
+    }
+
+    public float getMaxZF()
+    {
+        return (float) max.getZ();
+    }
 }
