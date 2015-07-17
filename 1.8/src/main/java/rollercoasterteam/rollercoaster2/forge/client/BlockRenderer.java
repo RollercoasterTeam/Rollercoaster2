@@ -55,28 +55,41 @@ public class BlockRenderer {
 
     @SubscribeEvent
     public void onModelBakeEvent(ModelBakeEvent event) {
-        TextureAtlasSprite base = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(rcBlock.getTexture().replace(":", ":blocks/"));
-        IBakedModel customModel = new CustomModel(base);
+        TextureAtlasSprite up = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(rcBlock.getTexturesWithFaces().getUp().textureName().replace(":", ":blocks/"));
+        TextureAtlasSprite down = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(rcBlock.getTexturesWithFaces().getDown().textureName().replace(":", ":blocks/"));
+        TextureAtlasSprite north = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(rcBlock.getTexturesWithFaces().getNorth().textureName().replace(":", ":blocks/"));
+        TextureAtlasSprite south = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(rcBlock.getTexturesWithFaces().getSouth().textureName().replace(":", ":blocks/"));
+        TextureAtlasSprite east = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(rcBlock.getTexturesWithFaces().getEast().textureName().replace(":", ":blocks/"));
+        TextureAtlasSprite west = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(rcBlock.getTexturesWithFaces().getWest().textureName().replace(":", ":blocks/"));
+
+        IBakedModel customModel = new CustomModel(up, down, north, south, east, west);
         event.modelRegistry.putObject(blockLocation, customModel);
 
         ItemModelMesher itemModelMesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
-        event.modelRegistry.putObject(itemLocation, new CustomModel(base));
+        event.modelRegistry.putObject(itemLocation, new CustomModel(up, down, north, south, east, west));
         itemModelMesher.register(Item.getItemFromBlock(Rollercoaster2Forge.handler.blockHashMap.get(rcBlock)), 0, itemLocation);
     }
 
 
     public static class CustomModel implements IFlexibleBakedModel, ISmartBlockModel, ISmartItemModel {
-        private final TextureAtlasSprite base;
-        private RCBlock rcBlock;
+        private final TextureAtlasSprite up;
+        private final TextureAtlasSprite down;
+        private final TextureAtlasSprite north;
+        private final TextureAtlasSprite south;
+        private final TextureAtlasSprite east;
+        private final TextureAtlasSprite west;
+
         protected static FaceBakery faceBakery = new FaceBakery();
 
-        public CustomModel(TextureAtlasSprite base) {
-            this(base, null);
+        public CustomModel(TextureAtlasSprite up, TextureAtlasSprite down, TextureAtlasSprite north, TextureAtlasSprite south, TextureAtlasSprite east, TextureAtlasSprite west) {
+            this.up = up;
+            this.down = down;
+            this.north = north;
+            this.south = south;
+            this.east = east;
+            this.west = west;
         }
 
-        public CustomModel(TextureAtlasSprite base, IBlockState state) {
-            this.base = base;
-        }
 
         @Override
         public List<BakedQuad> getFaceQuads(EnumFacing side) {
@@ -92,12 +105,12 @@ public class BlockRenderer {
             ModelRotation modelRot = ModelRotation.X0_Y0;
             boolean scale = true;
 
-            list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 0.0F, 0.0F), new Vector3f(16.0F, 0.0F, 16.0F), face, base, EnumFacing.DOWN, modelRot, null, scale, true));
-            list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 16.0F, 0.0F), new Vector3f(16.0F, 16.0F, 16.0F), face, base, EnumFacing.UP, modelRot, null, scale, true));
-            list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 0.0F, 0.0F), new Vector3f(16.0F, 16.0F, 0.0F), face, base, EnumFacing.NORTH, modelRot, null, scale, true));
-            list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 0.0F, 16.0F), new Vector3f(16.0F, 16.0F, 16.0F), face, base, EnumFacing.SOUTH, modelRot, null, scale, true));
-            list.add(faceBakery.makeBakedQuad(new Vector3f(16.0F, 0.0F, 0.0F), new Vector3f(16.0F, 16.0F, 16.0F), face, base, EnumFacing.EAST, modelRot, null, scale, true));
-            list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 0.0F, 0.0F), new Vector3f(0.0F, 16.0F, 16.0F), face, base, EnumFacing.WEST, modelRot, null, scale, true));
+            list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 0.0F, 0.0F), new Vector3f(16.0F, 0.0F, 16.0F), face, down, EnumFacing.DOWN, modelRot, null, scale, true));//down
+            list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 16.0F, 0.0F), new Vector3f(16.0F, 16.0F, 16.0F), face, up, EnumFacing.UP, modelRot, null, scale, true));//up
+            list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 0.0F, 0.0F), new Vector3f(16.0F, 16.0F, 0.0F), face, north, EnumFacing.NORTH, modelRot, null, scale, true));//north
+            list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 0.0F, 16.0F), new Vector3f(16.0F, 16.0F, 16.0F), face, south, EnumFacing.SOUTH, modelRot, null, scale, true));//south
+            list.add(faceBakery.makeBakedQuad(new Vector3f(16.0F, 0.0F, 0.0F), new Vector3f(16.0F, 16.0F, 16.0F), face, east, EnumFacing.EAST, modelRot, null, scale, true));//east
+            list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 0.0F, 0.0F), new Vector3f(0.0F, 16.0F, 16.0F), face, west, EnumFacing.WEST, modelRot, null, scale, true));//west
 
             return list;
         }
@@ -124,7 +137,7 @@ public class BlockRenderer {
 
         @Override
         public TextureAtlasSprite getTexture() {
-            return this.base;
+            return this.north;
         }
 
         public static ItemTransformVec3f MovedUp = new ItemTransformVec3f(new Vector3f(0.0F, 0.0F, 0.0F), new Vector3f(-0.05F, 0.05F, -0.15F), new Vector3f(-0.5F, -0.5F, -0.5F));
@@ -135,13 +148,12 @@ public class BlockRenderer {
 
         @Override
         public IBakedModel handleBlockState(IBlockState state) {
-            return new CustomModel(base, state);
+            return new CustomModel(up, down, north, south, east, west);
         }
 
         @Override
         public IBakedModel handleItemState(ItemStack stack) {
-            IBlockState itemState = Block.getBlockFromItem(stack.getItem()).getDefaultState();
-            return new CustomModel(base, itemState);
+            return new CustomModel(up, down, north, south, east, west);
         }
     }
 }

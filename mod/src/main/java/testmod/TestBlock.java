@@ -2,6 +2,9 @@ package testmod;
 
 import rollercoasterteam.rollercoaster2.core.BlockPosition;
 import rollercoasterteam.rollercoaster2.core.api.block.RCBlock;
+import rollercoasterteam.rollercoaster2.core.api.textures.IMultiFaceTexture;
+import rollercoasterteam.rollercoaster2.core.api.textures.MultiFaceTexture;
+import rollercoasterteam.rollercoaster2.core.api.textures.Texture;
 import rollercoasterteam.rollercoaster2.core.api.world.RCWorld;
 
 public class TestBlock extends RCBlock {
@@ -17,5 +20,8 @@ public class TestBlock extends RCBlock {
         return super.onActivated(world, position);
     }
 
-
+    @Override
+    public IMultiFaceTexture getTexturesWithFaces() {
+        return new MultiFaceTexture(new Texture("minecraft:cobblestone"),new Texture("minecraft:brick"),new Texture("minecraft:gold_block"),new Texture("minecraft:diamond_block"),new Texture("minecraft:gravel"),new Texture("minecraft:end_stone"));
+    }
 }
