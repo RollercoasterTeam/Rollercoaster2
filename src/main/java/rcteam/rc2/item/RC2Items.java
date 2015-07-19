@@ -22,6 +22,6 @@ public class RC2Items {
 	}
 	
 	private static void registerItem(Item item) {
-		GameRegistry.registerItem(hammer, hammer.getUnlocalizedName());
+		GameRegistry.registerItem(item, item.getUnlocalizedName());
 	}
 }
