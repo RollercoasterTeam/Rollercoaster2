@@ -6,6 +6,8 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import rcteam.rc2.block.RC2Blocks;
+import rcteam.rc2.item.RC2Items;
 import rcteam.rc2.proxy.CommonProxy;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -31,11 +33,11 @@ public class RC2 {
 	@SidedProxy(clientSide="rcteam.rc2.proxy.ClientProxy", serverSide="rcteam.rc2.proxy.CommonProxy")
 	public static CommonProxy proxy;
 	
-	public static CreativeTabs elements;
+	public static CreativeTabs tab;
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-		elements = new CreativeTabs("rc2") {
+		tab = new CreativeTabs("rc2") {
 			@Override
 			@SideOnly(Side.CLIENT)
 			public Item getTabIconItem() {
@@ -45,11 +47,13 @@ public class RC2 {
 			@Override
 			@SideOnly(Side.CLIENT)
 			public ItemStack getIconItemStack() {
-				return new ItemStack(Items.apple, 1, 0);
+				return new ItemStack(RC2Items.hammer);
 			}
 		};
 		
 		proxy.init();
+		RC2Items.init();
+		RC2Blocks.init();
 	}
 	
 	@EventHandler
