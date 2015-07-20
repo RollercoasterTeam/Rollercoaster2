@@ -3,10 +3,10 @@ package rcteam.rc2;
 import java.io.IOException;
 
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import rcteam.rc2.block.RC2Blocks;
+import rcteam.rc2.gui.GuiHandler;
 import rcteam.rc2.item.RC2Items;
 import rcteam.rc2.proxy.CommonProxy;
 import cpw.mods.fml.common.Mod;
@@ -17,6 +17,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartedEvent;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -54,6 +55,8 @@ public class RC2 {
 		proxy.init();
 		RC2Items.init();
 		RC2Blocks.init();
+		
+		NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
 	}
 	
 	@EventHandler
