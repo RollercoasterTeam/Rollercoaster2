@@ -34,6 +34,8 @@ public class TileEntityEntrance extends TileEntity {
 	public void writeToNBT(NBTTagCompound compound) {
 		super.writeToNBT(compound);
 		
+		themePark = themePark == null ? new ThemePark() : themePark;
+		
 		compound.setInteger("direction", themePark.direction);
 		
 		compound.setString("name", themePark.name);
