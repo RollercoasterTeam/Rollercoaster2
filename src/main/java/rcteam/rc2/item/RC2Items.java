@@ -7,6 +7,7 @@ import net.minecraft.item.Item;
 public class RC2Items {
 
 	public static Item hammer;
+	public static Item themePark;
 	
 	public static void init() {
 		define();
@@ -15,10 +16,12 @@ public class RC2Items {
 
 	private static void define() {
 		hammer = new ItemHammer().setUnlocalizedName("hammer").setTextureName("rc2:hammer").setCreativeTab(RC2.tab);
+		themePark = new ItemThemePark().setUnlocalizedName("themePark").setTextureName("rc2:themePark").setCreativeTab(RC2.tab);
 	}
 	
 	private static void register() {
 		registerItem(hammer);
+		registerItem(themePark);
 	}
 	
 	private static void registerItem(Item item) {

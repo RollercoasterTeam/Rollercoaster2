@@ -1,4 +1,4 @@
-package rcteam.rc2.gui;
+package rcteam.rc2.client.gui;
 
 public class GuiCreative {
 

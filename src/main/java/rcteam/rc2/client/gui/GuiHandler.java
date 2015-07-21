@@ -1,4 +1,4 @@
-package rcteam.rc2.gui;
+package rcteam.rc2.client.gui;
 
 import rcteam.rc2.util.Reference;
 import net.minecraft.entity.player.EntityPlayer;

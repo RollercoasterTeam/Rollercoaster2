@@ -6,7 +6,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import rcteam.rc2.block.RC2Blocks;
-import rcteam.rc2.gui.GuiHandler;
+import rcteam.rc2.client.gui.GuiHandler;
 import rcteam.rc2.item.RC2Items;
 import rcteam.rc2.proxy.CommonProxy;
 import cpw.mods.fml.common.Mod;
