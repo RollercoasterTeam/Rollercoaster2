@@ -10,6 +10,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -58,6 +59,19 @@ public class GuiEntrance extends GuiScreen {
 		parkName.setFocused(false);
 		parkName.setMaxStringLength(26);
 		parkName.setText(((TileEntityEntrance) world.getTileEntity(x, y, z)).themePark.name);
+		
+		buttonList.add(new GuiButton(0, k + 80, l + 24, 20, 20, "<"));
+		buttonList.add(new GuiButton(1, k + 102, l + 24, 20, 20, ">"));
+		
+		buttonList.add(new GuiButton(2, k + 80, l + 46, 20, 20, "<"));
+		buttonList.add(new GuiButton(3, k + 102, l + 46, 20, 20, ">"));
+		
+		buttonList.add(new GuiButton(4, k + 80, l + 68, 20, 20, "<"));
+		buttonList.add(new GuiButton(5, k + 102, l + 68, 20, 20, ">"));
+		
+		buttonList.add(new GuiButton(6, k + 130, l + 24, 38, 20, "Edit"));
+		buttonList.add(new GuiButton(7, k + 130, l + 46, 38, 20, "Save"));
+		buttonList.add(new GuiButton(8, k + 130, l + 68, 38, 20, "Exit"));
 	}
 	
 	@Override
@@ -70,6 +84,39 @@ public class GuiEntrance extends GuiScreen {
         this.drawTexturedModalRect(k, l, 0, 0, 176, 96);
         
         parkName.drawTextBox();
+        
+        super.drawScreen(i, j, f);
+	}
+	
+	@Override
+	protected void actionPerformed(GuiButton button) {
+		if(button.id == 0) {
+			
+		}
+		else if(button.id == 1) {
+			
+		}
+		else if(button.id == 2) {
+			
+		}
+		else if(button.id == 3) {
+			
+		}
+		else if(button.id == 4) {
+	
+		}
+		else if(button.id == 5) {
+	
+		}
+		else if(button.id == 6) {
+	
+		}
+		else if(button.id == 7) {
+			
+		}
+		else if(button.id == 8) {
+			
+		}
 	}
 	
 	@Override
@@ -83,7 +130,7 @@ public class GuiEntrance extends GuiScreen {
 	public void mouseClicked(int i, int j, int k) {
 		super.mouseClicked(i, j, k);
 		
-		parkName.mouseClicked(i, j, k);
+		//parkName.mouseClicked(i, j, k);
 	}
 	
 	@Override
