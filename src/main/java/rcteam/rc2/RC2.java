@@ -9,6 +9,7 @@ import rcteam.rc2.block.RC2Blocks;
 import rcteam.rc2.client.gui.GuiHandler;
 import rcteam.rc2.item.RC2Items;
 import rcteam.rc2.proxy.CommonProxy;
+import rcteam.rc2.rollercoaster.ThemeParkLogo;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -55,6 +56,7 @@ public class RC2 {
 		proxy.init();
 		RC2Items.init();
 		RC2Blocks.init();
+		ThemeParkLogo.init();
 		
 		NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
 	}

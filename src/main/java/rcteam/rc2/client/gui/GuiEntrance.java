@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import org.lwjgl.opengl.GL11;
 
 import rcteam.rc2.block.te.TileEntityEntrance;
+import rcteam.rc2.rollercoaster.ThemeParkLogo;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -27,6 +28,8 @@ public class GuiEntrance extends GuiScreen {
 	private static final ResourceLocation texture = new ResourceLocation("rc2:textures/gui/entrance.png");
 	
 	private GuiTextField parkName;
+	
+	public ThemeParkLogo logo = new ThemeParkLogo();
 	
 	private World world;
 	
@@ -60,18 +63,21 @@ public class GuiEntrance extends GuiScreen {
 		parkName.setMaxStringLength(26);
 		parkName.setText(((TileEntityEntrance) world.getTileEntity(x, y, z)).themePark.name);
 		
-		buttonList.add(new GuiButton(0, k + 80, l + 24, 20, 20, "<"));
-		buttonList.add(new GuiButton(1, k + 102, l + 24, 20, 20, ">"));
+		buttonList.add(new GuiButton(0, k + 80, l + 24, 12, 20, "<"));
+		buttonList.add(new GuiButton(1, k + 94, l + 24, 12, 20, ">"));
+		buttonList.add(new GuiButton(2, k + 108, l + 24, 12, 20, "C"));
 		
-		buttonList.add(new GuiButton(2, k + 80, l + 46, 20, 20, "<"));
-		buttonList.add(new GuiButton(3, k + 102, l + 46, 20, 20, ">"));
+		buttonList.add(new GuiButton(3, k + 80, l + 46, 12, 20, "<"));
+		buttonList.add(new GuiButton(4, k + 94, l + 46, 12, 20, ">"));
+		buttonList.add(new GuiButton(5, k + 108, l + 46, 12, 20, "C"));
 		
-		buttonList.add(new GuiButton(4, k + 80, l + 68, 20, 20, "<"));
-		buttonList.add(new GuiButton(5, k + 102, l + 68, 20, 20, ">"));
+		buttonList.add(new GuiButton(6, k + 80, l + 68, 12, 20, "<"));
+		buttonList.add(new GuiButton(7, k + 94, l + 68, 12, 20, ">"));
+		buttonList.add(new GuiButton(8, k + 108, l + 68, 12, 20, "C"));
 		
-		buttonList.add(new GuiButton(6, k + 130, l + 24, 38, 20, "Edit"));
-		buttonList.add(new GuiButton(7, k + 130, l + 46, 38, 20, "Save"));
-		buttonList.add(new GuiButton(8, k + 130, l + 68, 38, 20, "Exit"));
+		buttonList.add(new GuiButton(9, k + 130, l + 24, 38, 20, "Edit"));
+		buttonList.add(new GuiButton(10, k + 130, l + 46, 38, 20, "Save"));
+		buttonList.add(new GuiButton(11, k + 130, l + 68, 38, 20, "Exit"));
 	}
 	
 	@Override
@@ -83,21 +89,35 @@ public class GuiEntrance extends GuiScreen {
         this.mc.getTextureManager().bindTexture(texture);
         this.drawTexturedModalRect(k, l, 0, 0, 176, 96);
         
+        super.drawScreen(i, j, f);
+        
         parkName.drawTextBox();
         
-        super.drawScreen(i, j, f);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        //GL11.glScalef(0.25F, 0.25F, 0);
+        this.mc.getTextureManager().bindTexture(logo.bgs.get(logo.bg));
+        this.drawTexturedModalRect(k + 8, l + 24, (logo.bgColour % 4) * 64, (logo.bgColour >= 12 ? 3 : logo.bgColour >= 8 ? 2 : logo.bgColour >= 4 ? 1 : 0) * 64, 64, 64);
 	}
 	
 	@Override
 	protected void actionPerformed(GuiButton button) {
 		if(button.id == 0) {
-			
+			if(logo.bg > 0) {
+				logo.bg--;
+			}
 		}
 		else if(button.id == 1) {
-			
+			if(logo.bg < logo.bgs.size() - 1) {
+				logo.bg++;
+			}
 		}
 		else if(button.id == 2) {
-			
+			if(logo.bgColour == 15) {
+				logo.bgColour = 0;
+			}
+			else {
+				logo.bgColour++;
+			}
 		}
 		else if(button.id == 3) {
 			
@@ -116,6 +136,15 @@ public class GuiEntrance extends GuiScreen {
 		}
 		else if(button.id == 8) {
 			
+		}
+		else if(button.id == 9) {
+			
+		}
+		else if(button.id == 10) {
+	
+		}
+		else if(button.id == 11) {
+			Minecraft.getMinecraft().currentScreen = null;
 		}
 	}
 	

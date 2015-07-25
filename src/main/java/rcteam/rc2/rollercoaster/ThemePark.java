@@ -21,6 +21,8 @@ public class ThemePark {
 	
 	public int direction;
 	
+	public ThemeParkLogo logo;
+	
 	/**
 	 * @param direction The direction that the park is facing
 	 * @param name The name of the theme park 
