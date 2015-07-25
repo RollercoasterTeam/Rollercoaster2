@@ -1,0 +1,16 @@
+[
+{
+  "modid": "rc2",
+  "name": "Rollercoaster 2",
+  "description": "Ridable roller coasters in Minecraft!",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["klmDF14J, modmuss50, shadekiller666"],
+  "credits": "The RollercoasterTeam",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
