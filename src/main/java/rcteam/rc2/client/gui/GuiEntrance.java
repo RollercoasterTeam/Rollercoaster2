@@ -4,9 +4,12 @@ import java.lang.reflect.Field;
 
 import org.lwjgl.opengl.GL11;
 
+import rcteam.rc2.RC2;
 import rcteam.rc2.block.te.TileEntityEntrance;
 import rcteam.rc2.rollercoaster.ThemeParkLogo;
+import rcteam.rc2.util.Reference;
 
+import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -31,6 +34,8 @@ public class GuiEntrance extends GuiScreen {
 	
 	public ThemeParkLogo logo = new ThemeParkLogo();
 	
+	private EntityPlayer player;
+	
 	private World world;
 	
 	private int x;
@@ -38,6 +43,8 @@ public class GuiEntrance extends GuiScreen {
 	private int z;
 	
 	public GuiEntrance(EntityPlayer player, World world, int x, int y, int z) {
+		this.player = player;
+		
 		this.world = world;
 		
 		this.x = x;
@@ -94,7 +101,6 @@ public class GuiEntrance extends GuiScreen {
         parkName.drawTextBox();
         
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        //GL11.glScalef(0.25F, 0.25F, 0);
         this.mc.getTextureManager().bindTexture(logo.bgs.get(logo.bg));
         this.drawTexturedModalRect(k + 8, l + 24, (logo.bgColour % 4) * 64, (logo.bgColour >= 12 ? 3 : logo.bgColour >= 8 ? 2 : logo.bgColour >= 4 ? 1 : 0) * 64, 64, 64);
 	}
@@ -138,7 +144,7 @@ public class GuiEntrance extends GuiScreen {
 			
 		}
 		else if(button.id == 9) {
-			
+			FMLNetworkHandler.openGui(player, RC2.instance, Reference.GUI_ID_EDIT_THEME_PARK, world, x, y, z);
 		}
 		else if(button.id == 10) {
 	

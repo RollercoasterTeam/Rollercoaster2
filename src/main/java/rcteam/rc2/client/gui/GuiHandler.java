@@ -20,6 +20,9 @@ public class GuiHandler implements IGuiHandler {
 		if(id == Reference.GUI_ID_ENTRANCE) {
 			return new GuiEntrance(player, world, x, y, z);
 		}
+		else if(id == Reference.GUI_ID_EDIT_THEME_PARK) {
+			return new GuiEditThemePark(player, world, x, y, z);
+		}
 		return null;
 	}
 
