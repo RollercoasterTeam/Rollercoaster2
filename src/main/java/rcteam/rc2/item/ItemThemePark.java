@@ -27,7 +27,7 @@ public class ItemThemePark extends Item {
 			
 			TileEntityEntrance entrance = (TileEntityEntrance) world.getTileEntity(x, y, z);
 			
-			entrance.themePark = new ThemePark(l, stack.getDisplayName()).place(world, x, y, z);
+			entrance.themePark = new ThemePark(l, stack.getDisplayName(), 25, -1).place(world, x, y, z);
 			
 			return true;
 		}
