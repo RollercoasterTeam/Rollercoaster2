@@ -27,7 +27,7 @@ public class GiveThemeParkCommand implements ICommand {
 
 	@Override
 	public String getCommandUsage(ICommandSender p_71518_1_) {
-		return "/rc <player> <size> <maxBuildHeight>";
+		return "/rc tp <player> [size] [maxBuildHeight]";
 	}
 
 	@Override
