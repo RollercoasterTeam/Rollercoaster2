@@ -7,6 +7,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import rcteam.rc2.block.RC2Blocks;
 import rcteam.rc2.client.gui.GuiHandler;
+import rcteam.rc2.command.GiveThemeParkCommand;
 import rcteam.rc2.item.RC2Items;
 import rcteam.rc2.proxy.CommonProxy;
 import rcteam.rc2.rollercoaster.ThemeParkLogo;
@@ -18,6 +19,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartedEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -72,7 +74,7 @@ public class RC2 {
 	}
 	
 	@EventHandler
-	public void serverStarted(FMLServerStartedEvent event) throws ClassNotFoundException, IOException {
-		
+	public void serverStarting(FMLServerStartingEvent event) {
+		event.registerServerCommand(new GiveThemeParkCommand());
 	}
 }

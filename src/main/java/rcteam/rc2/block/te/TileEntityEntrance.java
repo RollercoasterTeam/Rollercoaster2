@@ -27,7 +27,7 @@ public class TileEntityEntrance extends TileEntity {
 	public void readFromNBT(NBTTagCompound compound) {
 		super.readFromNBT(compound);
 		
-		themePark = new ThemePark(compound.getInteger("direction"), compound.getString("name"), compound.getInteger("size"), compound.getInteger("buildHeightLimit"));
+		themePark = new ThemePark(compound.getInteger("direction"), compound.getString("name"), compound.getInteger("size"), compound.getInteger("maxBuildHeight"));
 	}
 	
 	@Override
@@ -42,6 +42,6 @@ public class TileEntityEntrance extends TileEntity {
 		
 		compound.setInteger("size", themePark.size);
 		
-		compound.setInteger("buildHeightLimit", themePark.buildHeightLimit);
+		compound.setInteger("maxBuildHeight", themePark.maxBuildHeight);
 	}
 }

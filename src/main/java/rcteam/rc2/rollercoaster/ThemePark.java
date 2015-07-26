@@ -19,7 +19,7 @@ public class ThemePark {
 	
 	public int size;
 	
-	public int buildHeightLimit;
+	public int maxBuildHeight;
 	
 	public int direction;
 	
@@ -37,7 +37,7 @@ public class ThemePark {
 		
 		this.size = xSize;
 		
-		this.buildHeightLimit = buildHeightLimit;
+		this.maxBuildHeight = buildHeightLimit;
 		
 		this.direction = direction;
 	}

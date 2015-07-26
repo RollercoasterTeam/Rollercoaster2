@@ -1,14 +1,14 @@
 [
 {
   "modid": "rc2",
-  "name": "Rollercoaster 2",
-  "description": "Ridable roller coasters in Minecraft!",
+  "name": "§4§lRollercoaster 2",
+  "description": "§fCreate theme parks\n§eDesign rollercoasters\n§cRide rides\n§6§l§nHave fun!",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
-  "authorList": ["klmDF14J, modmuss50, shadekiller666"],
-  "credits": "The RollercoasterTeam",
+  "authorList": ["roboyobo", "modmuss50", "shadekiller666"],
+  "credits": "The Rollercoaster Team",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []
