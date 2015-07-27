@@ -2,11 +2,14 @@ package rcteam.rc2;
 
 import java.io.IOException;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
 import rcteam.rc2.block.RC2Blocks;
 import rcteam.rc2.client.gui.GuiHandler;
+import rcteam.rc2.client.gui.GuiThemeParkOverlay;
 import rcteam.rc2.command.GiveThemeParkCommand;
 import rcteam.rc2.item.RC2Items;
 import rcteam.rc2.proxy.CommonProxy;
@@ -70,7 +73,7 @@ public class RC2 {
 	
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
-        
+		MinecraftForge.EVENT_BUS.register(new GuiThemeParkOverlay(Minecraft.getMinecraft()));
 	}
 	
 	@EventHandler
