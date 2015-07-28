@@ -57,6 +57,8 @@ public class ItemCone extends ItemFood {
 		scoops.appendTag(new NBTTagString("3"));
 		
 		stack.stackTagCompound.setTag("scoops", scoops);
+		
+		System.out.println("A: " + scoops.tagCount());
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -67,15 +69,21 @@ public class ItemCone extends ItemFood {
 			stack.stackTagCompound = new NBTTagCompound();
 			
 			NBTTagList scoops = new NBTTagList();
+			
+			scoops.appendTag(new NBTTagString("0"));
+			scoops.appendTag(new NBTTagString("1"));
+			scoops.appendTag(new NBTTagString("2"));
+			scoops.appendTag(new NBTTagString("3"));
+			
 			stack.stackTagCompound.setTag("scoops", scoops);
+			
+			System.out.println("Emergency!");
 		}
 		
 		NBTTagList scoops = stack.stackTagCompound.getTagList("scoops", 8);
 		
-		System.out.println(scoops.tagCount());
-		
 		for(int i = 0; i < scoops.tagCount(); i++) {
-			int tag = Integer.parseInt(scoops.getStringTagAt(i));
+			String tag = scoops.getStringTagAt(i);
 			list.add(tag);
 		}
 	}
