@@ -26,8 +26,9 @@ public class ItemIceCreamScoop extends Item {
 	}
 	
 	@Override
-	public boolean hasContainerItem(ItemStack stack) {
-		return true;
+	@SideOnly(Side.CLIENT)
+	public boolean hasEffect(ItemStack stack, int pass) {
+		return stack.getItem() == RC2Items.goldenScoop ? true : false;
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })

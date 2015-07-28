@@ -1,6 +1,10 @@
 itemGroup.rc2=Rollercoaster 2
 
 item.hammer.name=Hammer
+
 item.themePark.name=Theme Park
+
+item.scoop.name=Ice Cream Scoop
+item.goldenScoop.name=Golden Ice Cream Scoop
 
 tile.entrance.name=Park Entrance
