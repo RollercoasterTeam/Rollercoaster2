@@ -25,9 +25,8 @@ public class BlockEntrance extends BlockContainer {
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
 		if(world.isRemote) {
 			FMLNetworkHandler.openGui(player, RC2.instance, Reference.GUI_ID_ENTRANCE, world, x, y, z);
-			return true;
 		}
-		return false;
+		return true;
 	}
 
 }
