@@ -29,13 +29,14 @@ public class GuiThemeParkOverlay extends Gui {
 
 	@SubscribeEvent(priority = EventPriority.NORMAL)
 	public void onRenderExperienceBar(RenderGameOverlayEvent event) {
-		if (event.isCancelable() || event.type != ElementType.EXPERIENCE) {
+		if (event.isCancelable() || event.type != ElementType.ALL) {
 			return;
 		}
 		
 		int xPos = 2;
 		int yPos = 2;
 
+		GL11.glPushMatrix();
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		GL11.glDisable(GL11.GL_LIGHTING);
 		
@@ -43,6 +44,7 @@ public class GuiThemeParkOverlay extends Gui {
 		this.drawTexturedModalRect(xPos, yPos, 0, 0, 16, 16);		
 		
 		this.mc.getTextureManager().bindTexture(new ResourceLocation("rc2:textures/gui/icons/entrance.png"));
-		this.drawTexturedModalRect(xPos, yPos + 18, 0, 0, 16, 16);		
+		this.drawTexturedModalRect(xPos, yPos + 18, 0, 0, 16, 16);	
+		GL11.glPopMatrix();
 	}
 }
