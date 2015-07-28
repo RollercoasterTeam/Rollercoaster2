@@ -1,8 +1,8 @@
 package rcteam.rc2.item;
 
 import cpw.mods.fml.common.registry.GameRegistry;
-import rcteam.rc2.RC2;
 import net.minecraft.item.Item;
+import rcteam.rc2.RC2;
 
 public class RC2Items {
 

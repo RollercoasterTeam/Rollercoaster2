@@ -1,4 +1,8 @@
 *eclipse
 *.idea
 *.iml
+*.ipr
+*.iws
 .gradle/*
+out/*
+run/*

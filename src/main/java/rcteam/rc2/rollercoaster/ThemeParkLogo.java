@@ -1,8 +1,8 @@
 package rcteam.rc2.rollercoaster;
 
-import java.util.ArrayList;
-
 import net.minecraft.util.ResourceLocation;
+
+import java.util.ArrayList;
 
 public class ThemeParkLogo { 
 	

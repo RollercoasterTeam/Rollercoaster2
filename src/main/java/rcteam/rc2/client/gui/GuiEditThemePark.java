@@ -1,30 +1,13 @@
 package rcteam.rc2.client.gui;
 
-import java.lang.reflect.Field;
-
-import org.lwjgl.opengl.GL11;
-
-import rcteam.rc2.RC2;
-import rcteam.rc2.block.te.TileEntityEntrance;
-import rcteam.rc2.rollercoaster.ThemeParkLogo;
-import rcteam.rc2.util.Reference;
-
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.gui.inventory.GuiContainerCreative;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import org.lwjgl.opengl.GL11;
+import rcteam.rc2.block.te.TileEntityEntrance;
+import rcteam.rc2.rollercoaster.ThemeParkLogo;
 
 public class GuiEditThemePark extends GuiScreen {
 

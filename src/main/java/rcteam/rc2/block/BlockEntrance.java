@@ -1,5 +1,6 @@
 package rcteam.rc2.block;
 
+import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
@@ -8,7 +9,6 @@ import net.minecraft.world.World;
 import rcteam.rc2.RC2;
 import rcteam.rc2.block.te.TileEntityEntrance;
 import rcteam.rc2.util.Reference;
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 
 public class BlockEntrance extends BlockContainer {
 

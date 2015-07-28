@@ -1,9 +1,9 @@
 package rcteam.rc2.client.gui;
 
-import rcteam.rc2.util.Reference;
+import cpw.mods.fml.common.network.IGuiHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.network.IGuiHandler;
+import rcteam.rc2.util.Reference;
 
 public class GuiHandler implements IGuiHandler {
 

@@ -1,10 +1,10 @@
 package rcteam.rc2.block;
 
-import rcteam.rc2.RC2;
-import rcteam.rc2.block.te.TileEntityEntrance;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
+import rcteam.rc2.RC2;
+import rcteam.rc2.block.te.TileEntityEntrance;
 
 public class RC2Blocks {
 	
