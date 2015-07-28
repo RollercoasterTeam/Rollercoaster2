@@ -9,6 +9,7 @@ public class RC2Items {
 	public static Item hammer;
 	public static Item themePark;
 	public static Item scoop, goldenScoop;
+	public static Item cone;
 	
 	public static void init() {
 		define();
@@ -22,6 +23,8 @@ public class RC2Items {
 		
 		scoop = new ItemIceCreamScoop().setUnlocalizedName("scoop").setTextureName("rc2:iceCream/scoop").setCreativeTab(RC2.tab);
 		goldenScoop = new ItemIceCreamScoop().setUnlocalizedName("goldenScoop").setTextureName("rc2:iceCream/goldenScoop").setCreativeTab(RC2.tab);
+		
+		cone = new ItemCone().setUnlocalizedName("cone").setTextureName("rc2:iceCream/cone").setCreativeTab(RC2.tab);
 	}
 	
 	private static void register() {
@@ -31,6 +34,8 @@ public class RC2Items {
 		
 		registerItem(scoop);
 		registerItem(goldenScoop);
+		
+		registerItem(cone);
 	}
 	
 	private static void registerItem(Item item) {

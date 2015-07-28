@@ -10,6 +10,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import org.lwjgl.opengl.GL11;
 
 public class GuiThemeParkOverlay extends Gui {
+	
 	private Minecraft mc;
 
 	public GuiThemeParkOverlay(Minecraft mc) {
@@ -17,15 +18,6 @@ public class GuiThemeParkOverlay extends Gui {
 
 		this.mc = mc;
 	}
-
-	private static final int BUFF_ICON_SIZE = 18;
-	private static final int BUFF_ICON_SPACING = BUFF_ICON_SIZE + 2; // 2 pixels
-																		// between
-																		// buff
-																		// icons
-	private static final int BUFF_ICON_BASE_U_OFFSET = 0;
-	private static final int BUFF_ICON_BASE_V_OFFSET = 198;
-	private static final int BUFF_ICONS_PER_ROW = 8;
 
 	@SubscribeEvent(priority = EventPriority.NORMAL)
 	public void onRenderExperienceBar(RenderGameOverlayEvent event) {
