@@ -9,15 +9,19 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import rcteam.rc2.RC2;
 import rcteam.rc2.util.HammerMode;
 
 import java.util.List;
 
 public class ItemIceCreamScoop extends Item {
 	
-	public ItemIceCreamScoop() {
+	public ItemIceCreamScoop(boolean isGolden) {
 		setMaxStackSize(1);
 		setMaxDamage(100);
+		setUnlocalizedName(isGolden ? "goldenScoop" : "scoop");
+		setTextureName("rc2:iceCream/" + (isGolden ? "goldenScoop" : "scoop"));
+		setCreativeTab(RC2.tab);
 	}
 
 	@Override

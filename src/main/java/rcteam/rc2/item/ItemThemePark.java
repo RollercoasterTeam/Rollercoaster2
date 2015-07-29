@@ -5,6 +5,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import rcteam.rc2.RC2;
 import rcteam.rc2.block.RC2Blocks;
 import rcteam.rc2.block.te.TileEntityEntrance;
 import rcteam.rc2.rollercoaster.ThemePark;
@@ -12,7 +13,9 @@ import rcteam.rc2.rollercoaster.ThemePark;
 public class ItemThemePark extends Item {
 	
 	public ItemThemePark() {
-		
+		setUnlocalizedName("themePark");
+		setTextureName("rc2:themePark");
+		setCreativeTab(RC2.tab);
 	}
 	
 	@Override

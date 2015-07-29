@@ -2,6 +2,8 @@ package rcteam.rc2.item;
 
 import java.util.List;
 
+import rcteam.rc2.RC2;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
@@ -18,6 +20,9 @@ public class ItemCone extends ItemFood {
 	public ItemCone() {
 		super(4, 0.3F, false);
 		setMaxStackSize(1);
+		setUnlocalizedName("cone");
+		setTextureName("rc2:iceCream/cone");
+		setCreativeTab(RC2.tab);
 	}
 
 	@Override

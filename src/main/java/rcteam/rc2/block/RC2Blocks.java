@@ -11,20 +11,10 @@ public class RC2Blocks {
 	public static Block entrance;
 	
 	public static void init() {
-		define();
-		register();
-		registerTEs();
-	}
-
-	private static void define() {
-		entrance = new BlockEntrance().setBlockName("entrance").setBlockTextureName("rc2:entrance").setCreativeTab(RC2.tab);
-	}
-	
-	private static void register() {
+		entrance = new BlockEntrance();
+		
 		registerBlock(entrance);
-	}
-	
-	private static void registerTEs() {
+		
 		registerTE(TileEntityEntrance.class, entrance);
 	}
 	

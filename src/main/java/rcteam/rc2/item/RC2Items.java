@@ -12,22 +12,15 @@ public class RC2Items {
 	public static Item cone;
 	
 	public static void init() {
-		define();
-		register();
-	}
-
-	private static void define() {
-		hammer = new ItemHammer().setUnlocalizedName("hammer").setTextureName("rc2:hammer").setCreativeTab(RC2.tab);
+		hammer = new ItemHammer();
 		
-		themePark = new ItemThemePark().setUnlocalizedName("themePark").setTextureName("rc2:themePark").setCreativeTab(RC2.tab);
+		themePark = new ItemThemePark();
 		
-		scoop = new ItemIceCreamScoop().setUnlocalizedName("scoop").setTextureName("rc2:iceCream/scoop").setCreativeTab(RC2.tab);
-		goldenScoop = new ItemIceCreamScoop().setUnlocalizedName("goldenScoop").setTextureName("rc2:iceCream/goldenScoop").setCreativeTab(RC2.tab);
+		scoop = new ItemIceCreamScoop(false);
+		goldenScoop = new ItemIceCreamScoop(true);
 		
-		cone = new ItemCone().setUnlocalizedName("cone").setTextureName("rc2:iceCream/cone").setCreativeTab(RC2.tab);
-	}
-	
-	private static void register() {
+		cone = new ItemCone();
+		
 		registerItem(hammer);
 		
 		registerItem(themePark);

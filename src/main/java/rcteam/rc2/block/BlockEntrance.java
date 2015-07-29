@@ -14,6 +14,9 @@ public class BlockEntrance extends BlockContainer {
 
 	public BlockEntrance() {
 		super(Material.rock);
+		setBlockName("entrance");
+		setBlockTextureName("rc2:entrance");
+		setCreativeTab(RC2.tab);
 	}
 
 	@Override
