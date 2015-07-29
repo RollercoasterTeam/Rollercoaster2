@@ -6,6 +6,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
+import rcteam.rc2.block.te.TileEntityEntrance;
 import rcteam.rc2.network.packets.PacketThemeParkEntrance.Packet;
 
 public class PacketThemeParkEntrance extends AbstractPacket {
@@ -13,50 +14,50 @@ public class PacketThemeParkEntrance extends AbstractPacket {
 	public static enum Packet {
 		LOGO_BG {
 			@Override
-			public void execute() {
-				
+			public void execute(EntityPlayer player, int x, int y, int z, int numericData, String data) {
+				((TileEntityEntrance) player.worldObj.getTileEntity(x, y, z)).themePark.logo.bg = numericData;
 			}
 		},
 		LOGO_BG_COLOUR {
 			@Override
-			public void execute() {
-				
+			public void execute(EntityPlayer player, int x, int y, int z, int numericData, String data) {
+				((TileEntityEntrance) player.worldObj.getTileEntity(x, y, z)).themePark.logo.bgColour = numericData;
 			}
 		},
 		LOGO_FG {
 			@Override
-			public void execute() {
-				
+			public void execute(EntityPlayer player, int x, int y, int z, int numericData, String data) {
+				((TileEntityEntrance) player.worldObj.getTileEntity(x, y, z)).themePark.logo.fg = numericData;
 			}
 		},
 		LOGO_FG_COLOUR {
 			@Override
-			public void execute() {
-				
+			public void execute(EntityPlayer player, int x, int y, int z, int numericData, String data) {
+				((TileEntityEntrance) player.worldObj.getTileEntity(x, y, z)).themePark.logo.fgColour = numericData;
 			}
 		},
 		LOGO_TEXT {
 			@Override
-			public void execute() {
-				
+			public void execute(EntityPlayer player, int x, int y, int z, int numericData, String data) {
+				((TileEntityEntrance) player.worldObj.getTileEntity(x, y, z)).themePark.logo.text = numericData;
 			}
 		},
 		LOGO_TEXT_COLOUR {
 			@Override
-			public void execute() {
-				
+			public void execute(EntityPlayer player, int x, int y, int z, int numericData, String data) {
+				((TileEntityEntrance) player.worldObj.getTileEntity(x, y, z)).themePark.logo.textColour = numericData;
 			}
 		};
 		
-		public void execute() {
+		public void execute(EntityPlayer player, int x, int y, int z, int numericData, String data) {
 			
 		}
 	}
 	
-	public int packet;
-	public int x, y, z;
-	public int numericData;
-	public String data;
+	private int packet;
+	private int x, y, z;
+	private int numericData;
+	private String data;
 	
 	public PacketThemeParkEntrance(int packet, int x, int y, int z, int numericData, String data) {
 		this.packet = packet;
@@ -114,7 +115,7 @@ public class PacketThemeParkEntrance extends AbstractPacket {
 	public void handleServerSide(EntityPlayer player) {
 		for(Packet packet : Packet.values()) {
 			if(this.packet == packet.ordinal()) {
-				packet.execute();
+				packet.execute(player, x, y, z, numericData, data);
 				break;
 			}
 		}

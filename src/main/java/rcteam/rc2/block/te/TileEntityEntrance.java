@@ -28,6 +28,15 @@ public class TileEntityEntrance extends TileEntity {
 		super.readFromNBT(compound);
 		
 		themePark = new ThemePark(compound.getInteger("direction"), compound.getString("name"), compound.getInteger("size"), compound.getInteger("maxBuildHeight"));
+		
+		themePark.logo.bg = compound.getInteger("bg");
+		themePark.logo.bgColour = compound.getInteger("bgColour");
+		
+		themePark.logo.fg = compound.getInteger("fg");
+		themePark.logo.fgColour = compound.getInteger("fgColour");
+		
+		themePark.logo.text = compound.getInteger("text");
+		themePark.logo.textColour = compound.getInteger("textColour");
 	}
 	
 	@Override
@@ -43,5 +52,14 @@ public class TileEntityEntrance extends TileEntity {
 		compound.setInteger("size", themePark.size);
 		
 		compound.setInteger("maxBuildHeight", themePark.maxBuildHeight);
+		
+		compound.setInteger("bg", themePark.logo.bg);
+		compound.setInteger("bgColour", themePark.logo.bgColour);
+		
+		compound.setInteger("fg", themePark.logo.fg);
+		compound.setInteger("fgColour", themePark.logo.fgColour);
+		
+		compound.setInteger("text", themePark.logo.text);
+		compound.setInteger("textColour", themePark.logo.textColour);
 	}
 }

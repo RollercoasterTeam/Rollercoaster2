@@ -40,6 +40,8 @@ public class ThemePark {
 		this.maxBuildHeight = buildHeightLimit;
 		
 		this.direction = direction;
+		
+		this.logo = new ThemeParkLogo();
 	}
 	
 	public ThemePark() {

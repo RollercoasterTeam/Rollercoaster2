@@ -11,6 +11,8 @@ import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 import rcteam.rc2.RC2;
 import rcteam.rc2.block.te.TileEntityEntrance;
+import rcteam.rc2.network.NetworkHandler;
+import rcteam.rc2.network.packets.PacketThemeParkEntrance;
 import rcteam.rc2.rollercoaster.ThemeParkLogo;
 import rcteam.rc2.util.Reference;
 
@@ -20,7 +22,7 @@ public class GuiEntrance extends GuiScreen {
 	
 	private GuiTextField parkName;
 	
-	public ThemeParkLogo logo = new ThemeParkLogo();
+	public ThemeParkLogo logo;
 	
 	private EntityPlayer player;
 	
@@ -38,6 +40,8 @@ public class GuiEntrance extends GuiScreen {
 		this.x = x;
 		this.y = y;
 		this.z = z;
+		
+		this.logo = ((TileEntityEntrance) world.getTileEntity(x, y, z)).themePark.logo;
 	}
 	
 	@Override
@@ -99,11 +103,13 @@ public class GuiEntrance extends GuiScreen {
 			if(logo.bg > 0) {
 				logo.bg--;
 			}
+			NetworkHandler.updateThemeParkEntrance(PacketThemeParkEntrance.Packet.LOGO_BG, x, y, z, logo.bg, null);
 		}
 		else if(button.id == 1) {
 			if(logo.bg < logo.bgs.size() - 1) {
 				logo.bg++;
 			}
+			NetworkHandler.updateThemeParkEntrance(PacketThemeParkEntrance.Packet.LOGO_BG, x, y, z, logo.bg, null);
 		}
 		else if(button.id == 2) {
 			if(logo.bgColour == 15) {
@@ -112,6 +118,7 @@ public class GuiEntrance extends GuiScreen {
 			else {
 				logo.bgColour++;
 			}
+			NetworkHandler.updateThemeParkEntrance(PacketThemeParkEntrance.Packet.LOGO_BG_COLOUR, x, y, z, logo.bgColour, null);
 		}
 		else if(button.id == 3) {
 			
