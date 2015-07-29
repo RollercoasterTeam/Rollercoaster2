@@ -18,7 +18,7 @@ import rcteam.rc2.block.RC2Blocks;
 import rcteam.rc2.client.gui.GuiHandler;
 import rcteam.rc2.command.GiveThemeParkCommand;
 import rcteam.rc2.item.RC2Items;
-import rcteam.rc2.packets.PacketPipeline;
+import rcteam.rc2.network.packets.PacketPipeline;
 import rcteam.rc2.proxy.CommonProxy;
 
 @Mod(modid = RC2.MODID, name = RC2.NAME, version = RC2.VERSION)

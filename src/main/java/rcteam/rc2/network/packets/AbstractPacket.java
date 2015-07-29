@@ -1,4 +1,4 @@
-package rcteam.rc2.packets;
+package rcteam.rc2.network.packets;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;

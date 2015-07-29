@@ -1,4 +1,4 @@
-package rcteam.rc2.packets;
+package rcteam.rc2.network.packets;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.FMLEmbeddedChannel;
@@ -31,7 +31,7 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Abstra
 
     //Register packets here
     private void registerPackets() {
-        registerPacket(PacketExample.class);
+        registerPacket(PacketThemeParkEntrance.class);
     }
 
     private EnumMap<Side, FMLEmbeddedChannel> channels;
