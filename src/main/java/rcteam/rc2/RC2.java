@@ -61,10 +61,9 @@ public class RC2 {
             }
         };
 
-
         RC2Items.init();
-        RC2Blocks.init();
-        proxy.init();
+		RC2Blocks.init();
+		proxy.init();
 
         NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
 	}

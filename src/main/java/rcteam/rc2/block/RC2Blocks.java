@@ -7,7 +7,6 @@ import rcteam.rc2.RC2;
 import rcteam.rc2.block.te.TileEntityEntrance;
 
 public class RC2Blocks {
-	
 	public static Block entrance;
 	
 	public static void init() {
