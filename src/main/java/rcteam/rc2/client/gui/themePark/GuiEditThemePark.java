@@ -1,4 +1,4 @@
-package rcteam.rc2.client.gui;
+package rcteam.rc2.client.gui.themePark;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;

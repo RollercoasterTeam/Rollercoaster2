@@ -3,6 +3,8 @@ package rcteam.rc2.client.gui;
 import cpw.mods.fml.common.network.IGuiHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
+import rcteam.rc2.client.gui.themePark.GuiEditThemePark;
+import rcteam.rc2.client.gui.themePark.GuiEntrance;
 import rcteam.rc2.util.Reference;
 
 public class GuiHandler implements IGuiHandler {

@@ -1,4 +1,6 @@
-package rcteam.rc2.client.gui;
+package rcteam.rc2.client.gui.themePark;
+
+import java.util.ArrayList;
 
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import net.minecraft.client.Minecraft;
@@ -13,6 +15,12 @@ import org.lwjgl.util.Rectangle;
 
 import rcteam.rc2.RC2;
 import rcteam.rc2.block.te.TileEntityEntrance;
+import rcteam.rc2.client.gui.themePark.pane.GuiEntrancePane;
+import rcteam.rc2.client.gui.themePark.pane.GuiEntrancePaneFinance;
+import rcteam.rc2.client.gui.themePark.pane.GuiEntrancePaneLogo;
+import rcteam.rc2.client.gui.themePark.pane.GuiEntrancePaneMain;
+import rcteam.rc2.client.gui.themePark.pane.GuiEntrancePaneSettings;
+import rcteam.rc2.client.gui.themePark.pane.GuiEntrancePaneStatus;
 import rcteam.rc2.network.NetworkHandler;
 import rcteam.rc2.network.packets.PacketThemeParkEntrance;
 import rcteam.rc2.rollercoaster.ThemeParkLogo;
@@ -20,7 +28,13 @@ import rcteam.rc2.util.Reference;
 
 public class GuiEntrance extends GuiScreen {
 
-	private static final ResourceLocation texture = new ResourceLocation("rc2:textures/gui/entrance.png");
+	private static final GuiEntrancePane[] panes = {
+		new GuiEntrancePaneMain(), 
+		new GuiEntrancePaneStatus(), 
+		new GuiEntrancePaneFinance(), 
+		new GuiEntrancePaneLogo(), 
+		new GuiEntrancePaneSettings()
+	};
 	
 	private GuiTextField parkName;
 	
@@ -89,7 +103,7 @@ public class GuiEntrance extends GuiScreen {
         int l = (this.height / 2) - (96 / 2);
         
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.getTextureManager().bindTexture(texture);
+        this.mc.getTextureManager().bindTexture(panes[tabIndex].texture);
         
         this.drawTexturedModalRect(k, l - 28, 0, 96, 112, 30);
         
