@@ -32,6 +32,8 @@ public class GuiEntrance extends GuiScreen {
 	private int y;
 	private int z;
 	
+	private int tabIndex = 0;
+	
 	public GuiEntrance(EntityPlayer player, World world, int x, int y, int z) {
 		this.player = player;
 		
@@ -86,7 +88,12 @@ public class GuiEntrance extends GuiScreen {
         
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager().bindTexture(texture);
+        
+        this.drawTexturedModalRect(k, l - 28, 0, 96, 112, 30);
+        
         this.drawTexturedModalRect(k, l, 0, 0, 176, 96);
+        
+        this.drawTexturedModalRect(k + (tabIndex * 28), l - 28, tabIndex * 28, 126, 28, 32);
         
         super.drawScreen(i, j, f);
         
@@ -161,6 +168,10 @@ public class GuiEntrance extends GuiScreen {
 		super.mouseClicked(i, j, k);
 		
 		//parkName.mouseClicked(i, j, k);
+		
+		System.out.println(tabIndex);
+		tabIndex = tabIndex < 3 ? tabIndex + 1 : 0;
+		System.out.println(tabIndex);
 	}
 	
 	@Override
