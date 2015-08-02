@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
@@ -36,17 +37,17 @@ public class GuiEntrance extends GuiScreen {
 		new GuiEntrancePaneSettings()
 	};
 	
-	private GuiTextField parkName;
+	public GuiTextField parkName;
 	
 	public ThemeParkLogo logo;
 	
-	private EntityPlayer player;
+	public EntityPlayer player;
 	
-	private World world;
+	public World world;
 	
-	private int x;
-	private int y;
-	private int z;
+	public int x;
+	public int y;
+	public int z;
 	
 	private int tabIndex = 0;
 	
@@ -64,37 +65,8 @@ public class GuiEntrance extends GuiScreen {
 	
 	@Override
 	public void initGui() {
-		int k = (this.width / 2) - (176 / 2);
-        int l = (this.height / 2) - (96 / 2);
-        
-		parkName = new GuiTextField(fontRendererObj, k + 6, l + 6, 164, 12) {
-			@Override
-			public void mouseClicked(int i, int j, int k) {
-				super.mouseClicked(i, j, k);
-				
-				((TileEntityEntrance) world.getTileEntity(x, y, z)).themePark.name = parkName.getText();
-				world.markBlockForUpdate(x, y, z);
-			}
-		};
-		parkName.setFocused(false);
-		parkName.setMaxStringLength(26);
-		parkName.setText(((TileEntityEntrance) world.getTileEntity(x, y, z)).themePark.name);
-		
-		buttonList.add(new GuiButton(0, k + 80, l + 24, 12, 20, "<"));
-		buttonList.add(new GuiButton(1, k + 94, l + 24, 12, 20, ">"));
-		buttonList.add(new GuiButton(2, k + 108, l + 24, 12, 20, "C"));
-		
-		buttonList.add(new GuiButton(3, k + 80, l + 46, 12, 20, "<"));
-		buttonList.add(new GuiButton(4, k + 94, l + 46, 12, 20, ">"));
-		buttonList.add(new GuiButton(5, k + 108, l + 46, 12, 20, "C"));
-		
-		buttonList.add(new GuiButton(6, k + 80, l + 68, 12, 20, "<"));
-		buttonList.add(new GuiButton(7, k + 94, l + 68, 12, 20, ">"));
-		buttonList.add(new GuiButton(8, k + 108, l + 68, 12, 20, "C"));
-		
-		buttonList.add(new GuiButton(9, k + 130, l + 24, 38, 20, "Edit"));
-		buttonList.add(new GuiButton(10, k + 130, l + 46, 38, 20, "Save"));
-		buttonList.add(new GuiButton(11, k + 130, l + 68, 38, 20, "Exit"));
+		buttonList.clear();
+		panes[tabIndex].initGui(this);
 	}
 	
 	@Override
@@ -105,7 +77,7 @@ public class GuiEntrance extends GuiScreen {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager().bindTexture(panes[tabIndex].texture);
         
-        this.drawTexturedModalRect(k, l - 28, 0, 96, 112, 30);
+        this.drawTexturedModalRect(k, l - 28, 0, 96, 140, 30);
         
         this.drawTexturedModalRect(k, l, 0, 0, 176, 96);
         
@@ -113,7 +85,7 @@ public class GuiEntrance extends GuiScreen {
         
         super.drawScreen(i, j, f);
         
-        parkName.drawTextBox();
+        //parkName.drawTextBox();
         
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager().bindTexture(logo.bgs.get(logo.bg));
@@ -122,54 +94,7 @@ public class GuiEntrance extends GuiScreen {
 	
 	@Override
 	protected void actionPerformed(GuiButton button) {
-		if(button.id == 0) {
-			if(logo.bg > 0) {
-				logo.bg--;
-			}
-			NetworkHandler.updateThemeParkEntrance(PacketThemeParkEntrance.Packet.LOGO_BG, x, y, z, logo.bg, null);
-		}
-		else if(button.id == 1) {
-			if(logo.bg < logo.bgs.size() - 1) {
-				logo.bg++;
-			}
-			NetworkHandler.updateThemeParkEntrance(PacketThemeParkEntrance.Packet.LOGO_BG, x, y, z, logo.bg, null);
-		}
-		else if(button.id == 2) {
-			if(logo.bgColour == 15) {
-				logo.bgColour = 0;
-			}
-			else {
-				logo.bgColour++;
-			}
-			NetworkHandler.updateThemeParkEntrance(PacketThemeParkEntrance.Packet.LOGO_BG_COLOUR, x, y, z, logo.bgColour, null);
-		}
-		else if(button.id == 3) {
-			
-		}
-		else if(button.id == 4) {
-	
-		}
-		else if(button.id == 5) {
-	
-		}
-		else if(button.id == 6) {
-	
-		}
-		else if(button.id == 7) {
-			
-		}
-		else if(button.id == 8) {
-			
-		}
-		else if(button.id == 9) {
-			FMLNetworkHandler.openGui(player, RC2.instance, Reference.GUI_ID_EDIT_THEME_PARK, world, x, y, z);
-		}
-		else if(button.id == 10) {
-	
-		}
-		else if(button.id == 11) {
-			Minecraft.getMinecraft().currentScreen = null;
-		}
+		panes[tabIndex].actionPerformed(this, button);
 	}
 	
 	@Override
@@ -190,10 +115,11 @@ public class GuiEntrance extends GuiScreen {
 		
 		Rectangle mouse = new Rectangle(a, b, 1, 1);
 		System.out.println("A: " + a + ", B: " + b + ", C: " + c + ", K: " + k + ", L: " + l);
-		for(int i = 0; i < 4; i++) {
+		for(int i = 0; i < 5; i++) {
 			Rectangle bounds = new Rectangle(k + (i * 28), l - 28, 28, 32);
 			if(mouse.intersects(bounds)) {
 				tabIndex = i;
+				initGui();
 			}
 		}
 	}
@@ -201,5 +127,13 @@ public class GuiEntrance extends GuiScreen {
 	@Override
 	public boolean doesGuiPauseGame() {
 		return false;
+	}
+
+	public FontRenderer getFontRenderer() {
+		return fontRendererObj;
+	}
+
+	public void addButton(GuiButton button) {
+		buttonList.add(button);
 	}
 }

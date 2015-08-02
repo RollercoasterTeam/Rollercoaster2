@@ -1,5 +1,6 @@
 package rcteam.rc2.client.gui.themePark.pane;
 
+import rcteam.rc2.client.gui.themePark.GuiEntrance;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.ResourceLocation;
 
@@ -15,7 +16,7 @@ public class GuiEntrancePane {
 		texture = new ResourceLocation("rc2:textures/gui/entrance/pane_" + name.toLowerCase() + ".png");
 	}
 	
-	public void initGui() {
+	public void initGui(GuiEntrance gui) {
 		
 	}
 	
@@ -23,7 +24,7 @@ public class GuiEntrancePane {
 		
 	}
 	
-	public void actionPerformed(GuiButton button) {
+	public void actionPerformed(GuiEntrance gui, GuiButton button) {
 		
 	}
 }

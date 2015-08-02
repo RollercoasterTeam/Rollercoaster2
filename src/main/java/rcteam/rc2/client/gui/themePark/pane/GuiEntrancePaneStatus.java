@@ -1,15 +1,16 @@
 package rcteam.rc2.client.gui.themePark.pane;
 
+import rcteam.rc2.client.gui.themePark.GuiEntrance;
 import net.minecraft.client.gui.GuiButton;
 
 public class GuiEntrancePaneStatus extends GuiEntrancePane {
 
 	public GuiEntrancePaneStatus() {
-		super("status");
+		super("Status");
 	}
 	
 	@Override
-	public void initGui() {
+	public void initGui(GuiEntrance gui) {
 		
 	}
 	
@@ -18,7 +19,7 @@ public class GuiEntrancePaneStatus extends GuiEntrancePane {
 	}
 	
 	@Override
-	public void actionPerformed(GuiButton button) {
+	public void actionPerformed(GuiEntrance gui, GuiButton button) {
 		
 	}
 }
