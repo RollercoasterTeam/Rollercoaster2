@@ -9,6 +9,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.Rectangle;
+
 import rcteam.rc2.RC2;
 import rcteam.rc2.block.te.TileEntityEntrance;
 import rcteam.rc2.network.NetworkHandler;
@@ -164,14 +166,22 @@ public class GuiEntrance extends GuiScreen {
 	}
 	
 	@Override
-	public void mouseClicked(int i, int j, int k) {
-		super.mouseClicked(i, j, k);
+	public void mouseClicked(int a, int b, int c) {
+		super.mouseClicked(a, b, c);
 		
 		//parkName.mouseClicked(i, j, k);
 		
-		System.out.println(tabIndex);
-		tabIndex = tabIndex < 3 ? tabIndex + 1 : 0;
-		System.out.println(tabIndex);
+		int k = (this.width / 2) - (176 / 2);
+        int l = (this.height / 2) - (96 / 2);
+		
+		Rectangle mouse = new Rectangle(a, b, 1, 1);
+		System.out.println("A: " + a + ", B: " + b + ", C: " + c + ", K: " + k + ", L: " + l);
+		for(int i = 0; i < 4; i++) {
+			Rectangle bounds = new Rectangle(k + (i * 28), l - 28, 28, 32);
+			if(mouse.intersects(bounds)) {
+				tabIndex = i;
+			}
+		}
 	}
 	
 	@Override
