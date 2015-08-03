@@ -1,31 +1,20 @@
 package rcteam.rc2.client.gui.themePark;
 
-import java.util.ArrayList;
-
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.Rectangle;
 
-import rcteam.rc2.RC2;
-import rcteam.rc2.block.te.TileEntityEntrance;
 import rcteam.rc2.client.gui.themePark.pane.GuiEntrancePane;
 import rcteam.rc2.client.gui.themePark.pane.GuiEntrancePaneFinance;
 import rcteam.rc2.client.gui.themePark.pane.GuiEntrancePaneLogo;
 import rcteam.rc2.client.gui.themePark.pane.GuiEntrancePaneMain;
 import rcteam.rc2.client.gui.themePark.pane.GuiEntrancePaneSettings;
 import rcteam.rc2.client.gui.themePark.pane.GuiEntrancePaneStatus;
-import rcteam.rc2.network.NetworkHandler;
-import rcteam.rc2.network.packets.PacketThemeParkEntrance;
-import rcteam.rc2.rollercoaster.ThemeParkLogo;
-import rcteam.rc2.util.Reference;
 
 public class GuiEntrance extends GuiScreen {
 
@@ -71,11 +60,13 @@ public class GuiEntrance extends GuiScreen {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager().bindTexture(panes[tabIndex].texture);
         
-        this.drawTexturedModalRect(k, l - 28, 0, 96, 140, 30);
+        this.drawTexturedModalRect(k, l - 26, 0, 96, 140, 30);
         
         this.drawTexturedModalRect(k, l, 0, 0, 176, 96);
         
         this.drawTexturedModalRect(k + (tabIndex * 28), l - 28, tabIndex * 28, 126, 28, 32);
+        
+        this.fontRendererObj.drawString(panes[tabIndex].name, k + 5, l + 6, 0x555555);
         
         super.drawScreen(i, j, f);
         
@@ -102,7 +93,6 @@ public class GuiEntrance extends GuiScreen {
         int l = (this.height / 2) - (96 / 2);
 		
 		Rectangle mouse = new Rectangle(a, b, 1, 1);
-		System.out.println("A: " + a + ", B: " + b + ", C: " + c + ", K: " + k + ", L: " + l);
 		for(int i = 0; i < 5; i++) {
 			Rectangle bounds = new Rectangle(k + (i * 28), l - 28, 28, 32);
 			if(mouse.intersects(bounds)) {

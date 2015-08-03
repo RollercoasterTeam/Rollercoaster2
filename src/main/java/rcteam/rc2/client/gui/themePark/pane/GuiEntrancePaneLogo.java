@@ -15,8 +15,6 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 
 public class GuiEntrancePaneLogo extends GuiEntrancePane {
-
-	public GuiTextField parkName;
 	
 	public ThemeParkLogo logo;
 	
@@ -28,20 +26,6 @@ public class GuiEntrancePaneLogo extends GuiEntrancePane {
 	public void initGui(GuiEntrance gui) {
 		int k = (gui.width / 2) - (176 / 2);
         int l = (gui.height / 2) - (96 / 2);
-        
-        parkName = new GuiTextField(gui.getFontRenderer(), k + 6, l + 6, 164, 12) {
-			@Override
-			public void mouseClicked(int i, int j, int k) {
-				super.mouseClicked(i, j, k);
-				
-				/*((TileEntityEntrance) gui.world.getTileEntity(gui.x, gui.y, gui.z)).themePark.name = parkName.getText();
-				world.markBlockForUpdate(x, y, z);*/
-			}
-		};
-		
-		parkName.setFocused(false);
-		parkName.setMaxStringLength(26);
-		parkName.setText(((TileEntityEntrance) gui.world.getTileEntity(gui.x, gui.y, gui.z)).themePark.name);
 		
 		logo = ((TileEntityEntrance) gui.world.getTileEntity(gui.x, gui.y, gui.z)).themePark.logo;
 		
@@ -66,8 +50,6 @@ public class GuiEntrancePaneLogo extends GuiEntrancePane {
 	public void drawScreen(GuiEntrance gui, int i, int j, float f) {
 		int k = (gui.width / 2) - (176 / 2);
         int l = (gui.height / 2) - (96 / 2);
-        
-		parkName.drawTextBox();
         
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         gui.mc.getTextureManager().bindTexture(logo.bgs.get(logo.bg));
@@ -128,6 +110,6 @@ public class GuiEntrancePaneLogo extends GuiEntrancePane {
 	
 	@Override
 	public void keyTyped(GuiEntrance gui, char c, int i) {
-		parkName.textboxKeyTyped(c, i);
+		
 	}
 }
