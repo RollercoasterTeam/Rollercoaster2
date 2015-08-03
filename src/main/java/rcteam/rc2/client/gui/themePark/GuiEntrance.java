@@ -37,10 +37,6 @@ public class GuiEntrance extends GuiScreen {
 		new GuiEntrancePaneSettings()
 	};
 	
-	public GuiTextField parkName;
-	
-	public ThemeParkLogo logo;
-	
 	public EntityPlayer player;
 	
 	public World world;
@@ -59,8 +55,6 @@ public class GuiEntrance extends GuiScreen {
 		this.x = x;
 		this.y = y;
 		this.z = z;
-		
-		this.logo = ((TileEntityEntrance) world.getTileEntity(x, y, z)).themePark.logo;
 	}
 	
 	@Override
@@ -85,11 +79,7 @@ public class GuiEntrance extends GuiScreen {
         
         super.drawScreen(i, j, f);
         
-        //parkName.drawTextBox();
-        
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.getTextureManager().bindTexture(logo.bgs.get(logo.bg));
-        this.drawTexturedModalRect(k + 8, l + 24, (logo.bgColour % 4) * 64, (logo.bgColour >= 12 ? 3 : logo.bgColour >= 8 ? 2 : logo.bgColour >= 4 ? 1 : 0) * 64, 64, 64);
+        panes[tabIndex].drawScreen(this, i, j, f);
 	}
 	
 	@Override
@@ -101,14 +91,12 @@ public class GuiEntrance extends GuiScreen {
 	public void keyTyped(char c, int i) {
 		super.keyTyped(c, i);
 		
-		parkName.textboxKeyTyped(c, i);
+		panes[tabIndex].keyTyped(this, c, i);
 	}
 	
 	@Override
 	public void mouseClicked(int a, int b, int c) {
 		super.mouseClicked(a, b, c);
-		
-		//parkName.mouseClicked(i, j, k);
 		
 		int k = (this.width / 2) - (176 / 2);
         int l = (this.height / 2) - (96 / 2);

@@ -14,12 +14,18 @@ public class GuiEntrancePaneMain extends GuiEntrancePane {
 		
 	}
 	
-	public void drawScreen(int i, int j, float f) {
+	@Override
+	public void drawScreen(GuiEntrance gui, int i, int j, float f) {
 		
 	}
 	
 	@Override
 	public void actionPerformed(GuiEntrance gui, GuiButton button) {
+		
+	}
+	
+	@Override
+	public void keyTyped(GuiEntrance gui, char c, int i) {
 		
 	}
 }

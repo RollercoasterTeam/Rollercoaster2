@@ -20,11 +20,15 @@ public class GuiEntrancePane {
 		
 	}
 	
-	public void drawScreen(int i, int j, float f) {
+	public void drawScreen(GuiEntrance gui, int i, int j, float f) {
 		
 	}
 	
 	public void actionPerformed(GuiEntrance gui, GuiButton button) {
+		
+	}
+	
+	public void keyTyped(GuiEntrance gui, char c, int i) {
 		
 	}
 }

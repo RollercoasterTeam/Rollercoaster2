@@ -1,11 +1,14 @@
 package rcteam.rc2.client.gui.themePark.pane;
 
+import org.lwjgl.opengl.GL11;
+
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import rcteam.rc2.RC2;
 import rcteam.rc2.block.te.TileEntityEntrance;
 import rcteam.rc2.client.gui.themePark.GuiEntrance;
 import rcteam.rc2.network.NetworkHandler;
 import rcteam.rc2.network.packets.PacketThemeParkEntrance;
+import rcteam.rc2.rollercoaster.ThemeParkLogo;
 import rcteam.rc2.util.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -13,6 +16,10 @@ import net.minecraft.client.gui.GuiTextField;
 
 public class GuiEntrancePaneLogo extends GuiEntrancePane {
 
+	public GuiTextField parkName;
+	
+	public ThemeParkLogo logo;
+	
 	public GuiEntrancePaneLogo() {
 		super("Logo");
 	}
@@ -22,7 +29,7 @@ public class GuiEntrancePaneLogo extends GuiEntrancePane {
 		int k = (gui.width / 2) - (176 / 2);
         int l = (gui.height / 2) - (96 / 2);
         
-        gui.parkName = new GuiTextField(gui.getFontRenderer(), k + 6, l + 6, 164, 12) {
+        parkName = new GuiTextField(gui.getFontRenderer(), k + 6, l + 6, 164, 12) {
 			@Override
 			public void mouseClicked(int i, int j, int k) {
 				super.mouseClicked(i, j, k);
@@ -31,9 +38,12 @@ public class GuiEntrancePaneLogo extends GuiEntrancePane {
 				world.markBlockForUpdate(x, y, z);*/
 			}
 		};
-		gui.parkName.setFocused(false);
-		gui.parkName.setMaxStringLength(26);
-		gui.parkName.setText(((TileEntityEntrance) gui.world.getTileEntity(gui.x, gui.y, gui.z)).themePark.name);
+		
+		parkName.setFocused(false);
+		parkName.setMaxStringLength(26);
+		parkName.setText(((TileEntityEntrance) gui.world.getTileEntity(gui.x, gui.y, gui.z)).themePark.name);
+		
+		logo = ((TileEntityEntrance) gui.world.getTileEntity(gui.x, gui.y, gui.z)).themePark.logo;
 		
 		gui.addButton(new GuiButton(0, k + 80, l + 24, 12, 20, "<"));
 		gui.addButton(new GuiButton(1, k + 94, l + 24, 12, 20, ">"));
@@ -52,32 +62,40 @@ public class GuiEntrancePaneLogo extends GuiEntrancePane {
 		gui.addButton(new GuiButton(11, k + 130, l + 68, 38, 20, "Exit"));
 	}
 	
-	public void drawScreen(int i, int j, float f) {
-		
+	@Override
+	public void drawScreen(GuiEntrance gui, int i, int j, float f) {
+		int k = (gui.width / 2) - (176 / 2);
+        int l = (gui.height / 2) - (96 / 2);
+        
+		parkName.drawTextBox();
+        
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        gui.mc.getTextureManager().bindTexture(logo.bgs.get(logo.bg));
+        gui.drawTexturedModalRect(k + 8, l + 24, (logo.bgColour % 4) * 64, (logo.bgColour >= 12 ? 3 : logo.bgColour >= 8 ? 2 : logo.bgColour >= 4 ? 1 : 0) * 64, 64, 64);
 	}
 	
 	@Override
 	public void actionPerformed(GuiEntrance gui, GuiButton button) {
 		if(button.id == 0) {
-			if(gui.logo.bg > 0) {
-				gui.logo.bg--;
+			if(logo.bg > 0) {
+				logo.bg--;
 			}
-			NetworkHandler.updateThemeParkEntrance(PacketThemeParkEntrance.Packet.LOGO_BG, gui.x, gui.y, gui.z, gui.logo.bg, null);
+			NetworkHandler.updateThemeParkEntrance(PacketThemeParkEntrance.Packet.LOGO_BG, gui.x, gui.y, gui.z, logo.bg, null);
 		}
 		else if(button.id == 1) {
-			if(gui.logo.bg < gui.logo.bgs.size() - 1) {
-				gui.logo.bg++;
+			if(logo.bg < logo.bgs.size() - 1) {
+				logo.bg++;
 			}
-			NetworkHandler.updateThemeParkEntrance(PacketThemeParkEntrance.Packet.LOGO_BG, gui.x, gui.y, gui.z, gui.logo.bg, null);
+			NetworkHandler.updateThemeParkEntrance(PacketThemeParkEntrance.Packet.LOGO_BG, gui.x, gui.y, gui.z, logo.bg, null);
 		}
 		else if(button.id == 2) {
-			if(gui.logo.bgColour == 15) {
-				gui.logo.bgColour = 0;
+			if(logo.bgColour == 15) {
+				logo.bgColour = 0;
 			}
 			else {
-				gui.logo.bgColour++;
+				logo.bgColour++;
 			}
-			NetworkHandler.updateThemeParkEntrance(PacketThemeParkEntrance.Packet.LOGO_BG_COLOUR, gui.x, gui.y, gui.z, gui.logo.bgColour, null);
+			NetworkHandler.updateThemeParkEntrance(PacketThemeParkEntrance.Packet.LOGO_BG_COLOUR, gui.x, gui.y, gui.z, logo.bgColour, null);
 		}
 		else if(button.id == 3) {
 			
@@ -106,5 +124,10 @@ public class GuiEntrancePaneLogo extends GuiEntrancePane {
 		else if(button.id == 11) {
 			Minecraft.getMinecraft().currentScreen = null;
 		}
+	}
+	
+	@Override
+	public void keyTyped(GuiEntrance gui, char c, int i) {
+		parkName.textboxKeyTyped(c, i);
 	}
 }
