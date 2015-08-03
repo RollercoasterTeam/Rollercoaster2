@@ -4,6 +4,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import org.lwjgl.opengl.GL11;
@@ -25,6 +26,8 @@ public class GuiEntrance extends GuiScreen {
 		new GuiEntrancePaneLogo(), 
 		new GuiEntrancePaneSettings()
 	};
+	
+	private static final ResourceLocation tabs = new ResourceLocation("rc2:textures/gui/entrance/tabs.png");
 	
 	public EntityPlayer player;
 	
@@ -58,13 +61,17 @@ public class GuiEntrance extends GuiScreen {
         int l = (this.height / 2) - (96 / 2);
         
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.getTextureManager().bindTexture(panes[tabIndex].texture);
+        this.mc.getTextureManager().bindTexture(tabs);
         
-        this.drawTexturedModalRect(k, l - 26, 0, 96, 140, 30);
+        this.drawTexturedModalRect(k, l - 26, 0, 0, 140, 30);
+        
+        this.mc.getTextureManager().bindTexture(panes[tabIndex].texture);
         
         this.drawTexturedModalRect(k, l, 0, 0, 176, 96);
         
-        this.drawTexturedModalRect(k + (tabIndex * 28), l - 28, tabIndex * 28, 126, 28, 32);
+        this.mc.getTextureManager().bindTexture(tabs);
+        
+        this.drawTexturedModalRect(k + (tabIndex * 28), l - 28, tabIndex * 28, 30, 28, 32);
         
         this.fontRendererObj.drawString(panes[tabIndex].name, k + 5, l + 6, 0x555555);
         
