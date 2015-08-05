@@ -9,11 +9,11 @@ import rcteam.rc2.block.te.TileEntityEntrance;
 public class RC2Blocks {
 	public static Block entrance;
 	
-	public static void init() {
+	public static void preInit() {
 		entrance = new BlockEntrance();
-		
+
 		registerBlock(entrance);
-		
+
 		registerTE(TileEntityEntrance.class, entrance);
 	}
 	

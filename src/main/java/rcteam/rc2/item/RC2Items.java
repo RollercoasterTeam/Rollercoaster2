@@ -11,7 +11,7 @@ public class RC2Items {
 	public static Item scoop, goldenScoop;
 	public static Item cone;
 	
-	public static void init() {
+	public static void preInit() {
 		hammer = new ItemHammer();
 		
 		themePark = new ItemThemePark();
