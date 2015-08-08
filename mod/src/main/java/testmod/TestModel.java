@@ -11,7 +11,7 @@ public class TestModel extends RCModel{
 		if(meta.getMeta() == 0){
 			cubes.add(new ModelPart(new Vecs3dCube(4, 4, 4, 12, 12, 12), "minecraft:cobblestone"));
 		} else {
-			cubes.add(new ModelPart(new Vecs3dCube(4, 4, 4, 12, 12, 12), "minecraft:glowstone"));
+			cubes.add(new ModelPart(new Vecs3dCube(3, 3, 3, 13, 13, 13), "minecraft:glowstone"));
 		}
 
 

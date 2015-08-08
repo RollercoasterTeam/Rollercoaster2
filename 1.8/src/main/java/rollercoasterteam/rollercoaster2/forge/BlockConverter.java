@@ -19,6 +19,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.common.property.Properties;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import rollercoasterteam.rollercoaster2.core.BlockPosition;
 import rollercoasterteam.rollercoaster2.core.api.BaseAPIProxy;
 import rollercoasterteam.rollercoaster2.core.api.block.RCBlock;
@@ -37,6 +39,7 @@ public class BlockConverter extends BlockContainer {
         setUnlocalizedName(rcBlock.getName());
         setCreativeTab(CreativeTabs.tabAllSearch);
         this.rcBlock = rcBlock;
+		setLightLevel(0.3F);
     }
 
     @Override
@@ -81,7 +84,7 @@ public class BlockConverter extends BlockContainer {
 
 	@Override
 	public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) {
-		return new FakeState(world, pos);
+		return new FakeState(world, pos, this);
 	}
 
 	@Override
@@ -96,6 +99,9 @@ public class BlockConverter extends BlockContainer {
 	@Override
 	public int getMetaFromState(IBlockState state) {
 		if(state instanceof FakeState){
+			if(((FakeState) state).meta != -1){
+				return ((FakeState) state).meta;
+			}
 			TileEntity mctile = ((FakeState) state).blockAccess.getTileEntity(((FakeState) state).pos);
 			if(mctile instanceof TileConverter){
 				RCTile rcTile = ((TileConverter) mctile).rcTile;
@@ -107,14 +113,50 @@ public class BlockConverter extends BlockContainer {
 		return super.getMetaFromState(state);
 	}
 
-	@Override
-	public void getSubBlocks(Item itemIn, CreativeTabs tab, List list) {
-		RCTile tile = rcBlock.getTile();
-		if(tile instanceof RCMeta){
-			for(Integer i : ((RCMeta) rcBlock.getTile()).types()){
-				list.add(new ItemStack(itemIn, 1, i));
-			}
+//	@Override
+//	public void getSubBlocks(Item itemIn, CreativeTabs tab, List list) {
+//		RCTile tile = rcBlock.getTile();
+//		if(tile instanceof RCMeta){
+//			for(Integer i : ((RCMeta) rcBlock.getTile()).types()){
+//				list.add(new ItemStack(itemIn, 1, i));
+//			}
+//		}
+//		super.getSubBlocks(itemIn, tab, list);
+//	}
+
+
+	public int getRenderType()
+	{
+		if(rcBlock instanceof IModeledBlock){
+			return 3;
 		}
-		super.getSubBlocks(itemIn, tab, list);
+		return super.getRenderType();
+	}
+
+
+	public boolean isBlockNormalCube()
+	{
+		return !(rcBlock instanceof IModeledBlock);
+	}
+
+
+
+	public boolean isFullBlock()
+	{
+		return !(rcBlock instanceof IModeledBlock);
+	}
+
+
+	@SideOnly(Side.CLIENT)
+	public boolean isTranslucent()
+	{
+		return (rcBlock instanceof IModeledBlock);
+	}
+
+	@Override
+	public IBlockState getStateFromMeta(int meta) {
+		FakeState state = new FakeState(null, null, this);
+		state.meta = meta;
+		return state;
 	}
 }

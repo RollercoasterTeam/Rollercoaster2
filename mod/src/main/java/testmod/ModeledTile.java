@@ -6,9 +6,6 @@ import rollercoasterteam.rollercoaster2.core.api.tile.RCTileMeta;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by mark on 08/08/15.
- */
 public class ModeledTile extends RCTileMeta {
 	public ModeledTile(RCBlock block) {
 		super(block);

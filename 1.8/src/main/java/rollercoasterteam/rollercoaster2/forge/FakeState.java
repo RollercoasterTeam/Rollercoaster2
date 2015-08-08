@@ -15,11 +15,13 @@ public class FakeState implements IBlockState {
 	public IBlockAccess blockAccess;
 	public BlockPos pos;
 	public int meta = -1;
+	BlockConverter converter;
 
-	public FakeState(IBlockAccess w, BlockPos p)
+	public FakeState(IBlockAccess w, BlockPos p, BlockConverter block)
 	{
 		this.blockAccess = w;
 		this.pos = p;
+		this.converter = block;
 	}
 
 	@Override
@@ -49,6 +51,6 @@ public class FakeState implements IBlockState {
 
 	@Override
 	public Block getBlock() {
-		return null;
+		return converter;
 	}
 }

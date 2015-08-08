@@ -28,7 +28,9 @@ public class ItemBlockConverter extends ItemBlock {
 			for(Integer i : ((RCMeta) converter.rcBlock.getTile()).types()){
 				list.add(new ItemStack(itemIn, 1, i));
 			}
+		}else {
+			super.getSubItems(itemIn, tab, list);
 		}
-		super.getSubItems(itemIn, tab, list);
+
 	}
 }

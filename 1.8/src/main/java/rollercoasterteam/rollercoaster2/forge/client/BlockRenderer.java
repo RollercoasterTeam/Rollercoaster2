@@ -147,9 +147,14 @@ public class BlockRenderer {
 						}
 					};
 				}
-                for(ModelPart part : ((IModeledBlock) rcBlock).getModel(meta).cubes){
-                    addCube(part, list, face, modelRot);
-                }
+				if(meta != null){
+					for(ModelPart part : ((IModeledBlock) rcBlock).getModel(meta).cubes){
+						addCube(part, list, face, modelRot);
+					}
+				} else{
+					System.out.println("COULD NOT FIND BLOCK META DATA");
+				}
+
             } else {
 				if(up == null){
 					return list;
@@ -214,7 +219,7 @@ public class BlockRenderer {
 
 		@Override
 		public IBakedModel handleItemState(ItemStack stack) {
-			FakeState state = new FakeState(null, null);
+			FakeState state = new FakeState(null, null, null);
 			state.meta = stack.getItemDamage();
 			return new CustomModel(up, down, north, south, east, west, rcBlock, state);
 		}
