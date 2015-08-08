@@ -1,6 +1,6 @@
 package rollercoasterteam.rollercoaster2.forge;
 
-import net.minecraft.block.Block;
+import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
@@ -8,9 +8,13 @@ import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
@@ -18,9 +22,13 @@ import net.minecraftforge.common.property.Properties;
 import rollercoasterteam.rollercoaster2.core.BlockPosition;
 import rollercoasterteam.rollercoaster2.core.api.BaseAPIProxy;
 import rollercoasterteam.rollercoaster2.core.api.block.RCBlock;
+import rollercoasterteam.rollercoaster2.core.api.block.RCMeta;
 import rollercoasterteam.rollercoaster2.core.api.textures.model.IModeledBlock;
+import rollercoasterteam.rollercoaster2.core.api.tile.RCTile;
 
-public class BlockConverter extends Block {
+import java.util.List;
+
+public class BlockConverter extends BlockContainer {
 
     RCBlock rcBlock;
     
@@ -70,4 +78,43 @@ public class BlockConverter extends Block {
     public boolean isOpaqueCube() {
         return !(rcBlock instanceof IModeledBlock);
     }
+
+	@Override
+	public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) {
+		return new FakeState(world, pos);
+	}
+
+	@Override
+	public TileEntity createNewTileEntity(World worldIn, int meta) {
+		RCTile rcTile = rcBlock.getTile();
+		if(rcTile != null){
+			return new TileConverter(rcTile, rcBlock);
+		}
+		return null;
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState state) {
+		if(state instanceof FakeState){
+			TileEntity mctile = ((FakeState) state).blockAccess.getTileEntity(((FakeState) state).pos);
+			if(mctile instanceof TileConverter){
+				RCTile rcTile = ((TileConverter) mctile).rcTile;
+				if(rcTile instanceof RCMeta){
+					return ((RCMeta) rcTile).getMeta();
+				}
+			}
+		}
+		return super.getMetaFromState(state);
+	}
+
+	@Override
+	public void getSubBlocks(Item itemIn, CreativeTabs tab, List list) {
+		RCTile tile = rcBlock.getTile();
+		if(tile instanceof RCMeta){
+			for(Integer i : ((RCMeta) rcBlock.getTile()).types()){
+				list.add(new ItemStack(itemIn, 1, i));
+			}
+		}
+		super.getSubBlocks(itemIn, tab, list);
+	}
 }

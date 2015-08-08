@@ -12,6 +12,7 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.resources.model.ModelRotation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.*;
@@ -19,9 +20,13 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import rollercoasterteam.rollercoaster2.core.ModInfo;
 import rollercoasterteam.rollercoaster2.core.api.block.RCBlock;
+import rollercoasterteam.rollercoaster2.core.api.block.RCMeta;
 import rollercoasterteam.rollercoaster2.core.api.textures.model.IModeledBlock;
 import rollercoasterteam.rollercoaster2.core.api.textures.model.ModelPart;
+import rollercoasterteam.rollercoaster2.core.api.tile.RCTile;
+import rollercoasterteam.rollercoaster2.forge.FakeState;
 import rollercoasterteam.rollercoaster2.forge.Rollercoaster2Forge;
+import rollercoasterteam.rollercoaster2.forge.TileConverter;
 
 import javax.vecmath.Vector3f;
 import java.util.ArrayList;
@@ -69,18 +74,22 @@ public class BlockRenderer {
 
 
     public static class CustomModel implements IFlexibleBakedModel, ISmartBlockModel, ISmartItemModel {
-        private final TextureAtlasSprite up;
-        private final TextureAtlasSprite down;
-        private final TextureAtlasSprite north;
-        private final TextureAtlasSprite south;
-        private final TextureAtlasSprite east;
-        private final TextureAtlasSprite west;
+        private TextureAtlasSprite up = null;
+        private TextureAtlasSprite down = null;
+        private TextureAtlasSprite north = null;
+        private TextureAtlasSprite south = null;
+        private TextureAtlasSprite east = null;
+        private TextureAtlasSprite west = null;
 
         protected static FaceBakery faceBakery = new FaceBakery();
 
         RCBlock rcBlock;
 
-        public CustomModel(TextureAtlasSprite up, TextureAtlasSprite down, TextureAtlasSprite north, TextureAtlasSprite south, TextureAtlasSprite east, TextureAtlasSprite west, RCBlock block) {
+		RCTile rcTile;
+
+		FakeState state;
+
+        public CustomModel(TextureAtlasSprite up, TextureAtlasSprite down, TextureAtlasSprite north, TextureAtlasSprite south, TextureAtlasSprite east, TextureAtlasSprite west, RCBlock block, FakeState state) {
             this.up = up;
             this.down = down;
             this.north = north;
@@ -88,7 +97,24 @@ public class BlockRenderer {
             this.east = east;
             this.west = west;
             this.rcBlock = block;
+			this.state = state;
+			if(state.blockAccess != null){
+				TileEntity mcTile = state.blockAccess.getTileEntity(state.pos);
+				if(mcTile instanceof TileConverter){
+					rcTile = ((TileConverter) mcTile).getRcTile();
+				}
+			}
         }
+
+		public CustomModel(TextureAtlasSprite up, TextureAtlasSprite down, TextureAtlasSprite north, TextureAtlasSprite south, TextureAtlasSprite east, TextureAtlasSprite west, RCBlock block) {
+			this.up = up;
+			this.down = down;
+			this.north = north;
+			this.south = south;
+			this.east = east;
+			this.west = west;
+			this.rcBlock = block;
+		}
 
 
         @Override
@@ -105,11 +131,29 @@ public class BlockRenderer {
             ModelRotation modelRot = ModelRotation.X0_Y0;
             boolean scale = true;
             if(rcBlock instanceof IModeledBlock){
-                for(ModelPart part : ((IModeledBlock) rcBlock).getModel().cubes){
+				RCMeta meta = null;
+				if(rcTile != null && rcTile instanceof RCMeta){
+					meta = (RCMeta) rcTile;
+				} else if(state.meta != -1) {
+					meta = new RCMeta() {
+						@Override
+						public int getMeta() {
+							return state.meta;
+						}
+
+						@Override
+						public List<Integer> types() {
+							return null;
+						}
+					};
+				}
+                for(ModelPart part : ((IModeledBlock) rcBlock).getModel(meta).cubes){
                     addCube(part, list, face, modelRot);
                 }
             } else {
-
+				if(up == null){
+					return list;
+				}
                 list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 0.0F, 0.0F), new Vector3f(16.0F, 0.0F, 16.0F), face, down, EnumFacing.DOWN, modelRot, null, scale, true));//down
                 list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 16.0F, 0.0F), new Vector3f(16.0F, 16.0F, 16.0F), face, up, EnumFacing.UP, modelRot, null, scale, true));//up
                 list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 0.0F, 0.0F), new Vector3f(16.0F, 16.0F, 0.0F), face, north, EnumFacing.NORTH, modelRot, null, scale, true));//north
@@ -164,12 +208,15 @@ public class BlockRenderer {
 
         @Override
         public IBakedModel handleBlockState(IBlockState state) {
-            return new CustomModel(up, down, north, south, east, west, rcBlock);
+			return (state instanceof FakeState) ? new CustomModel(up, down, north, south, east, west, rcBlock, (FakeState)state) : null;
         }
 
-        @Override
-        public IBakedModel handleItemState(ItemStack stack) {
-            return new CustomModel(up, down, north, south, east, west, rcBlock);
-        }
-    }
+
+		@Override
+		public IBakedModel handleItemState(ItemStack stack) {
+			FakeState state = new FakeState(null, null);
+			state.meta = stack.getItemDamage();
+			return new CustomModel(up, down, north, south, east, west, rcBlock, state);
+		}
+	}
 }

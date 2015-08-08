@@ -1,9 +1,11 @@
 package rollercoasterteam.rollercoaster2.forge;
 
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import rollercoasterteam.rollercoaster2.core.BlockPosition;
 import rollercoasterteam.rollercoaster2.core.api.block.RCBlock;
+import rollercoasterteam.rollercoaster2.core.api.tile.RCTile;
 import rollercoasterteam.rollercoaster2.core.api.world.RCWorld;
 
 public class WorldConverter extends RCWorld {
@@ -18,4 +20,13 @@ public class WorldConverter extends RCWorld {
     public void setBlock(BlockPosition position, RCBlock block) {
         world.setBlockState(new BlockPos(position.getX(), position.getY(), position.getZ()), Rollercoaster2Forge.handler.blockHashMap.get(block).getDefaultState());
     }
+
+	@Override
+	public RCTile getTile(BlockPosition position) {
+		TileEntity tile = world.getTileEntity(new BlockPos(position.getX(), position.getY(), position.getZ()));
+		if(tile instanceof TileConverter){
+			return ((TileConverter) tile).getRcTile();
+		}
+		return null;
+	}
 }

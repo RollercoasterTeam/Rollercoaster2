@@ -5,6 +5,7 @@ import rollercoasterteam.rollercoaster2.core.BlockPosition;
 import rollercoasterteam.rollercoaster2.core.api.textures.IMultiFaceTexture;
 import rollercoasterteam.rollercoaster2.core.api.textures.MultiFaceTexture;
 import rollercoasterteam.rollercoaster2.core.api.textures.Texture;
+import rollercoasterteam.rollercoaster2.core.api.tile.RCTile;
 import rollercoasterteam.rollercoaster2.core.api.world.RCWorld;
 
 public class RCBlock {
@@ -37,5 +38,9 @@ public class RCBlock {
     public IMultiFaceTexture getTexturesWithFaces(){
         return new MultiFaceTexture(new Texture(texture),new Texture(texture),new Texture(texture),new Texture(texture),new Texture(texture),new Texture(texture));
     }
+
+	public RCTile getTile(){
+		return null;
+	}
 
 }

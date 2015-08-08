@@ -1,6 +1,6 @@
 package rollercoasterteam.rollercoaster2.forge;
 
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import rollercoasterteam.rollercoaster2.core.ModInfo;
 import rollercoasterteam.rollercoaster2.core.ModRegistry;
 import rollercoasterteam.rollercoaster2.core.api.BaseAPIProxy;
@@ -31,6 +31,7 @@ public class Rollercoaster2Forge {
     @Mod.EventHandler
     public void init(FMLInitializationEvent event){
         ModRegistry.loadMods();
+		GameRegistry.registerTileEntity(TileConverter.class, "TileConverter");
     }
 
 }

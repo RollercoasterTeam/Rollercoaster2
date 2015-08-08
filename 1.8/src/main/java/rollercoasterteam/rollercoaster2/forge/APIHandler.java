@@ -14,6 +14,7 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.ISmartBlockModel;
 import net.minecraftforge.client.model.ISmartItemModel;
@@ -27,6 +28,7 @@ import rollercoasterteam.rollercoaster2.core.ModInfo;
 import rollercoasterteam.rollercoaster2.core.api.IApiHandler;
 import rollercoasterteam.rollercoaster2.core.api.IXMod;
 import rollercoasterteam.rollercoaster2.core.api.block.RCBlock;
+import rollercoasterteam.rollercoaster2.core.api.block.RCMeta;
 import rollercoasterteam.rollercoaster2.core.api.item.RCItem;
 import rollercoasterteam.rollercoaster2.core.api.world.RCWorld;
 import rollercoasterteam.rollercoaster2.forge.client.BlockRenderer;
@@ -39,11 +41,14 @@ import java.util.List;
 public class APIHandler implements IApiHandler {
     
     public HashMap<RCBlock, Block> blockHashMap = new HashMap<RCBlock, Block>();
+	public HashMap<World, RCWorld> worldHashMap = new HashMap<World, RCWorld>();
 
     @Override
     public void registerBlock(RCBlock block) {
-        Block mcBlock = new BlockConverter(block);
-        GameRegistry.registerBlock(mcBlock, block.getName());
+		BlockConverter mcBlock = new BlockConverter(block);
+		GameRegistry.registerBlock(mcBlock, new ItemBlockConverter(mcBlock).getClass(), block.getName());
+
+
         if(!blockHashMap.containsKey(block)){
             blockHashMap.put(block, mcBlock);
         }
@@ -62,6 +67,14 @@ public class APIHandler implements IApiHandler {
 
     @Override
     public RCWorld getWorld(int dimID) {
-        return new WorldConverter(DimensionManager.getWorld(dimID));
+        return getWorld(DimensionManager.getWorld(dimID));
     }
+
+	public RCWorld getWorld(World world) {
+		if(worldHashMap.containsKey(world)){
+			return worldHashMap.get(world);
+		}
+		worldHashMap.put(world,new WorldConverter(world));
+		return worldHashMap.get(world);
+	}
 }
