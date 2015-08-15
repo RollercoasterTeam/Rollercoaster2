@@ -1,6 +1,9 @@
 package rcteam.rc2.block;
 
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,8 +17,8 @@ public class BlockEntrance extends BlockContainer {
 
 	public BlockEntrance() {
 		super(Material.rock);
-		setBlockName("entrance");
-		setBlockTextureName("rc2:entrance");
+		setUnlocalizedName("entrance");
+//		setBlockTextureName("rc2:entrance");
 		setCreativeTab(RC2.tab);
 	}
 
@@ -25,9 +28,9 @@ public class BlockEntrance extends BlockContainer {
 	}
 	
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
-		if(world.isRemote) {
-			FMLNetworkHandler.openGui(player, RC2.instance, Reference.GUI_ID_ENTRANCE, world, x, y, z);
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ) {
+		if(worldIn.isRemote) {
+			FMLNetworkHandler.openGui(playerIn, RC2.instance, Reference.GUI_ID_ENTRANCE, worldIn, pos.getX(), pos.getY(), pos.getZ());
 		}
 		return true;
 	}

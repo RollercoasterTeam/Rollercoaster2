@@ -1,17 +1,12 @@
 package rcteam.rc2.util;
 
-import com.google.gson.stream.JsonReader;
-import cpw.mods.fml.common.registry.GameRegistry;
+import com.google.common.collect.Maps;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.AdvancedModelLoader;
 import org.apache.commons.io.FileUtils;
 import rcteam.rc2.RC2;
-import rcteam.rc2.block.BlockTrack;
-import rcteam.rc2.item.ItemTrack;
 import rcteam.rc2.rollercoaster.CoasterStyle;
 import rcteam.rc2.rollercoaster.StyleRegistry;
 
-import javax.swing.text.Style;
 import java.io.*;
 import java.util.HashMap;
 import java.util.zip.ZipEntry;
@@ -26,7 +21,8 @@ public class CoasterPack {
 	private String name;
 	private ZipFile zipFile;
 
-	private HashMap<String, BlockTrack> tracks = new HashMap<>();
+//	private HashMap<String, BlockTrack> tracks = new HashMap<>();
+	private HashMap<String, CoasterStyle> styles = Maps.newHashMap();
 
 	public CoasterPack(Type type, String name, ZipFile zipFile) {
 		this.type = type;
@@ -44,7 +40,8 @@ public class CoasterPack {
 	}
 
 	public String getDirectory() {
-		return "./rollercoaster2/packs/" + name + "/";
+		return RC2.packsDir + "\\";
+//		return Reference.RELATIVE_PACKS_DIR + name + "/";
 	}
 
 	public InputStream getInputStream(String path) throws IOException {
@@ -67,22 +64,25 @@ public class CoasterPack {
 		CoasterStyle style = null;
 		OBJModel model = null;
 		String styleName = "";
-		for (File file : FileUtils.getFile(this.getDirectory() + "coasters/").listFiles()) {
-			styleName = file.getName();
-			RC2.logger.info(styleName);
-			for (File file1 : file.listFiles()) {
-				RC2.logger.info(file1.getName());
-				if (file1.getName().equals("style.json")) {
-					try {
-						style = JsonParser.GSON.fromJson(new InputStreamReader(new FileInputStream(file1)), CoasterStyle.class);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				} else if (file1.getName().equals("model.obj")) {
-					try {
-						model = new OBJModel(new FileInputStream(file1), file.getName());
-					} catch (FileNotFoundException e) {
-						RC2.logger.info("FAILED TO LOAD MODEL");
+		for (File packs : FileUtils.getFile(this.getDirectory()).listFiles()) {
+			for (File file : FileUtils.getFile(packs.getPath() + "/coasters/").listFiles()) {
+				styleName = file.getName();
+				RC2.logger.info(styleName);
+				for (File file1 : file.listFiles()) {
+					RC2.logger.info(file1.getName());
+					if (file1.getName().equals("style.json")) {
+						try {
+							style = JsonParser.GSON.fromJson(new InputStreamReader(new FileInputStream(file1)), CoasterStyle.class);
+							style.setJsonLocation(new ResourceLocation(RC2.MODID + ":" + file1.getPath()));
+							style.setModelLocation(new ResourceLocation(RC2.MODID + ":" + file1.getPath().substring(0, file1.getPath().length() - "style.json".length()) + "model.obj"));
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					} else if (file1.getName().equals("model.obj")) {
+//					    model = new OBJModel(new FileInputStream(file1), file.getPath());
+//						style.setModelLocation(new ResourceLocation(RC2.MODID + ":" + file1.getPath()));
+//						model = (OBJModel) OBJLoader.instance.loadModel(new ResourceLocation(RC2.MODID + ":" + file1.getPath()));
+						model = (OBJModel) OBJLoader.instance.loadModel(new ResourceLocation(RC2.MODID + ":" + file1.getPath().substring(file1.getPath().indexOf("packs"), file1.getPath().length())));
 					}
 				}
 			}
@@ -91,10 +91,16 @@ public class CoasterPack {
 		RC2.logger.info("Model null: " + Boolean.toString(model == null));
 		if (style != null) {
 			if (model != null) {
+				style.setModel(model);
 				StyleRegistry.INSTANCE.register(styleName.isEmpty() ? style.getName() : styleName, style, model);
 			} else {
 				StyleRegistry.INSTANCE.register(styleName.isEmpty() ? style.getName() : styleName, style);
 			}
+			this.styles.put(styleName.isEmpty() ? style.getName() : styleName, style);
 		}
+	}
+
+	public HashMap<String, CoasterStyle> getStyles() {
+		return this.styles;
 	}
 }

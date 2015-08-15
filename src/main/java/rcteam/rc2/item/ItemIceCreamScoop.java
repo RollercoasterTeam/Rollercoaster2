@@ -1,7 +1,7 @@
 package rcteam.rc2.item;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -15,24 +15,18 @@ import rcteam.rc2.util.HammerMode;
 import java.util.List;
 
 public class ItemIceCreamScoop extends Item {
-	
 	public ItemIceCreamScoop(boolean isGolden) {
 		setMaxStackSize(1);
 		setMaxDamage(100);
 		setUnlocalizedName(isGolden ? "goldenScoop" : "scoop");
-		setTextureName("rc2:iceCream/" + (isGolden ? "goldenScoop" : "scoop"));
+//		setTextureName("rc2:iceCream/" + (isGolden ? "goldenScoop" : "scoop"));
 		setCreativeTab(RC2.tab);
-	}
-
-	@Override
-	public boolean doesContainerItemLeaveCraftingGrid(ItemStack itemStack) {
-		return false;
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public boolean hasEffect(ItemStack stack, int pass) {
-		return stack.getItem() == RC2Items.goldenScoop ? true : false;
+	public boolean hasEffect(ItemStack stack) {
+		return stack.getItem() == RC2Items.goldenScoop;
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })

@@ -4,7 +4,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 public class HammerMode {
-	
 	public String name;
 	
 	public HammerMode(String name) {

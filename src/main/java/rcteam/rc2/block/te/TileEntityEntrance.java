@@ -5,6 +5,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import rcteam.rc2.rollercoaster.ThemePark;
 
 public class TileEntityEntrance extends TileEntity {
@@ -15,19 +16,19 @@ public class TileEntityEntrance extends TileEntity {
 	public Packet getDescriptionPacket() {
 		NBTTagCompound nbt = new NBTTagCompound();
 		this.writeToNBT(nbt);
-		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, nbt);
+		return new S35PacketUpdateTileEntity(pos, 1, nbt);
 	}
 
 	@Override
 	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) {
-		readFromNBT(packet.func_148857_g());
+		readFromNBT(packet.getNbtCompound());
 	}
 	
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
 		super.readFromNBT(compound);
 		
-		themePark = new ThemePark(compound.getInteger("direction"), compound.getString("name"), compound.getInteger("size"), compound.getInteger("maxBuildHeight"));
+		themePark = new ThemePark(EnumFacing.getFront(compound.getInteger("direction")), compound.getString("name"), compound.getInteger("size"), compound.getInteger("maxBuildHeight"));
 		
 		themePark.logo.bg = compound.getInteger("bg");
 		themePark.logo.bgColour = compound.getInteger("bgColour");
@@ -45,7 +46,7 @@ public class TileEntityEntrance extends TileEntity {
 		
 		themePark = themePark == null ? new ThemePark() : themePark;
 		
-		compound.setInteger("direction", themePark.direction);
+		compound.setInteger("direction", themePark.direction.getIndex());
 		
 		compound.setString("name", themePark.name);
 		

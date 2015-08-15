@@ -1,8 +1,9 @@
 package rcteam.rc2.client.gui.themePark.pane;
 
+import net.minecraft.util.BlockPos;
 import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 import rcteam.rc2.RC2;
 import rcteam.rc2.block.te.TileEntityEntrance;
 import rcteam.rc2.client.gui.themePark.GuiEntrance;
@@ -15,7 +16,6 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 
 public class GuiEntrancePaneLogo extends GuiEntrancePane {
-	
 	public ThemeParkLogo logo;
 	
 	public GuiEntrancePaneLogo() {
@@ -27,7 +27,7 @@ public class GuiEntrancePaneLogo extends GuiEntrancePane {
 		int k = (gui.width / 2) - (176 / 2);
         int l = (gui.height / 2) - (96 / 2);
 		
-		logo = ((TileEntityEntrance) gui.world.getTileEntity(gui.x, gui.y, gui.z)).themePark.logo;
+		logo = ((TileEntityEntrance) gui.world.getTileEntity(gui.pos)).themePark.logo;
 		
 		gui.addButton(new GuiButton(0, k + 80, l + 24, 12, 20, "<"));
 		gui.addButton(new GuiButton(1, k + 94, l + 24, 12, 20, ">"));
@@ -62,48 +62,36 @@ public class GuiEntrancePaneLogo extends GuiEntrancePane {
 			if(logo.bg > 0) {
 				logo.bg--;
 			}
-			NetworkHandler.updateThemeParkEntrance(PacketThemeParkEntrance.Packet.LOGO_BG, gui.x, gui.y, gui.z, logo.bg, null);
-		}
-		else if(button.id == 1) {
+			NetworkHandler.updateThemeParkEntrance(PacketThemeParkEntrance.Packet.LOGO_BG, gui.pos, logo.bg, null);
+		} else if(button.id == 1) {
 			if(logo.bg < logo.bgs.size() - 1) {
 				logo.bg++;
 			}
-			NetworkHandler.updateThemeParkEntrance(PacketThemeParkEntrance.Packet.LOGO_BG, gui.x, gui.y, gui.z, logo.bg, null);
-		}
-		else if(button.id == 2) {
+			NetworkHandler.updateThemeParkEntrance(PacketThemeParkEntrance.Packet.LOGO_BG, gui.pos, logo.bg, null);
+		} else if(button.id == 2) {
 			if(logo.bgColour == 15) {
 				logo.bgColour = 0;
-			}
-			else {
+			} else {
 				logo.bgColour++;
 			}
-			NetworkHandler.updateThemeParkEntrance(PacketThemeParkEntrance.Packet.LOGO_BG_COLOUR, gui.x, gui.y, gui.z, logo.bgColour, null);
-		}
-		else if(button.id == 3) {
+			NetworkHandler.updateThemeParkEntrance(PacketThemeParkEntrance.Packet.LOGO_BG_COLOUR, gui.pos, logo.bgColour, null);
+		} else if(button.id == 3) {
 			
-		}
-		else if(button.id == 4) {
+		} else if(button.id == 4) {
 	
-		}
-		else if(button.id == 5) {
+		} else if(button.id == 5) {
 	
-		}
-		else if(button.id == 6) {
+		} else if(button.id == 6) {
 	
-		}
-		else if(button.id == 7) {
+		} else if(button.id == 7) {
 			
-		}
-		else if(button.id == 8) {
+		} else if(button.id == 8) {
 			
-		}
-		else if(button.id == 9) {
-			FMLNetworkHandler.openGui(gui.player, RC2.instance, Reference.GUI_ID_EDIT_THEME_PARK, gui.world, gui.x, gui.y, gui.z);
-		}
-		else if(button.id == 10) {
+		} else if(button.id == 9) {
+			FMLNetworkHandler.openGui(gui.player, RC2.instance, Reference.GUI_ID_EDIT_THEME_PARK, gui.world, gui.pos.getX(), gui.pos.getY(), gui.pos.getZ());
+		} else if(button.id == 10) {
 	
-		}
-		else if(button.id == 11) {
+		} else if(button.id == 11) {
 			Minecraft.getMinecraft().currentScreen = null;
 		}
 	}

@@ -1,0 +1,20 @@
+{
+	"forge_marker": 1,
+	"defaults": {
+		"textures": {},
+		"model": "rc2:model.obj"
+	},
+	"variants": {
+		"normal": [{}],
+		"inventory": [{
+			"model": "rc2:model.obj",
+			"transform": "forge:default-block"
+		}],
+		"facing": {
+			"north": {"model": "rc2:model.obj"},
+			"south": {"model": "rc2:model.obj", "y": 180},
+			"west": {"model": "rc2:model.obj", "y": 270},
+			"east": {"model": "rc2:model.obj", "y": 90}
+		}
+	}
+}

@@ -4,12 +4,14 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.Rectangle;
 
+import rcteam.rc2.RC2;
 import rcteam.rc2.client.gui.themePark.pane.GuiEntrancePane;
 import rcteam.rc2.client.gui.themePark.pane.GuiEntrancePaneFinance;
 import rcteam.rc2.client.gui.themePark.pane.GuiEntrancePaneLogo;
@@ -17,8 +19,9 @@ import rcteam.rc2.client.gui.themePark.pane.GuiEntrancePaneMain;
 import rcteam.rc2.client.gui.themePark.pane.GuiEntrancePaneSettings;
 import rcteam.rc2.client.gui.themePark.pane.GuiEntrancePaneStatus;
 
-public class GuiEntrance extends GuiScreen {
+import java.io.IOException;
 
+public class GuiEntrance extends GuiScreen {
 	private static final GuiEntrancePane[] panes = {
 		new GuiEntrancePaneMain(), 
 		new GuiEntrancePaneStatus(), 
@@ -27,26 +30,16 @@ public class GuiEntrance extends GuiScreen {
 		new GuiEntrancePaneSettings()
 	};
 	
-	private static final ResourceLocation tabs = new ResourceLocation("rc2:textures/gui/entrance/tabs.png");
-	
+	private static final ResourceLocation tabs = new ResourceLocation(RC2.MODID + ":" + "textures/gui/entrance/tabs.png");
 	public EntityPlayer player;
-	
 	public World world;
-	
-	public int x;
-	public int y;
-	public int z;
-	
+	public BlockPos pos;
 	private int tabIndex = 0;
 	
-	public GuiEntrance(EntityPlayer player, World world, int x, int y, int z) {
+	public GuiEntrance(EntityPlayer player, World world, BlockPos pos) {
 		this.player = player;
-		
 		this.world = world;
-		
-		this.x = x;
-		this.y = y;
-		this.z = z;
+		this.pos = pos;
 	}
 	
 	@Override
@@ -86,14 +79,14 @@ public class GuiEntrance extends GuiScreen {
 	}
 	
 	@Override
-	public void keyTyped(char c, int i) {
+	public void keyTyped(char c, int i) throws IOException {
 		super.keyTyped(c, i);
 		
 		panes[tabIndex].keyTyped(this, c, i);
 	}
 	
 	@Override
-	public void mouseClicked(int a, int b, int c) {
+	public void mouseClicked(int a, int b, int c) throws IOException {
 		super.mouseClicked(a, b, c);
 		
 		int k = (this.width / 2) - (176 / 2);

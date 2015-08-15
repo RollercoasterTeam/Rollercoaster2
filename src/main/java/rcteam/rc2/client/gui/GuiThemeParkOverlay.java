@@ -1,7 +1,7 @@
 package rcteam.rc2.client.gui;
 
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.util.ResourceLocation;
@@ -10,7 +10,6 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import org.lwjgl.opengl.GL11;
 
 public class GuiThemeParkOverlay extends Gui {
-	
 	private Minecraft mc;
 
 	public GuiThemeParkOverlay(Minecraft mc) {

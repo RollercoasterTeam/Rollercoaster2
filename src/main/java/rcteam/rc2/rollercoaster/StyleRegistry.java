@@ -4,8 +4,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
-import net.minecraftforge.client.model.IModelCustom;
 import rcteam.rc2.RC2;
+import rcteam.rc2.util.CoasterPack;
+import rcteam.rc2.util.OBJModel;
 
 import java.io.File;
 import java.util.HashMap;
@@ -15,7 +16,7 @@ import java.util.Map;
 public class StyleRegistry {
 	public static StyleRegistry INSTANCE = new StyleRegistry();
 	private Map<CategoryEnum, Map<String, CoasterStyle>> registry = Maps.newEnumMap(CategoryEnum.class);
-	private Map<CategoryEnum, Map<String, IModelCustom>> modelRegistry = Maps.newEnumMap(CategoryEnum.class);
+	private Map<CategoryEnum, Map<String, OBJModel>> modelRegistry = Maps.newEnumMap(CategoryEnum.class);
 
 	private StyleRegistry() {
 		Lists.newArrayList(CategoryEnum.values()).forEach(categoryEnum -> this.registry.put(categoryEnum, Maps.newHashMap()));
@@ -26,7 +27,7 @@ public class StyleRegistry {
 		return this.registry;
 	}
 
-	public Map<CategoryEnum, Map<String, IModelCustom>> getModelRegistry() {
+	public Map<CategoryEnum, Map<String, OBJModel>> getModelRegistry() {
 		return this.modelRegistry;
 	}
 
@@ -34,7 +35,7 @@ public class StyleRegistry {
 		this.register(style.getName(), style, null);
 	}
 
-	public void register(CoasterStyle style, IModelCustom obj) {
+	public void register(CoasterStyle style, OBJModel obj) {
 		this.register(style.getName(), style, obj);
 	}
 
@@ -43,12 +44,7 @@ public class StyleRegistry {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void register(String name, CoasterStyle style, IModelCustom obj) {
-//		if (style != null) {
-//			this.registry.put(style.getCategory(), (Map<String, CoasterStyle>) Maps.newHashMap().put(name, style));
-//			this.modelRegistry.put(style.getCategory(), (Map<String, IModelCustom>) Maps.newHashMap().put(name, obj));
-//			RC2.logger.info(String.format("Style registered: %s", name));
-//		}
+	public void register(String name, CoasterStyle style, OBJModel obj) {
 		if (style != null) {
 			this.registry.get(style.getCategory()).put(name, style);
 			this.modelRegistry.get(style.getCategory()).put(name, obj);
@@ -62,7 +58,7 @@ public class StyleRegistry {
 		return true;
 	}
 
-	public boolean replaceModelInRegistry(String name, IModelCustom replacement) {
+	public boolean replaceModelInRegistry(String name, OBJModel replacement) {
 		if (!hasNameBeenRegistered(name)) return false;
 		modelRegistry.values().stream().filter(stringFileMap -> stringFileMap.containsKey(name)).findAny().get().replace(name, replacement);
 		return true;
@@ -72,7 +68,7 @@ public class StyleRegistry {
 		return registry.get(category);
 	}
 
-	public Map<String, IModelCustom> getModelsFromCategory(CategoryEnum category) {
+	public Map<String, OBJModel> getModelsFromCategory(CategoryEnum category) {
 		return modelRegistry.get(category);
 	}
 
@@ -84,18 +80,11 @@ public class StyleRegistry {
 		return hasNameBeenRegistered(name) ? registry.values().stream().filter(stringCoasterStyleMap -> stringCoasterStyleMap.containsKey(name)).findFirst().get().get(name) : null;
 	}
 
-	public IModelCustom getModelByName(String name) {
+	public OBJModel getModelByName(String name) {
 		return hasNameBeenRegistered(name) ? modelRegistry.values().stream().filter(stringFileMap -> stringFileMap.containsKey(name)).findFirst().get().get(name) : null;
 	}
 
-	public void registerBlocks() {
-//		this.registry.forEach((categoryEnum, stringCoasterStyleMap) -> stringCoasterStyleMap.forEach((s, style) -> style.registerBlocks()));
-		for (CategoryEnum categoryEnum : CategoryEnum.values()) {
-			if (this.registry.containsKey(categoryEnum)) {
-				for (CoasterStyle style : this.registry.get(categoryEnum).values()) {
-					style.registerBlocks();
-				}
-			}
-		}
+	public void registerBlocks() {  //TODO: can we get away with only registering 1 BlockTrack?
+		this.registry.forEach((categoryEnum1, stringCoasterStyleMap) -> stringCoasterStyleMap.forEach((s, style) -> style.registerBlock()));
 	}
 }

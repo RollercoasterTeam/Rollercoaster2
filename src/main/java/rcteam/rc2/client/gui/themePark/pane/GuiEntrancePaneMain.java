@@ -1,12 +1,12 @@
 package rcteam.rc2.client.gui.themePark.pane;
 
+import net.minecraft.util.BlockPos;
 import rcteam.rc2.block.te.TileEntityEntrance;
 import rcteam.rc2.client.gui.themePark.GuiEntrance;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 
 public class GuiEntrancePaneMain extends GuiEntrancePane {
-
 	public GuiTextField parkName;
 	
 	public GuiEntrancePaneMain() {
@@ -18,7 +18,7 @@ public class GuiEntrancePaneMain extends GuiEntrancePane {
 		int k = (gui.width / 2) - (176 / 2);
         int l = (gui.height / 2) - (96 / 2);
         
-        parkName = new GuiTextField(gui.getFontRenderer(), k + 6, l + 6, 164, 12) {
+        parkName = new GuiTextField(0, gui.getFontRenderer(), k + 6, l + 6, 164, 12) {
 			@Override
 			public void mouseClicked(int i, int j, int k) {
 				super.mouseClicked(i, j, k);
@@ -30,7 +30,7 @@ public class GuiEntrancePaneMain extends GuiEntrancePane {
 		
 		parkName.setFocused(false);
 		parkName.setMaxStringLength(26);
-		parkName.setText(((TileEntityEntrance) gui.world.getTileEntity(gui.x, gui.y, gui.z)).themePark.name);
+		parkName.setText(((TileEntityEntrance) gui.world.getTileEntity(gui.pos)).themePark.name);
 	}
 	
 	@Override

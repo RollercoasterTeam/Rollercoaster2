@@ -3,36 +3,29 @@ package rcteam.rc2.client.gui.themePark;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
+import rcteam.rc2.RC2;
 import rcteam.rc2.block.te.TileEntityEntrance;
 import rcteam.rc2.rollercoaster.ThemeParkLogo;
 
-public class GuiEditThemePark extends GuiScreen {
+import java.io.IOException;
 
-	private static final ResourceLocation texture = new ResourceLocation("rc2:textures/gui/editThemePark.png");
-	
+public class GuiEditThemePark extends GuiScreen {
+	private static final ResourceLocation texture = new ResourceLocation(RC2.MODID + ":" + "textures/gui/editThemePark.png");
 	public ThemeParkLogo logo;
-	
 	private EntityPlayer player;
-	
 	private World world;
-	
-	private int x;
-	private int y;
-	private int z;
-	
-	public GuiEditThemePark(EntityPlayer player, World world, int x, int y, int z) {
+	private BlockPos pos;
+
+	public GuiEditThemePark(EntityPlayer player, World world, BlockPos pos) {
 		this.player = player;
-		
 		this.world = world;
+		this.pos = pos;
 		
-		this.x = x;
-		this.y = y;
-		this.z = z;
-		
-		logo = ((TileEntityEntrance) world.getTileEntity(x, y, z)).themePark.logo;
+		logo = ((TileEntityEntrance) world.getTileEntity(pos)).themePark.logo;
 	}
 	
 	@Override
@@ -63,12 +56,12 @@ public class GuiEditThemePark extends GuiScreen {
 	}
 	
 	@Override
-	public void keyTyped(char c, int i) {
+	public void keyTyped(char c, int i) throws IOException {
 		super.keyTyped(c, i);
 	}
 	
 	@Override
-	public void mouseClicked(int i, int j, int k) {
+	public void mouseClicked(int i, int j, int k) throws IOException {
 		super.mouseClicked(i, j, k);
 	}
 	

@@ -18,7 +18,7 @@ public abstract class AbstractPacket {
      *
      * @param ctx    channel context
      * @param buffer the buffer to encode into
-     * @link{cpw.mods.fml.common.network.ByteBuffUtils )
+     * @link net.minecraftforge.fml.common.network.ByteBuffUtils
      */
     public abstract void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer);
 
@@ -28,7 +28,7 @@ public abstract class AbstractPacket {
      *
      * @param ctx    channel context
      * @param buffer the buffer to decode from
-     * @link{cpw.mods.fml.common.network.ByteBuffUtils )
+     * @link net.minecraftforge.fml.common.network.ByteBuffUtils
      */
     public abstract void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer);
 
