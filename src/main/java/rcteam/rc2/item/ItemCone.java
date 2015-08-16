@@ -2,7 +2,10 @@ package rcteam.rc2.item;
 
 import java.util.List;
 
+import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import net.minecraftforge.common.util.Constants;
 import rcteam.rc2.RC2;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,8 +20,38 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemCone extends ItemFood {
+	public enum EnumFlavors {
+		CONE(0, "cone"),
+		CHOCOLATE(1, "chocolate"),
+		MINT(2, "mint"),
+		STRAWBERRY(3, "strawberry"),
+		VANILLA(4, "vanilla");
+
+		public int meta;
+		public String textureName;
+
+		EnumFlavors(int meta, String textureName) {
+			this.meta = meta;
+			this.textureName = textureName;
+		}
+
+		public static ItemMeshDefinition getItemMeshDefinition() {
+			return new ItemMeshDefinition() {
+				@Override
+				public ModelResourceLocation getModelLocation(ItemStack stack) {
+					if (stack == null || !(stack.getItem() instanceof ItemCone)) {
+						return null;
+					} else {
+						return new ModelResourceLocation(RC2.MODID.toLowerCase() + ":" + "ice_cream/" + EnumFlavors.values()[stack.getItemDamage()].textureName);
+					}
+				}
+			};
+		}
+	}
+
 	public ItemCone() {
 		super(4, 0.3F, false);
+		setHasSubtypes(true);
 		setMaxStackSize(1);
 		setUnlocalizedName("cone");
 		setCreativeTab(RC2.tab);
@@ -68,6 +101,14 @@ public class ItemCone extends ItemFood {
 		for(int i = 0; i < scoops.tagCount(); i++) {
 			String tag = scoops.getStringTagAt(i);
 			list.add(tag);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void getSubItems(Item itemIn, CreativeTabs tab, List subItems) {
+		for (int i = 0; i < EnumFlavors.values().length; i++) {
+			subItems.add(new ItemStack(itemIn.setCreativeTab(tab), 1, i));
 		}
 	}
 

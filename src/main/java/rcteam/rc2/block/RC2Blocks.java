@@ -3,6 +3,7 @@ package rcteam.rc2.block;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -75,9 +76,15 @@ public class RC2Blocks {
 	public static void init(Side side) {
 		List<Block> blocks = Lists.newArrayList(modelMap.keySet());
 		for (Block block : blocks) {
-			ModelResourceLocation location = new ModelResourceLocation(RC2.MODID.toLowerCase() + ":" + modelMap.get(block).getLeft());
+			ModelResourceLocation location = new ModelResourceLocation(RC2.MODID.toLowerCase() + ":" + modelMap.get(block).getLeft(), "inventory");
 			modelMap.put(block, Pair.of(modelMap.get(block).getLeft(), location));
-			if (side == Side.CLIENT) ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0, location);
+			if (side == Side.CLIENT) {
+				if (block instanceof BlockTrack) {
+					ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0, location);
+				} else {
+					Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(Item.getItemFromBlock(block), 0, location);
+				}
+			}
 		}
 	}
 }

@@ -1,6 +1,5 @@
 package rcteam.rc2.item;
 
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -24,7 +23,7 @@ public class ItemThemePark extends Item {
 		if(!world.isRemote) {
 			world.setBlockState(pos, RC2Blocks.entrance.getDefaultState());
 			TileEntityEntrance entrance = (TileEntityEntrance) world.getTileEntity(pos);
-			entrance.themePark = new ThemePark(Utils.getFacingFromEntity(world, pos, player), stack.getDisplayName(), 25, -1).place(world, pos);
+			entrance.themePark = new ThemePark(Utils.getFacingFromEntity(world, pos, player, true, false), stack.getDisplayName(), 25, -1).place(world, pos);
 			return true;
 		}
 		return false;

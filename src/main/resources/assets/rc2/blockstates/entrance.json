@@ -1,15 +1,32 @@
 {
-	"forge_marker": 1,
-	"defaults": {
-		"textures": {
-			"all": "rc2:blocks/entrance"
-		},
-		"model": "cube_all"
-	},
 	"variants": {
-		"normal": [{}],
-		"inventory": [{
-			"transform": "forge:default-block"
-		}]
+		"normal": {
+			"model": "rc2:entrance"
+		}
 	}
+//	"forge_marker": 1,
+//	"defaults": {
+//		"textures": {
+//			"all": "rc2:blocks/entrance"
+//		},
+//		"model": "cube_all"
+//	},
+//	"variants": {
+//		"normal": [{}],
+//		"inventory": [{
+//			"transform": {
+//				"thirdperson": {
+//					"translation": [0, 1.5, -2.5],
+//					"rotation": [{"y": -45}, {"x": 10}, {"z": 170}],
+//					"scale": 0.375
+//				}
+//			}
+////			"transform": "forge:default-block"
+//		}]
+//		"display": {
+//			"translation":[0, 1.5, -2.5],
+//			"rotation": [10, -45, 170],
+//			"scale": [0.375, 0.375, 0.375]
+//		}
+//	}
 }

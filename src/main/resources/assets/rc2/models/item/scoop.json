@@ -1,7 +1,7 @@
 {
 	"parent": "builtin/generated",
 	"textures": {
-		"layer0": "rc2:items/cone"
+		"layer0": "rc2:items/ice_cream/scoop"
 	},
 	"display": {
 		"thirdperson": {

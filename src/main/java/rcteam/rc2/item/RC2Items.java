@@ -2,8 +2,10 @@ package rcteam.rc2.item;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraft.item.Item;
@@ -38,6 +40,7 @@ public class RC2Items {
 	private static void registerItem(Item item, String name) {
 //		GameRegistry.registerItem(item, item.getUnlocalizedName());
 		GameRegistry.registerItem(item, name);
+		if (item instanceof ItemCone) name = "ice_cream/" + name;
 		modelMap.put(item, Pair.of(name, null));
 	}
 
@@ -46,7 +49,26 @@ public class RC2Items {
 		for (Item item : items) {
 			ModelResourceLocation location = new ModelResourceLocation(RC2.MODID.toLowerCase() + ":" + modelMap.get(item).getLeft(), "inventory");
 			modelMap.put(item, Pair.of(modelMap.get(item).getLeft(), location));
-			if (side == Side.CLIENT) ModelLoader.setCustomModelResourceLocation(item, 0, location);
+			if (side == Side.CLIENT) {
+				if (item instanceof ItemTrack) {
+					ModelLoader.setCustomModelResourceLocation(item, 0, location);
+				} else if (item instanceof ItemCone) {
+					//TODO: figure out how to best implement these!
+					for (ItemCone.EnumFlavors flavor : ItemCone.EnumFlavors.values()) {
+						ModelLoader.setCustomModelResourceLocation(item, flavor.meta, new ModelResourceLocation(RC2.MODID.toLowerCase() + ":" + "ice_cream/" + flavor.textureName, "inventory"));
+						ModelLoader.addVariantName(item, RC2.MODID.toLowerCase() + ":" + /*"ice_cream/" +*/ flavor.textureName);
+					}
+//					List<Item> subitems = Lists.newArrayList();
+//					item.getSubItems(item, RC2.tab, subitems);
+//					for (int i = 0; i < subitems.size(); i++) {
+//						Item subitem = subitems.get(i);
+//						ModelLoader.setCustomModelResourceLocation(RC2.MODID.toLowerCase() + ":" + "ice_cream/" + ItemCone.EnumFlavors.values()[i].textureName, "inventory");
+//					}
+//					Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, ItemCone.EnumFlavors.getItemMeshDefinition());
+				} else {
+					Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, 0, location);
+				}
+			}
 		}
 	}
 }

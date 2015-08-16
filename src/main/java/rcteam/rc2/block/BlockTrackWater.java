@@ -1,5 +1,6 @@
 package rcteam.rc2.block;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import rcteam.rc2.RC2;
@@ -14,7 +15,7 @@ public class BlockTrackWater extends BlockTrack {
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World world, int meta) {
+	public TileEntity createTileEntity(World world, IBlockState state) {
 		return new TileEntityTrackWater(this.info);
 	}
 }

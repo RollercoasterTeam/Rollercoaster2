@@ -20,6 +20,7 @@ import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 
+import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -1283,7 +1284,7 @@ public class OBJModel implements IRetexturableModel, IModelCustomData
 		private IModelState state;
 		private final VertexFormat format;
 		private final ByteBuffer buffer;
-		private LinkedHashSet<BakedQuad> quads;
+		private Set<BakedQuad> quads;
 		private static final int BYTES_IN_INT = Integer.SIZE / Byte.SIZE;
 		private static final int VERTICES_IN_QUAD = 4;
 		private Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter;
@@ -1323,8 +1324,10 @@ public class OBJModel implements IRetexturableModel, IModelCustomData
 		{
 			if (quads == null)
 			{
-				quads = new LinkedHashSet<BakedQuad>();
-				LinkedHashSet<Face> faces = new LinkedHashSet<Face>();
+//				quads = new LinkedHashSet<BakedQuad>();
+				quads = Collections.synchronizedSet(new LinkedHashSet<BakedQuad>());
+//				LinkedHashSet<Face> faces = new LinkedHashSet<Face>();
+				Set<Face> faces = Collections.synchronizedSet(new LinkedHashSet<Face>());
 				TRSRTransformation transform = TRSRTransformation.identity();
 				for (Group e : this.model.getMatLib().getGroups().values())
 				{
@@ -1434,8 +1437,9 @@ public class OBJModel implements IRetexturableModel, IModelCustomData
 					quads.add(new ColoredBakedQuad(data, -1, EnumFacing.getFacingFromVector(f.getNormal().normal.x, f.getNormal().normal.y, f.getNormal().normal.z)));
 				}
 			}
-			List<BakedQuad> quadList = new ArrayList<BakedQuad>();
-			quadList.addAll(quads);
+//			List<BakedQuad> quadList = new ArrayList<BakedQuad>();
+			List<BakedQuad> quadList = Collections.synchronizedList(Lists.newArrayList(quads));
+//			quadList.addAll(quads);
 			return quadList;
 		}
 

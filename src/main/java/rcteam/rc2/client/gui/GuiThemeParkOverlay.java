@@ -1,5 +1,6 @@
 package rcteam.rc2.client.gui;
 
+import net.minecraft.client.settings.GameSettings;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.client.Minecraft;
@@ -20,9 +21,12 @@ public class GuiThemeParkOverlay extends Gui {
 
 	@SubscribeEvent(priority = EventPriority.NORMAL)
 	public void onRenderExperienceBar(RenderGameOverlayEvent event) {
-		if (event.isCancelable() || event.type != ElementType.ALL) {
+		if (Minecraft.getMinecraft().gameSettings.showDebugInfo || (event.isCancelable() || event.type != ElementType.ALL)) {
 			return;
 		}
+//		if ((event.isCancelable() || event.type != ElementType.ALL) && !Minecraft.getMinecraft().gameSettings.showDebugInfo) {
+//			return;
+//		}
 		
 		int xPos = 2;
 		int yPos = 2;

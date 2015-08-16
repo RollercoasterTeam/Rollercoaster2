@@ -1,5 +1,7 @@
 package rcteam.rc2.item;
 
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraftforge.fml.common.asm.transformers.ItemStackTransformer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,7 +21,6 @@ public class ItemIceCreamScoop extends Item {
 		setMaxStackSize(1);
 		setMaxDamage(100);
 		setUnlocalizedName(isGolden ? "goldenScoop" : "scoop");
-//		setTextureName("rc2:iceCream/" + (isGolden ? "goldenScoop" : "scoop"));
 		setCreativeTab(RC2.tab);
 	}
 	

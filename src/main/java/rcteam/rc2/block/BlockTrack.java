@@ -24,7 +24,7 @@ import rcteam.rc2.rollercoaster.*;
 import rcteam.rc2.util.OBJModel;
 import rcteam.rc2.util.Utils;
 
-public class BlockTrack extends Block implements ITileEntityProvider {
+public class BlockTrack extends Block {
 	public static final PropertyDirection FACING = PropertyDirection.create("facing");
 	public ExtendedBlockState state = new ExtendedBlockState(this, new IProperty[] {FACING}, new IUnlistedProperty[] {TrackProperty.instance, OBJModel.OBJProperty.instance});
 	protected TrackPieceInfo info;
@@ -87,7 +87,7 @@ public class BlockTrack extends Block implements ITileEntityProvider {
 	@Override
 	public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
 		//TODO: things will be set from the track designer later
-		return this.getDefaultState().withProperty(FACING, Utils.getFacingFromEntity(worldIn, pos, placer));
+		return this.getDefaultState().withProperty(FACING, Utils.getFacingFromEntity(worldIn, pos, placer, false, false));
 	}
 
 	@Override
@@ -101,7 +101,7 @@ public class BlockTrack extends Block implements ITileEntityProvider {
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World world, int meta) {
+	public TileEntity createTileEntity(World world, IBlockState state) {
 		return new TileEntityTrack(this.info);
 	}
 

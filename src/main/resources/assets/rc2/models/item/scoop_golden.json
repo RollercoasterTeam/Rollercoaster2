@@ -1,7 +1,7 @@
 {
 	"parent": "builtin/generated",
 	"textures": {
-		"layer0": "rc2:items/hammer"
+		"layer0": "rc2:items/ice_cream/goldenScoop"
 	},
 	"display": {
 		"thirdperson": {

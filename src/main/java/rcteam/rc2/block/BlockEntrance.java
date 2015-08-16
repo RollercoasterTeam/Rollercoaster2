@@ -1,10 +1,11 @@
 package rcteam.rc2.block;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -13,17 +14,21 @@ import rcteam.rc2.RC2;
 import rcteam.rc2.block.te.TileEntityEntrance;
 import rcteam.rc2.util.Reference;
 
-public class BlockEntrance extends BlockContainer {
+public class BlockEntrance extends Block {
 
 	public BlockEntrance() {
 		super(Material.rock);
 		setUnlocalizedName("entrance");
-//		setBlockTextureName("rc2:entrance");
 		setCreativeTab(RC2.tab);
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_) {
+	public boolean hasTileEntity(IBlockState state) {
+		return true;
+	}
+
+	@Override
+	public TileEntity createTileEntity(World world, IBlockState state) {
 		return new TileEntityEntrance();
 	}
 	
@@ -34,5 +39,4 @@ public class BlockEntrance extends BlockContainer {
 		}
 		return true;
 	}
-
 }

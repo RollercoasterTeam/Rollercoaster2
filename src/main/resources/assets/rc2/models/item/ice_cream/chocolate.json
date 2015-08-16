@@ -1,0 +1,6 @@
+{
+	"parent": "rc2:item/ice_cream/cone",
+	"textures": {
+		"layer1": "rc2:items/ice_cream/chocolate"
+	}
+}
