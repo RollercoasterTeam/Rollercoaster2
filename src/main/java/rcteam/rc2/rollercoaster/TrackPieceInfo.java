@@ -4,21 +4,60 @@ import com.google.common.collect.Lists;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants;
+import rcteam.rc2.RC2;
 
 import java.util.List;
 
 public class TrackPieceInfo {
 	private CategoryEnum category;
-//	private TrackPiece piece;
+	private TrackPiece currentPiece = null;
 	private List<TrackPiece> pieces = Lists.newArrayList();
 
 	public TrackPieceInfo(CategoryEnum category) {
-		this.category = category;
+		this(category, Lists.newArrayList());
 	}
 
 	public TrackPieceInfo(CategoryEnum category, List<TrackPiece> pieces) {
+		this(category, pieces, pieces.get(0));
+	}
+
+	public TrackPieceInfo(CategoryEnum category, List<TrackPiece> pieces, TrackPiece currentPiece) {
 		this.category = category;
 		this.pieces = pieces;
+		this.currentPiece = currentPiece;
+	}
+
+	//TODO: make pieces a map?
+	public void setCurrentPiece(int index) {
+		this.currentPiece = this.pieces.get(index);
+	}
+
+	public void setCurrentPiece(TrackPiece currentPiece) {
+		if (!this.pieces.contains(currentPiece)) {
+			this.pieces.add(currentPiece);
+		}
+		this.currentPiece = currentPiece;
+	}
+
+	public TrackPiece getCurrentPiece() {
+		return this.currentPiece;
+	}
+
+	public TrackPiece getNextPiece() {
+		if (this.currentPiece == null || !this.pieces.contains(this.currentPiece)) return this.pieces.get(0);
+		int index = this.pieces.indexOf(this.currentPiece);
+		if (index + 1 == this.pieces.size()) return this.pieces.get(0);
+		return this.pieces.get(index + 1);
+	}
+
+	public TrackPiece getPiece(String name) {
+		for (TrackPiece piece : this.pieces) {
+			if (piece.getName().equals(name)) {
+				return piece;
+			}
+		}
+		RC2.logger.info("returning index 0!");
+		return this.pieces.get(0);
 	}
 
 	public void setCategory(CategoryEnum category) {
@@ -47,8 +86,9 @@ public class TrackPieceInfo {
 		for (TrackPiece piece : this.pieces) {
 			builder.append(String.format("%s, ", piece.getName()));
 		}
-		builder.delete(builder.length() - 3, builder.length());
-		builder.append("]");
+		builder.delete(builder.length() - 2, builder.length());
+		builder.append("], ");
+		builder.append(String.format("Current Piece: %s", this.currentPiece.getName()));
 		return builder.toString();
 //		return String.format("TrackPieceInfo: Category: %s, ", this.category.getName(), this.piece.getName());
 	}
@@ -59,8 +99,9 @@ public class TrackPieceInfo {
 
 		NBTTagList list = new NBTTagList();
 		this.pieces.forEach(piece -> list.appendTag(piece.writeToNBT()));
-
 		compound.setTag("pieces", list);
+
+		compound.setTag("current", this.currentPiece.writeToNBT());
 		return compound;
 	}
 
@@ -74,6 +115,8 @@ public class TrackPieceInfo {
 			pieces.add(TrackPiece.readFromNBT(pieceCompound));
 		}
 
-		return new TrackPieceInfo(category, pieces);
+		TrackPiece current = TrackPiece.readFromNBT(compound.getCompoundTag("current"));
+
+		return new TrackPieceInfo(category, pieces, current);
 	}
 }

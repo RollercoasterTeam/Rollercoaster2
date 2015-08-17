@@ -9,7 +9,7 @@ import rcteam.rc2.rollercoaster.TrackPieceInfo;
 
 public class BlockTrackWater extends BlockTrack {
 	public BlockTrackWater(TrackPieceInfo info) {
-		super(info.getCategory().getMaterial());
+		super(null);
 		this.info = info;
 		setUnlocalizedName("track_" + info.getCategory().getName());
 	}

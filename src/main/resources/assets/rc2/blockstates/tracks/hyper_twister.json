@@ -1,0 +1,33 @@
+{
+	"forge_marker": 1,
+	"defaults": {
+		"textures": {
+			"particle": "textures/builtin/white"
+		},
+		"model": "rc2:tracks/hyper_twister/straight.obj"
+	},
+	"variants": {
+		"normal": [{}],
+		"inventory": [{
+			"transform": "forge:default-block"
+		}],
+		"facing": {
+			"north": {},
+			"south": {"y": 180},
+			"west": {"y": 270},
+			"east": {"y": 90}
+		},
+		"piece": {
+			"straight": {"model": "rc2:tracks/hyper_twister/straight.obj"},
+			"small_corner": {"model": "rc2:tracks/hyper_twister/small_corner.obj"},
+			"medium_corner": {"model": "rc2:tracks/hyper_twister/medium_corner.obj"},
+			"large_corner_left": {"model": "rc2:tracks/hyper_twister/large_corner_left.obj"},
+			"large_corner_right": {"model": "rc2:tracks/hyper_twister/large_corner_right.obj"}
+		}
+	},
+	"style_info": {
+		"display_name": "Hyper Twister Coaster",
+		"category": "steel",
+		"train_cars": ["default"]
+	}
+}

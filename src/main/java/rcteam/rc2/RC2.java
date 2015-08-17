@@ -97,7 +97,7 @@ public class RC2 {
 //		StyleRegistry.INSTANCE.registerBlocks();
 
 		RC2Items.preInit();
-		RC2Blocks.preInit();
+		RC2Blocks.preInit(event.getSide());
 	}
 
 	@EventHandler

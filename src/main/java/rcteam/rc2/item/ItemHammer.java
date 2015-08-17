@@ -10,17 +10,17 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import rcteam.rc2.RC2;
+import rcteam.rc2.block.te.TileEntityTrack;
 import rcteam.rc2.util.HammerMode;
 
 import java.util.List;
 
 public class ItemHammer extends Item {
-
 	public static HammerMode[] modes = {
 		new HammerMode("Rotate") {
 			@Override
 			public void onRightClick(TileEntity tileentity, PlayerInteractEvent event) {
-			
+
 			}
 		},
 		new HammerMode("Change Type") {
@@ -41,7 +41,6 @@ public class ItemHammer extends Item {
 		setMaxStackSize(1);
 		setMaxDamage(100);
 		setUnlocalizedName("hammer");
-//		setTextureName("rc2:hammer");
 		setCreativeTab(RC2.tab);
 	}
 

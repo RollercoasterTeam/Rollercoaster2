@@ -7,7 +7,6 @@
 	"variants": {
 		"normal": [{}],
 		"inventory": [{
-//			"model": "rc2:model.obj",
 			"transform": "forge:default-block"
 		}],
 		"facing": {

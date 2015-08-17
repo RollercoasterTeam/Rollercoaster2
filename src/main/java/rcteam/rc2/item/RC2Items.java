@@ -12,6 +12,7 @@ import net.minecraft.item.Item;
 import net.minecraftforge.fml.relauncher.Side;
 import org.apache.commons.lang3.tuple.Pair;
 import rcteam.rc2.RC2;
+import rcteam.rc2.util.Reference;
 
 import java.util.List;
 import java.util.Map;
@@ -47,15 +48,13 @@ public class RC2Items {
 	public static void init(Side side) {
 		List<Item> items = Lists.newArrayList(modelMap.keySet());
 		for (Item item : items) {
-			ModelResourceLocation location = new ModelResourceLocation(RC2.MODID.toLowerCase() + ":" + modelMap.get(item).getLeft(), "inventory");
+			ModelResourceLocation location = new ModelResourceLocation(Reference.RESOURCE_PREFIX + modelMap.get(item).getLeft(), "inventory");
 			modelMap.put(item, Pair.of(modelMap.get(item).getLeft(), location));
 			if (side == Side.CLIENT) {
-				if (item instanceof ItemTrack) {
-					ModelLoader.setCustomModelResourceLocation(item, 0, location);
-				} else if (item instanceof ItemCone) {
+				if (item instanceof ItemCone) {
 					//TODO: figure out how to best implement these!
 					for (ItemCone.EnumFlavors flavor : ItemCone.EnumFlavors.values()) {
-						ModelLoader.setCustomModelResourceLocation(item, flavor.meta, new ModelResourceLocation(RC2.MODID.toLowerCase() + ":" + "ice_cream/" + flavor.textureName, "inventory"));
+						ModelLoader.setCustomModelResourceLocation(item, flavor.meta, new ModelResourceLocation(Reference.RESOURCE_PREFIX + "ice_cream/" + flavor.textureName, "inventory"));
 						ModelLoader.addVariantName(item, RC2.MODID.toLowerCase() + ":" + /*"ice_cream/" +*/ flavor.textureName);
 					}
 //					List<Item> subitems = Lists.newArrayList();

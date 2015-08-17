@@ -22,6 +22,7 @@ import rcteam.rc2.rollercoaster.CategoryEnum;
 import rcteam.rc2.rollercoaster.ThemeParkLogo;
 import rcteam.rc2.util.FileManager;
 import rcteam.rc2.util.OBJLoader;
+import rcteam.rc2.util.TrackStateMapper;
 
 import java.io.File;
 import java.util.Map;
@@ -46,13 +47,5 @@ public class ClientProxy extends CommonProxy {
 	public void initRenderers() {
         ThemeParkLogo.init();
 		MinecraftForge.EVENT_BUS.register(new GuiThemeParkOverlay(Minecraft.getMinecraft()));
-
-//		ModelLoaderRegistry.registerLoader(OBJLoader.instance);
-//		OBJLoader.instance.addDomain(RC2.MODID.toLowerCase());
-
-		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(RC2Blocks.track_steel), 0, RC2Blocks.modelMap.get(RC2Blocks.track_steel).getRight());
-		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(RC2Blocks.track_wood), 0, RC2Blocks.modelMap.get(RC2Blocks.track_wood).getRight());
-		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(RC2Blocks.track_inverted), 0, RC2Blocks.modelMap.get(RC2Blocks.track_inverted).getRight());
-		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(RC2Blocks.track_water), 0, RC2Blocks.modelMap.get(RC2Blocks.track_water).getRight());
 	}
 }
