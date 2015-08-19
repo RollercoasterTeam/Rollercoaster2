@@ -1,5 +1,8 @@
 package rcteam.rc2.item;
 
+import com.google.common.collect.Lists;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,33 +13,37 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import rcteam.rc2.RC2;
+import rcteam.rc2.block.BlockTrack;
 import rcteam.rc2.block.te.TileEntityTrack;
 import rcteam.rc2.util.HammerMode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ItemHammer extends Item {
-	public static HammerMode[] modes = {
-		new HammerMode("Rotate") {
-			@Override
-			public void onRightClick(TileEntity tileentity, PlayerInteractEvent event) {
+	public static List<HammerMode> modes = Lists.newArrayList(
+			new HammerMode("Rotate") {      //TODO: make these pull from lang files? make HammerMode an enum?
+				@Override
+				public void onRightClick(TileEntity tileEntity, PlayerInteractEvent event) {
 
-			}
-		},
-		new HammerMode("Change Type") {
-			@Override
-			public void onRightClick(TileEntity tileentity, PlayerInteractEvent event) {
-				
-			}
-		},
-		new HammerMode("Adjustment") {
-			@Override
-			public void onRightClick(TileEntity tileentity, PlayerInteractEvent event) {
+				}
+			},
+	        new HammerMode("Change Type") {
+		        @Override
+	            public void onRightClick(TileEntity tileEntity, PlayerInteractEvent event) {
 
-			}
-		}
-	};
-	
+		        }
+	        },
+	        new HammerMode("Adjustment") {
+		        @Override
+	            public void onRightClick(TileEntity tileEntity, PlayerInteractEvent event) {
+
+		        }
+	        }
+	);
+
+	public HammerMode mode = modes.get(0);
+
 	public ItemHammer() {
 		setMaxStackSize(1);
 		setMaxDamage(100);
@@ -67,7 +74,7 @@ public class ItemHammer extends Item {
 	@Override
 	public void onCreated(ItemStack stack, World world, EntityPlayer player) {
 		if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
-		stack.getTagCompound().setInteger("mode", 0);
+		stack.getTagCompound().setInteger("mode", modes.indexOf(this.mode));
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -75,6 +82,38 @@ public class ItemHammer extends Item {
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean val) {
 		onCreated(stack, player.getEntityWorld(), player);
-		list.add(modes[stack.getTagCompound().getInteger("mode")].name + " Mode");
+		list.add(modes.get(stack.getTagCompound().getInteger("mode")).name + " Mode");
+	}
+
+	@Override
+	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+		if (!world.isRemote && player.isSneaking()) {
+			RC2.logger.info("changing mode");
+			int index = modes.indexOf(this.mode);
+			if (index + 1 == modes.size()) {
+				this.mode = modes.get(0);
+			} else {
+				this.mode = modes.get(index + 1);
+			}
+		}
+		return stack;
+	}
+
+	@Override
+	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ) {
+		if (RC2.isRunningInDev) {
+			if (world.getTileEntity(pos) != null && world.getTileEntity(pos) instanceof TileEntityTrack) {
+				if (this.mode.name.equalsIgnoreCase("Rotate")) {
+					world.setBlockState(pos, world.getBlockState(pos).cycleProperty(BlockTrack.FACING), 3);
+				} else if (this.mode.name.equalsIgnoreCase("Adjustment")) {
+					TileEntityTrack tileEntityTrack = (TileEntityTrack) world.getTileEntity(pos);
+					tileEntityTrack.info.cycleCurrentPiece();
+					world.markBlockForUpdate(pos);
+//					world.setBlockState(pos, world.getBlockState(pos).withProperty(BlockTrack.PIECE_PROPERTY, tileEntityTrack.info.getCurrentPiece()), 3);
+				}
+				return true;
+			}
+		}
+		return false;
 	}
 }

@@ -8,7 +8,7 @@ import rcteam.rc2.RC2;
 
 import java.util.List;
 
-public class TrackPieceInfo {
+public class TrackPieceInfo implements Comparable {
 	private CategoryEnum category;
 	private TrackPiece currentPiece = null;
 	private List<TrackPiece> pieces = Lists.newArrayList();
@@ -18,7 +18,7 @@ public class TrackPieceInfo {
 	}
 
 	public TrackPieceInfo(CategoryEnum category, List<TrackPiece> pieces) {
-		this(category, pieces, pieces.get(0));
+		this(category, pieces, null);
 	}
 
 	public TrackPieceInfo(CategoryEnum category, List<TrackPiece> pieces, TrackPiece currentPiece) {
@@ -39,7 +39,18 @@ public class TrackPieceInfo {
 		this.currentPiece = currentPiece;
 	}
 
+	public void setCurrentPiece(String name) {
+		for (TrackPiece piece : this.pieces) {
+			if (piece.getName().equals(name)) {
+				this.currentPiece = piece;
+			}
+		}
+	}
+
 	public TrackPiece getCurrentPiece() {
+		if (this.currentPiece == null) {
+			this.currentPiece = this.pieces.get(0);
+		}
 		return this.currentPiece;
 	}
 
@@ -58,6 +69,12 @@ public class TrackPieceInfo {
 		}
 		RC2.logger.info("returning index 0!");
 		return this.pieces.get(0);
+	}
+
+	public TrackPiece cycleCurrentPiece() {
+		if (this.currentPiece == null || this.pieces.indexOf(this.currentPiece) + 1 == this.pieces.size()) this.currentPiece = pieces.get(0);
+		else this.currentPiece = this.pieces.get(this.pieces.indexOf(this.currentPiece) + 1);
+		return this.currentPiece;
 	}
 
 	public void setCategory(CategoryEnum category) {
@@ -90,7 +107,6 @@ public class TrackPieceInfo {
 		builder.append("], ");
 		builder.append(String.format("Current Piece: %s", this.currentPiece.getName()));
 		return builder.toString();
-//		return String.format("TrackPieceInfo: Category: %s, ", this.category.getName(), this.piece.getName());
 	}
 
 	public NBTTagCompound writeToNBT() {
@@ -118,5 +134,20 @@ public class TrackPieceInfo {
 		TrackPiece current = TrackPiece.readFromNBT(compound.getCompoundTag("current"));
 
 		return new TrackPieceInfo(category, pieces, current);
+	}
+
+	@Override
+	public int compareTo(Object o) {
+		if (!(o instanceof TrackPieceInfo)) {
+			return 1;
+		}
+		TrackPieceInfo info = (TrackPieceInfo) o;
+		int categoryComp = info.getCategory().compareTo(this.getCategory());
+		if (categoryComp == 0) {
+			int pieces = info.getPieces().size();
+			if (pieces == this.pieces.size()) return this.currentPiece.compareTo(info.getCurrentPiece());
+			else if (pieces > this.pieces.size()) return -1;
+			else return 1;
+		} else return categoryComp;
 	}
 }

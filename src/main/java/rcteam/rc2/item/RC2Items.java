@@ -12,6 +12,11 @@ import net.minecraft.item.Item;
 import net.minecraftforge.fml.relauncher.Side;
 import org.apache.commons.lang3.tuple.Pair;
 import rcteam.rc2.RC2;
+import rcteam.rc2.block.BlockTrack;
+import rcteam.rc2.block.RC2Blocks;
+import rcteam.rc2.rollercoaster.CategoryEnum;
+import rcteam.rc2.rollercoaster.TrackPieceInfo;
+import rcteam.rc2.rollercoaster.TrackPieceRegistry;
 import rcteam.rc2.util.Reference;
 
 import java.util.List;
@@ -23,8 +28,9 @@ public class RC2Items {
 	public static Item themePark;
 	public static Item scoop, goldenScoop;
 	public static Item cone;
+	public static Item track_steel, track_wood, track_inverted, track_water;
 
-	public static void preInit() {
+	public static void preInit(Side side) {
 		hammer = new ItemHammer();
 		themePark = new ItemThemePark();
 		scoop = new ItemIceCreamScoop(false);
@@ -36,6 +42,37 @@ public class RC2Items {
 		registerItem(scoop, "scoop");
 		registerItem(goldenScoop, "scoop_golden");
 		registerItem(cone, "cone");
+
+//		RC2Blocks.infoMap.put(CategoryEnum.STEEL, new TrackPieceInfo(CategoryEnum.STEEL, TrackPieceRegistry.INSTANCE.getPieces()));
+//		RC2Blocks.infoMap.put(CategoryEnum.WOODEN, new TrackPieceInfo(CategoryEnum.WOODEN, TrackPieceRegistry.INSTANCE.getPieces()));
+//		RC2Blocks.infoMap.put(CategoryEnum.INVERTED, new TrackPieceInfo(CategoryEnum.INVERTED, TrackPieceRegistry.INSTANCE.getPieces()));
+//		RC2Blocks.infoMap.put(CategoryEnum.WATER, new TrackPieceInfo(CategoryEnum.WATER, TrackPieceRegistry.INSTANCE.getPieces()));
+//
+//		BlockTrack.PIECE_PROPERTY.setAllowedValues(RC2Blocks.infoMap.get(CategoryEnum.STEEL).getPieces());
+//		RC2Blocks.track_steel = new BlockTrack(new TrackPieceInfo(CategoryEnum.STEEL, TrackPieceRegistry.INSTANCE.getPieces()));
+//		BlockTrack.PIECE_PROPERTY.setAllowedValues(RC2Blocks.infoMap.get(CategoryEnum.WOODEN).getPieces());
+//		RC2Blocks.track_wood = new BlockTrack(new TrackPieceInfo(CategoryEnum.WOODEN, TrackPieceRegistry.INSTANCE.getPieces()));
+//		BlockTrack.PIECE_PROPERTY.setAllowedValues(RC2Blocks.infoMap.get(CategoryEnum.INVERTED).getPieces());
+//		RC2Blocks.track_inverted = new BlockTrack(new TrackPieceInfo(CategoryEnum.INVERTED, TrackPieceRegistry.INSTANCE.getPieces()));
+//		BlockTrack.PIECE_PROPERTY.setAllowedValues(RC2Blocks.infoMap.get(CategoryEnum.WATER).getPieces());
+//		RC2Blocks.track_water = new BlockTrack( new TrackPieceInfo(CategoryEnum.WATER, TrackPieceRegistry.INSTANCE.getPieces()));
+//
+//		track_steel = new ItemTrack(RC2Blocks.track_steel);
+//		track_wood = new ItemTrack(RC2Blocks.track_wood);
+//		track_inverted = new ItemTrack(RC2Blocks.track_inverted);
+//		track_water = new ItemTrack(RC2Blocks.track_water);
+//
+//		if (side == Side.CLIENT) {
+//			ModelLoader.setCustomModelResourceLocation(track_steel, 0, new ModelResourceLocation(Reference.RESOURCE_PREFIX + "tracks/hyper_twister", "inventory"));
+//			ModelLoader.setCustomModelResourceLocation(track_wood, 0, new ModelResourceLocation(Reference.RESOURCE_PREFIX + "tracks/hyper_twister", "inventory"));
+//			ModelLoader.setCustomModelResourceLocation(track_inverted, 0, new ModelResourceLocation(Reference.RESOURCE_PREFIX + "tracks/hyper_twister", "inventory"));
+//			ModelLoader.setCustomModelResourceLocation(track_water, 0, new ModelResourceLocation(Reference.RESOURCE_PREFIX + "tracks/hyper_twister", "inventory"));
+//		}
+//
+//		registerItem(track_steel, "track_" + CategoryEnum.STEEL.getName());
+//		registerItem(track_wood, "track_" + CategoryEnum.WOODEN.getName());
+//		registerItem(track_inverted, "track_" + CategoryEnum.INVERTED.getName());
+//		registerItem(track_water, "track_" + CategoryEnum.WATER.getName());
 	}
 	
 	private static void registerItem(Item item, String name) {

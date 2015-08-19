@@ -166,7 +166,7 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Abstra
      * Send this message to the specified player.
      * <p/>
      * Adapted from CPW's code in
-     * cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper
+     * net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper
      *
      * @param message The message to send
      * @param player  The player to send it to
@@ -185,7 +185,7 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Abstra
      *
      * @param message The message to send
      * @param point   The
-     *                {@link cpw.mods.fml.common.network.NetworkRegistry.TargetPoint}
+     *                {@link net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint}
      *                around which to send
      */
     public void sendToAllAround(AbstractPacket message, NetworkRegistry.TargetPoint point) {
@@ -198,7 +198,7 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Abstra
      * Send this message to everyone within the supplied dimension.
      * <p/>
      * Adapted from CPW's code in
-     * cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper
+     * net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper
      *
      * @param message     The message to send
      * @param dimensionId The dimension id to target

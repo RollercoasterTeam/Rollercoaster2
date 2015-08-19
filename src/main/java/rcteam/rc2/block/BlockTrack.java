@@ -1,48 +1,48 @@
 package rcteam.rc2.block;
 
 import com.google.common.collect.Lists;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyHelper;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import org.apache.logging.log4j.Level;
 import rcteam.rc2.RC2;
 import rcteam.rc2.block.te.TileEntityTrack;
+import rcteam.rc2.item.ItemHammer;
 import rcteam.rc2.rollercoaster.*;
 import rcteam.rc2.util.Utils;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public class BlockTrack extends Block {
 	public static final PropertyDirection FACING = PropertyDirection.create("facing", Lists.newArrayList(EnumFacing.HORIZONTALS));
-	public static final TestProperty PIECE_PROPERTY = new TestProperty("piece");
-//	public ExtendedBlockState state = new ExtendedBlockState(this, new IProperty[] {FACING, PIECE_PROPERTY}, new IUnlistedProperty[] {TrackProperty.instance});
-	protected TrackPieceInfo info;
+//	public static final TrackPieceProperty PIECE_PROPERTY = new TrackPieceProperty("piece");
+	//THIS ONLY EXISTS SO THAT THE PROPER INSTANCE OF TrackPieceProperty CAN BE RETURNED FROM createBlockState(), DO NOT USE OTHERWISE!
+	private TrackPieceProperty tempPieceProperty;
+	private static int index = 0;
 
 	public BlockTrack(TrackPieceInfo info) {
 		super(info.getCategory().getMaterial());
-		this.info = info;
 		setCreativeTab(RC2.tab);
 		setBlockUnbreakable();
-		setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(PIECE_PROPERTY, info.getCurrentPiece()));
+		setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(info.getCategory().PIECE_PROPERTY, info.getCurrentPiece()));
 		setBlockBounds(0f, 0f, 0f, 1f, 0.5f, 1f);
 		setUnlocalizedName("track_" + info.getCategory().getName());
-	}
-
-	public TrackPieceInfo getInfo() {
-		return this.info;
-	}
-
-	public void setInfo(TrackPieceInfo info) {
-		this.info = info;
 	}
 
 	@Override
@@ -60,36 +60,33 @@ public class BlockTrack extends Block {
 		return false;
 	}
 
-//	@Override
-//	public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) {
-//		return ((IExtendedBlockState) state).withProperty(TrackProperty.instance, this.info);
-//	}
-
 	@Override
 	public BlockState createBlockState() {
-		return new BlockState(this, FACING, PIECE_PROPERTY);
-//		return new ExtendedBlockState(this, new IProperty[] {FACING}, new IUnlistedProperty[] {TrackProperty.instance});
+		this.tempPieceProperty = CategoryEnum.values()[index].PIECE_PROPERTY;
+		index++;
+		return new BlockState(this, FACING, this.tempPieceProperty);
 	}
 
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
-		if (this.info != null) {
-			return this.getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta)).withProperty(PIECE_PROPERTY, this.info.getCurrentPiece());
-		}
 		return this.getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta));
 	}
 
 	@Override
 	public int getMetaFromState(IBlockState state) {
-		if (this.info == null) {
-			this.info = ((BlockTrack) state.getBlock()).getInfo();
+		return ((EnumFacing) state.getValue(FACING)).getHorizontalIndex();
+	}
+
+	@Override
+	public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos) {
+		if (world.getTileEntity(pos) != null && world.getTileEntity(pos) instanceof TileEntityTrack) {
+			TileEntityTrack tileEntityTrack = (TileEntityTrack) world.getTileEntity(pos);
+			if (!state.getValue(tileEntityTrack.getInfo().getCategory().PIECE_PROPERTY).equals(tileEntityTrack.getInfo().getCurrentPiece())) {
+//				RC2.logger.printf(Level.INFO, "Updating state: X: %d, Y: %d, Z: %d, Input: %s, Current: %s", pos.getX(), pos.getY(), pos.getZ(), ((TrackPiece)state.getValue(PIECE_PROPERTY)).getName(), tileEntityTrack.getInfo().getCurrentPiece().getName());
+				state = state.withProperty(tileEntityTrack.getInfo().getCategory().PIECE_PROPERTY, tileEntityTrack.getInfo().getCurrentPiece());
+			}
 		}
-		EnumFacing facing = ((EnumFacing) state.getValue(FACING));
-		if (facing == EnumFacing.DOWN || facing == EnumFacing.UP) {
-			return 0;
-		} else {
-			return ((EnumFacing) state.getValue(FACING)).getHorizontalIndex();
-		}
+		return state;
 	}
 
 	@Override
@@ -110,25 +107,22 @@ public class BlockTrack extends Block {
 
 	@Override
 	public TileEntity createTileEntity(World world, IBlockState state) {
-		return new TileEntityTrack(this.info);
-	}
-
-	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ) {
-		if (worldIn.isRemote) {
-			RC2.logger.info("someones punching me!");
-			this.info.setCurrentPiece(this.info.getNextPiece());
-			((BlockTrack) state.getBlock()).setInfo(this.info);
-			worldIn.setBlockState(pos, state, 3);
+		TileEntityTrack tileEntityTrack = new TileEntityTrack();
+		for (Object object : state.getProperties().keySet()) {
+			if (object instanceof TrackPieceProperty) {
+				TrackPieceProperty property = (TrackPieceProperty) object;
+				tileEntityTrack = new TileEntityTrack(((TrackPiece)state.getValue(property)).getCategory().getInfo());
+			}
 		}
-		return true;
+		if (tileEntityTrack.info == null) RC2.logger.error("BlockTrack: WARNING!!! createTileEntity() HAS RETURNED AN INSTANCE WITHOUT ITS INFO SET! WARNING!!!");
+		return tileEntityTrack;
 	}
 
-	public static class TestProperty extends PropertyHelper {
+	public static class TrackPieceProperty extends PropertyHelper {
 		private List<TrackPiece> allowedValues;
 
-		public TestProperty(String name) {
-			super(name, TrackPieceInfo.class);
+		public TrackPieceProperty(String name) {
+			super(name, TrackPiece.class);
 		}
 
 		public void setAllowedValues(List<TrackPiece> allowedValues) {
@@ -143,7 +137,6 @@ public class BlockTrack extends Block {
 		@Override
 		public String getName(Comparable value) {
 			return ((TrackPiece) value).getName();
-//			return this.getName();
 		}
 	}
 }

@@ -18,8 +18,8 @@ public class BlockEntrance extends Block {
 
 	public BlockEntrance() {
 		super(Material.rock);
-		setUnlocalizedName("entrance");
 		setCreativeTab(RC2.tab);
+		setUnlocalizedName("entrance");
 	}
 
 	@Override

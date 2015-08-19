@@ -3,6 +3,7 @@ package rcteam.rc2;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.command.CommandHandler;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.FMLLog;
@@ -63,6 +64,8 @@ public class RC2 {
 	public static Logger logger;
 	public static CreativeTabs tab;
 
+	public static final boolean isRunningInDev = (Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
+
 	public static final PacketPipeline packetPipeline = new PacketPipeline();
 
 	@EventHandler
@@ -96,7 +99,7 @@ public class RC2 {
 //		getListPacks().stream().forEach(CoasterPack::registerStyles);
 //		StyleRegistry.INSTANCE.registerBlocks();
 
-		RC2Items.preInit();
+		RC2Items.preInit(event.getSide());
 		RC2Blocks.preInit(event.getSide());
 	}
 
