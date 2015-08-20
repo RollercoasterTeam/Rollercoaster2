@@ -14,23 +14,9 @@ import rcteam.rc2.network.packets.PacketThemeParkEntrance;
 import rcteam.rc2.rollercoaster.*;
 
 public class TileEntityTrack extends TileEntity {
-	//	public CoasterStyle style;
-//	public CategoryEnum category;
-//	public TrackPiece piece;
 	public TrackPieceInfo info;
 
-	public TileEntityTrack() {
-//		this.info = new TrackPieceInfo(CategoryEnum.STEEL, TrackPieceRegistry.INSTANCE.getPiece("straight"));
-	}
-
-//	public TileEntityTrack(CoasterStyle style) {
-//		this.style = style;
-//	}
-
-//	public TileEntityTrack(CategoryEnum category, TrackPiece piece) {
-//		this.category = category;
-//		this.piece = piece;
-//	}
+	public TileEntityTrack() {}
 
 	public TileEntityTrack(TrackPieceInfo info) {
 		this.info = info;

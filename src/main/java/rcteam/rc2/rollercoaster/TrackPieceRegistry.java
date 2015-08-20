@@ -2,10 +2,6 @@ package rcteam.rc2.rollercoaster;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Table;
-import com.google.common.collect.Tables;
-import jdk.internal.util.xml.impl.Pair;
-import rcteam.rc2.RC2;
 
 import javax.vecmath.Vector3f;
 import java.util.List;
@@ -13,7 +9,6 @@ import java.util.Map;
 
 public class TrackPieceRegistry {
 	public static final TrackPieceRegistry INSTANCE = new TrackPieceRegistry();
-//	private Map<String, TrackPiece> pieceMap = Maps.newHashMap();
 	private Map<CategoryEnum, Map<String, TrackPiece>> pieceMap = Maps.newEnumMap(CategoryEnum.class);
 
 	private TrackPieceRegistry() {}
@@ -27,29 +22,7 @@ public class TrackPieceRegistry {
 			pieceNameMap.put(piece.getName(), piece);
 		}
 		this.pieceMap.put(piece.getCategory(), pieceNameMap);
-//		if (!this.pieceMap.containsKey(piece.getName()) && !this.pieceMap.containsValue(piece)) {
-//			this.pieceMap.put(piece.getName(), piece);
-//		} else {
-//			RC2.logger.warn("TrackPieceRegistry: Tried to register a duplicate TrackPiece: %s, skipping!", piece.getName());
-//		}
 	}
-
-//	public void replacePiece(TrackPiece piece) {
-//		if (!this.pieceMap.containsKey(piece.getName()) && !this.pieceMap.containsValue(piece)) {
-//			this.pieceMap.put(piece.getName(), piece);
-//			RC2.logger.warn("TrackPieceRegistry: Tried to replace a piece that hasn't been registered, added piece %s to map instead.", piece.getName());
-//		} else {
-//			this.pieceMap.replace(piece.getName(), piece);
-//		}
-//	}
-//
-//	public void removePiece(String name) {
-//		if (!this.pieceMap.containsKey(name)) {
-//			RC2.logger.warn("TrackPieceMap: Tried to remove a piece with name %s, but no piece of that name exists in the map.", name);
-//		} else {
-//			this.pieceMap.remove(name);
-//		}
-//	}
 
 	public Map<String, TrackPiece> getPieceNameMap(CategoryEnum categoryEnum) {
 		return this.pieceMap.get(categoryEnum);
@@ -63,10 +36,6 @@ public class TrackPieceRegistry {
 		if (this.pieceMap.get(categoryEnum) == null) return null;
 		return Lists.newArrayList(this.pieceMap.get(categoryEnum).values());
 	}
-
-//	public List<String> getPieceNames() {
-//		return Lists.newArrayList(this.pieceMap.keySet());
-//	}
 
 	public TrackPiece getPiece(CategoryEnum categoryEnum, String name) {
 		if (this.pieceMap.get(categoryEnum) == null) return null;

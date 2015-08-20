@@ -107,7 +107,7 @@ public class ItemHammer extends Item {
 					world.setBlockState(pos, world.getBlockState(pos).cycleProperty(BlockTrack.FACING), 3);
 				} else if (this.mode.name.equalsIgnoreCase("Adjustment")) {
 					TileEntityTrack tileEntityTrack = (TileEntityTrack) world.getTileEntity(pos);
-					tileEntityTrack.info.cycleCurrentPiece();
+					tileEntityTrack.info.getCurrentStyle().cycleCurrentPiece();
 					world.markBlockForUpdate(pos);
 //					world.setBlockState(pos, world.getBlockState(pos).withProperty(BlockTrack.PIECE_PROPERTY, tileEntityTrack.info.getCurrentPiece()), 3);
 				}

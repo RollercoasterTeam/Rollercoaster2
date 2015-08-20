@@ -1,153 +1,115 @@
 package rcteam.rc2.rollercoaster;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraftforge.common.util.Constants;
 import rcteam.rc2.RC2;
 
 import java.util.List;
+import java.util.Map;
 
-public class TrackPieceInfo implements Comparable {
-	private CategoryEnum category;
-	private TrackPiece currentPiece = null;
-	private List<TrackPiece> pieces = Lists.newArrayList();
+public class TrackPieceInfo {
+	private final CategoryEnum category;
+	private final Map<String, CoasterStyle> styleMap = Maps.newHashMap();
+	private CoasterStyle currentStyle;
 
 	public TrackPieceInfo(CategoryEnum category) {
-		this(category, Lists.newArrayList());
+		this(category, null, null);
 	}
 
-	public TrackPieceInfo(CategoryEnum category, List<TrackPiece> pieces) {
-		this(category, pieces, null);
-	}
-
-	public TrackPieceInfo(CategoryEnum category, List<TrackPiece> pieces, TrackPiece currentPiece) {
+	public TrackPieceInfo(CategoryEnum category, Map<String, CoasterStyle> styleMap, CoasterStyle currentStyle) {
 		this.category = category;
-		this.pieces = pieces;
-		this.currentPiece = currentPiece;
-	}
-
-	//TODO: make pieces a map?
-	public void setCurrentPiece(int index) {
-		this.currentPiece = this.pieces.get(index);
-	}
-
-	public void setCurrentPiece(TrackPiece currentPiece) {
-		if (!this.pieces.contains(currentPiece)) {
-			this.pieces.add(currentPiece);
+		this.styleMap.putAll(styleMap);
+		this.currentStyle = currentStyle;
+		for (CoasterStyle style : this.styleMap.values()) {
+			style.setParentInfo(this);
 		}
-		this.currentPiece = currentPiece;
-	}
-
-	public void setCurrentPiece(String name) {
-		for (TrackPiece piece : this.pieces) {
-			if (piece.getName().equals(name)) {
-				this.currentPiece = piece;
-			}
-		}
-	}
-
-	public TrackPiece getCurrentPiece() {
-		if (this.currentPiece == null) {
-			this.currentPiece = this.pieces.get(0);
-		}
-		return this.currentPiece;
-	}
-
-	public TrackPiece getNextPiece() {
-		if (this.currentPiece == null || !this.pieces.contains(this.currentPiece)) return this.pieces.get(0);
-		int index = this.pieces.indexOf(this.currentPiece);
-		if (index + 1 == this.pieces.size()) return this.pieces.get(0);
-		return this.pieces.get(index + 1);
-	}
-
-	public TrackPiece getPiece(String name) {
-		for (TrackPiece piece : this.pieces) {
-			if (piece.getName().equals(name)) {
-				return piece;
-			}
-		}
-		RC2.logger.info("returning index 0!");
-		return this.pieces.get(0);
-	}
-
-	public TrackPiece cycleCurrentPiece() {
-		if (this.currentPiece == null || this.pieces.indexOf(this.currentPiece) + 1 == this.pieces.size()) this.currentPiece = pieces.get(0);
-		else this.currentPiece = this.pieces.get(this.pieces.indexOf(this.currentPiece) + 1);
-		return this.currentPiece;
-	}
-
-	public void setCategory(CategoryEnum category) {
-		this.category = category;
+		if (this.currentStyle != null) this.currentStyle.setParentInfo(this);
 	}
 
 	public CategoryEnum getCategory() {
 		return this.category;
 	}
 
-	public void addPiece(TrackPiece piece) {
-		this.pieces.add(piece);
-	}
-
-	public void addPieces(List<TrackPiece> pieces) {
-		this.pieces.addAll(pieces);
-	}
-
-	public List<TrackPiece> getPieces() {
-		return this.pieces;
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder(String.format("TrackPieceInfo: Category: %s, Pieces: [", this.category.getName()));
-		for (TrackPiece piece : this.pieces) {
-			builder.append(String.format("%s, ", piece.getName()));
+	public boolean setCurrentStyle(String name) {
+		if (this.styleMap.containsKey(name)) {
+			this.currentStyle = this.styleMap.get(name);
+			return true;
 		}
-		builder.delete(builder.length() - 2, builder.length());
-		builder.append("], ");
-		builder.append(String.format("Current Piece: %s", this.currentPiece.getName()));
-		return builder.toString();
+		return false;
 	}
+
+	public boolean setCurrentStyle(CoasterStyle style, boolean force) {
+		if (force || this.styleMap.containsValue(style)) {
+			this.currentStyle = style;
+			return true;
+		}
+		return false;
+	}
+
+	public CoasterStyle getCurrentStyle() {
+		return this.currentStyle;
+	}
+
+	public void addStyleToMap(CoasterStyle style) {
+		if (style != null) this.styleMap.put(style.getName(), style);
+	}
+
+	public void addStylesToMap(List<CoasterStyle> styles) {
+		if (styles != null && !styles.isEmpty()) styles.forEach(style -> this.styleMap.put(style.getName(), style));
+	}
+
+	public Map<String, CoasterStyle> getStyleMap() {
+		return this.styleMap;
+	}
+
+	public List<String> getStyleNames() {
+		return Lists.newArrayList(this.styleMap.keySet());
+	}
+
+	public List<CoasterStyle> getStyles() {
+		return Lists.newArrayList(this.styleMap.values());
+	}
+
+//	@Override
+//	public String toString() {
+//		StringBuilder builder = new StringBuilder(String.format("TrackPieceInfo: Category: %s, Total Styles: %d, Styles: [", this.category.getName(), this.styleMap.size()));
+//		this.styleMap.forEach((s, style) -> );
+//		builder.delete(builder.length() - 2, builder.length());
+//		builder.append("], ");
+////		builder.append(String.format("Current Piece: %s", this.currentPiece.getName()));
+//		return builder.toString();
+//	}
 
 	public NBTTagCompound writeToNBT() {
 		NBTTagCompound compound = new NBTTagCompound();
 		compound.setInteger("category", this.category.ordinal());
-
-		NBTTagList list = new NBTTagList();
-		this.pieces.forEach(piece -> list.appendTag(piece.writeToNBT()));
-		compound.setTag("pieces", list);
-
-		compound.setTag("current", this.currentPiece.writeToNBT());
+		NBTTagList keys = new NBTTagList();
+		NBTTagList values = new NBTTagList();
+		for (Map.Entry<String, CoasterStyle> entry : this.styleMap.entrySet()) {
+			keys.appendTag(new NBTTagString(entry.getKey()));
+			values.appendTag(entry.getValue().writeToNBT());
+		}
+		compound.setTag("style_names", keys);
+		compound.setTag("styles", values);
+		compound.setTag("current_style", this.currentStyle.writeToNBT());
 		return compound;
 	}
 
 	public static TrackPieceInfo readFromNBT(NBTTagCompound compound) {
-		CategoryEnum category = CategoryEnum.values()[compound.getInteger("category")];
-		List<TrackPiece> pieces = Lists.newArrayList();
-
-		NBTTagList list = compound.getTagList("pieces", Constants.NBT.TAG_COMPOUND);
-		for (int i = 0; i < list.tagCount(); i++) {
-			NBTTagCompound pieceCompound = list.getCompoundTagAt(i);
-			pieces.add(TrackPiece.readFromNBT(pieceCompound));
+		CategoryEnum categoryEnum = CategoryEnum.values()[compound.getInteger("category")];
+		Map<String, CoasterStyle> styleMap = Maps.newHashMap();
+		NBTTagList keys = compound.getTagList("style_names", Constants.NBT.TAG_STRING);
+		NBTTagList values = compound.getTagList("styles", Constants.NBT.TAG_COMPOUND);
+		for (int i = 0; i < keys.tagCount(); i++) {
+			String name = keys.getStringTagAt(i);
+			CoasterStyle style = CoasterStyle.readFromNBT(values.getCompoundTagAt(i));
+			styleMap.put(name, style);
 		}
-
-		TrackPiece current = TrackPiece.readFromNBT(compound.getCompoundTag("current"));
-
-		return new TrackPieceInfo(category, pieces, current);
-	}
-
-	@Override
-	public int compareTo(Object o) {
-		if (!(o instanceof TrackPieceInfo)) {
-			return 1;
-		}
-		TrackPieceInfo info = (TrackPieceInfo) o;
-		int categoryComp = info.getCategory().compareTo(this.getCategory());
-		if (categoryComp == 0) {
-			int pieces = info.getPieces().size();
-			if (pieces == this.pieces.size()) return this.currentPiece.compareTo(info.getCurrentPiece());
-			else if (pieces > this.pieces.size()) return -1;
-			else return 1;
-		} else return categoryComp;
+		CoasterStyle currentStyle = CoasterStyle.readFromNBT(compound.getCompoundTag("current_style"));
+		return new TrackPieceInfo(categoryEnum, styleMap, currentStyle);
 	}
 }
