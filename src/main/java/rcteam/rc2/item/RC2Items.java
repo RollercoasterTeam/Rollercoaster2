@@ -51,26 +51,26 @@ public class RC2Items {
 //		BlockTrack.PIECE_PROPERTY.setAllowedValues(RC2Blocks.infoMap.get(CategoryEnum.STEEL).getPieces());
 //		RC2Blocks.track_steel = new BlockTrack(new TrackPieceInfo(CategoryEnum.STEEL, TrackPieceRegistry.INSTANCE.getPieces()));
 //		BlockTrack.PIECE_PROPERTY.setAllowedValues(RC2Blocks.infoMap.get(CategoryEnum.WOODEN).getPieces());
-//		RC2Blocks.track_wood = new BlockTrack(new TrackPieceInfo(CategoryEnum.WOODEN, TrackPieceRegistry.INSTANCE.getPieces()));
+//		RC2Blocks.track_wooden = new BlockTrack(new TrackPieceInfo(CategoryEnum.WOODEN, TrackPieceRegistry.INSTANCE.getPieces()));
 //		BlockTrack.PIECE_PROPERTY.setAllowedValues(RC2Blocks.infoMap.get(CategoryEnum.INVERTED).getPieces());
 //		RC2Blocks.track_inverted = new BlockTrack(new TrackPieceInfo(CategoryEnum.INVERTED, TrackPieceRegistry.INSTANCE.getPieces()));
 //		BlockTrack.PIECE_PROPERTY.setAllowedValues(RC2Blocks.infoMap.get(CategoryEnum.WATER).getPieces());
 //		RC2Blocks.track_water = new BlockTrack( new TrackPieceInfo(CategoryEnum.WATER, TrackPieceRegistry.INSTANCE.getPieces()));
 //
 //		track_steel = new ItemTrack(RC2Blocks.track_steel);
-//		track_wood = new ItemTrack(RC2Blocks.track_wood);
+//		track_wooden = new ItemTrack(RC2Blocks.track_wooden);
 //		track_inverted = new ItemTrack(RC2Blocks.track_inverted);
 //		track_water = new ItemTrack(RC2Blocks.track_water);
 //
 //		if (side == Side.CLIENT) {
 //			ModelLoader.setCustomModelResourceLocation(track_steel, 0, new ModelResourceLocation(Reference.RESOURCE_PREFIX + "tracks/hyper_twister", "inventory"));
-//			ModelLoader.setCustomModelResourceLocation(track_wood, 0, new ModelResourceLocation(Reference.RESOURCE_PREFIX + "tracks/hyper_twister", "inventory"));
+//			ModelLoader.setCustomModelResourceLocation(track_wooden, 0, new ModelResourceLocation(Reference.RESOURCE_PREFIX + "tracks/hyper_twister", "inventory"));
 //			ModelLoader.setCustomModelResourceLocation(track_inverted, 0, new ModelResourceLocation(Reference.RESOURCE_PREFIX + "tracks/hyper_twister", "inventory"));
 //			ModelLoader.setCustomModelResourceLocation(track_water, 0, new ModelResourceLocation(Reference.RESOURCE_PREFIX + "tracks/hyper_twister", "inventory"));
 //		}
 //
 //		registerItem(track_steel, "track_" + CategoryEnum.STEEL.getName());
-//		registerItem(track_wood, "track_" + CategoryEnum.WOODEN.getName());
+//		registerItem(track_wooden, "track_" + CategoryEnum.WOODEN.getName());
 //		registerItem(track_inverted, "track_" + CategoryEnum.INVERTED.getName());
 //		registerItem(track_water, "track_" + CategoryEnum.WATER.getName());
 	}

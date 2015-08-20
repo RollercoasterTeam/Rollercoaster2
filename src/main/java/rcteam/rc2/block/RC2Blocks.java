@@ -17,7 +17,6 @@ import rcteam.rc2.block.te.*;
 import rcteam.rc2.item.ItemTrack;
 import rcteam.rc2.rollercoaster.CategoryEnum;
 import rcteam.rc2.rollercoaster.TrackPieceRegistry;
-import rcteam.rc2.rollercoaster.TrackStateMapper;
 import rcteam.rc2.util.Reference;
 
 import java.util.List;
@@ -27,56 +26,51 @@ public class RC2Blocks {
 	public static final Map<Block, Pair<String, ModelResourceLocation>> modelMap = Maps.newHashMap();
 	public static Block entrance;
 	public static Block track_steel;
-	public static Block track_wood;
+	public static Block track_wooden;
 	public static Block track_inverted;
 	public static Block track_water;
 	
 	public static void preInit(Side side) {
 		entrance = new BlockEntrance();
 
-//		for (CategoryEnum categoryEnum : CategoryEnum.values()) {
-//			categoryEnum.getInfo().setValidPieces(TrackPieceRegistry.INSTANCE.getPieces());  //TODO: distinguish between different categories!!!
-//			categoryEnum.getInfo().setCurrentPiece("straight");
-//		}
-
-		CategoryEnum.STEEL.setValidPieces(TrackPieceRegistry.INSTANCE.getPieces(CategoryEnum.STEEL)).setCurrentPiece("straight");
-		CategoryEnum.WOODEN.setValidPieces(TrackPieceRegistry.INSTANCE.getPieces(CategoryEnum.WOODEN)).setCurrentPiece("straight");
-		CategoryEnum.INVERTED.setValidPieces(TrackPieceRegistry.INSTANCE.getPieces(CategoryEnum.INVERTED)).setCurrentPiece("straight");
-		CategoryEnum.WATER.setValidPieces(TrackPieceRegistry.INSTANCE.getPieces(CategoryEnum.WATER)).setCurrentPiece("straight");
-
-//		BlockTrack.PIECE_PROPERTY.setAllowedValues(CategoryEnum.STEEL.getInfo().getPieces());
-		track_steel = new BlockTrack(CategoryEnum.STEEL.getInfo());
-//		BlockTrack.PIECE_PROPERTY.setAllowedValues(CategoryEnum.WOODEN.getInfo().getPieces());
-		track_wood = new BlockTrack(CategoryEnum.WOODEN.getInfo());
-//		BlockTrack.PIECE_PROPERTY.setAllowedValues(CategoryEnum.INVERTED.getInfo().getPieces());
-		track_inverted = new BlockTrack(CategoryEnum.INVERTED.getInfo());
-//		BlockTrack.PIECE_PROPERTY.setAllowedValues(CategoryEnum.WATER.getInfo().getPieces());
-		track_water = new BlockTrack(CategoryEnum.WATER.getInfo());
-
-		if (side == Side.CLIENT) {
-			ModelLoader.setCustomStateMapper(track_steel, TrackStateMapper.INSTANCE);
-			ModelLoader.setCustomStateMapper(track_wood, TrackStateMapper.INSTANCE);
-			ModelLoader.setCustomStateMapper(track_inverted, TrackStateMapper.INSTANCE);
-			ModelLoader.setCustomStateMapper(track_water, TrackStateMapper.INSTANCE);
+		for (CategoryEnum categoryEnum : CategoryEnum.values()) {
+			categoryEnum.setValidPieces();
 		}
+
+//		CategoryEnum.STEEL.setValidPieces(TrackPieceRegistry.INSTANCE.getPieces(CategoryEnum.STEEL)).setCurrentPiece("straight");
+//		CategoryEnum.WOODEN.setValidPieces(TrackPieceRegistry.INSTANCE.getPieces(CategoryEnum.WOODEN)).setCurrentPiece("straight");
+//		CategoryEnum.INVERTED.setValidPieces(TrackPieceRegistry.INSTANCE.getPieces(CategoryEnum.INVERTED)).setCurrentPiece("straight");
+//		CategoryEnum.WATER.setValidPieces(TrackPieceRegistry.INSTANCE.getPieces(CategoryEnum.WATER)).setCurrentPiece("straight");
+
+		track_steel = new BlockTrack(CategoryEnum.STEEL.getInfo());
+		track_wooden = new BlockTrack(CategoryEnum.WOODEN.getInfo());
+		track_inverted = new BlockTrack(CategoryEnum.INVERTED.getInfo());
+		track_water = new BlockTrack(CategoryEnum.WATER.getInfo());
 
 		registerBlock(entrance, "entrance");
 		registerBlock(track_steel, ItemTrack.class, "track_steel", CategoryEnum.STEEL.getInfo());
-		registerBlock(track_wood, ItemTrack.class, "track_wooden", CategoryEnum.WOODEN.getInfo());
+		registerBlock(track_wooden, ItemTrack.class, "track_wooden", CategoryEnum.WOODEN.getInfo());
 		registerBlock(track_inverted, ItemTrack.class, "track_inverted", CategoryEnum.INVERTED.getInfo());
 		registerBlock(track_water, ItemTrack.class, "track_water", CategoryEnum.WATER.getInfo());
 
 		if (side == Side.CLIENT) {
+			ModelLoader.setCustomStateMapper(track_steel, BlockTrack.TrackStateMapper.INSTANCE);
+			ModelLoader.setCustomStateMapper(track_wooden, BlockTrack.TrackStateMapper.INSTANCE);
+			ModelLoader.setCustomStateMapper(track_inverted, BlockTrack.TrackStateMapper.INSTANCE);
+			ModelLoader.setCustomStateMapper(track_water, BlockTrack.TrackStateMapper.INSTANCE);
 			ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(track_steel), ItemTrack.ItemTrackMeshDefinition.INSTANCE);
-			ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(track_wood), ItemTrack.ItemTrackMeshDefinition.INSTANCE);
+			ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(track_wooden), ItemTrack.ItemTrackMeshDefinition.INSTANCE);
 			ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(track_inverted), ItemTrack.ItemTrackMeshDefinition.INSTANCE);
 			ModelLoader.setCustomMeshDefinition(Item.getItemFromBlock(track_water), ItemTrack.ItemTrackMeshDefinition.INSTANCE);
-			ModelBakery.addVariantName(Item.getItemFromBlock(track_steel), Reference.RESOURCE_PREFIX + "tracks/hyper_twister");
+			ModelBakery.addVariantName(Item.getItemFromBlock(track_steel), Reference.RESOURCE_PREFIX + "tracks/steel/hyper_twister");
+//			ModelBakery.addVariantName(Item.getItemFromBlock(track_wooden), Reference.RESOURCE_PREFIX + "tracks/hyper_twister");
+//			ModelBakery.addVariantName(Item.getItemFromBlock(track_inverted), Reference.RESOURCE_PREFIX + "tracks/hyper_twister");
+//			ModelBakery.addVariantName(Item.getItemFromBlock(track_water), Reference.RESOURCE_PREFIX + "tracks/hyper_twister");
 		}
 
 		registerTE(TileEntityEntrance.class, entrance);
 		registerTE(TileEntityTrack.class, track_steel);
-		registerTE(TileEntityTrack.class, track_wood);
+		registerTE(TileEntityTrack.class, track_wooden);
 		registerTE(TileEntityTrack.class, track_inverted);
 		registerTE(TileEntityTrack.class, track_water);
 	}
@@ -104,5 +98,11 @@ public class RC2Blocks {
 				Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(Item.getItemFromBlock(block), 0, location);
 			}
 		}
+	}
+
+	public static List<Item> getItemList() {
+		List<Item> items = Lists.newArrayList();
+		modelMap.keySet().forEach(block -> items.add(Item.getItemFromBlock(block)));
+		return items;
 	}
 }

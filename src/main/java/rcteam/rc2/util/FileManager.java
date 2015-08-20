@@ -1,18 +1,64 @@
 package rcteam.rc2.util;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.gson.stream.JsonReader;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraftforge.fml.client.FMLClientHandler;
+import org.apache.commons.io.FileUtils;
 import rcteam.rc2.RC2;
+import rcteam.rc2.rollercoaster.CategoryEnum;
+import rcteam.rc2.rollercoaster.TrackPieceInfo;
 import rcteam.rc2.util.CoasterPack;
 
+import javax.annotation.Nonnull;
 import java.io.*;
+import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipFile;
 
 public class FileManager implements IResourceManagerReloadListener {
-	private static Map<String, CoasterPack> packRegistry = new HashMap<>();
+	public static final String TRACKS_DIR = RC2.configDir + "/tracks/";
+	private static Map<String, CoasterPack> packRegistry = Maps.newHashMap();
+
+//	public static void makeInfoDirs() {
+//		for (int i = 0; i < CategoryEnum.values().length; i++) {
+//			File file = new File(TRACKS_DIR + CategoryEnum.values()[i].getName());
+//			file.mkdirs();
+//		}
+//	}
+
+	public static void readInfoFiles() throws FileNotFoundException {
+		for (int i = 0; i < CategoryEnum.values().length; i++) {
+			File file = new File(TRACKS_DIR + CategoryEnum.values()[i].getName());
+			if (file.listFiles() == null) break;
+			List<File> styles = Lists.newArrayList(file.listFiles());
+			for (File style : styles) {
+				InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(style));
+				TrackPieceInfo info = JsonParser.GSON.fromJson(inputStreamReader, TrackPieceInfo.class);
+				CategoryEnum.values()[i].setInfo(info);
+			}
+		}
+	}
+
+	public static void copyDefaultsFromJar(Class<?> jarClass, File to) {
+		RC2.logger.info("Copying default packs from jar");
+		File defFolder = new File(jarClass.getResource("/assets/" + RC2.MODID.toLowerCase() + "/defaults/tracks").getFile());
+
+		try {
+			FileUtils.copyDirectory(defFolder, to);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+//	@Nonnull
+//	public File extractZip(File zip) {
+//		String zipPath = zip.getParent() + "";
+//	}
 
 	public static CoasterPack readPack(File file) {
 		CoasterPack.Type type;
@@ -46,6 +92,6 @@ public class FileManager implements IResourceManagerReloadListener {
 	@Override
 	public void onResourceManagerReload(IResourceManager resourceManager) {
 		//TODO!
-//		FMLClientHandler.instance().getResourcePackFor(RC2.MODID).
+//		FMLClientHandler.instance().getResourcePackFor(RC2.MODID)
 	}
 }

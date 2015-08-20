@@ -53,24 +53,24 @@ public class ItemTrack extends ItemBlock {
 			//TODO!
 			stack.setTagInfo("BlockEntityTag", new NBTTagCompound());
 			stack.setTagInfo("info", this.info.writeToNBT());
-			world.setBlockState(pos, newState.withProperty(this.info.getCategory().PIECE_PROPERTY, this.info.getCurrentPiece()).withProperty(BlockTrack.FACING, Utils.getFacingFromEntity(world, pos, player, false, false)), 3);
+			world.setBlockState(pos, newState.withProperty(this.info.getCategory().PIECE_PROPERTY, this.info.getCurrentStyle().getCurrentPiece()).withProperty(BlockTrack.FACING, Utils.getFacingFromEntity(world, pos, player, false, false)), 3);
 			setTileEntityNBT(world, pos, stack, player);
 			return true;
 		}
 		return false;
 	}
 
-//	@SuppressWarnings("unchecked")
-//	@Override
-//	public void getSubItems(Item item, CreativeTabs tabs, List subItems) {
-//		if (item instanceof ItemTrack) {
-//			for (CategoryEnum categoryEnum : CategoryEnum.values()) {
-//				ItemStack stack = new ItemStack(this.block, 1, categoryEnum.ordinal());
-//				stack.setTagInfo("info", this.info.writeToNBT());
-//				subItems.add(stack);
-//			}
-//		}
-//	}
+	@SuppressWarnings("unchecked")
+	@Override
+	public void getSubItems(Item item, CreativeTabs tabs, List subItems) {
+		if (item instanceof ItemTrack) {
+			for (CategoryEnum categoryEnum : CategoryEnum.values()) {
+				ItemStack stack = new ItemStack(this.block, 1, categoryEnum.ordinal());
+				stack.setTagInfo("info", this.info.writeToNBT());
+				subItems.add(stack);
+			}
+		}
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -84,23 +84,20 @@ public class ItemTrack extends ItemBlock {
 			stack.getTagCompound().setTag("info", this.info.writeToNBT());
 		}
 		TrackPieceInfo info = TrackPieceInfo.readFromNBT(stack.getTagCompound().getCompoundTag("info"));
-		tooltip.add(info.getCurrentPiece().getDisplayName());
-		tooltip.add(info.getCurrentPiece().getName());
+		tooltip.add(info.getCurrentStyle().getCurrentPiece().getDisplayName());
+		tooltip.add(info.getCurrentStyle().getCurrentPiece().getName());
 	}
 
 	public static class ItemTrackMeshDefinition implements ItemMeshDefinition {
 		public static final ItemTrackMeshDefinition INSTANCE = new ItemTrackMeshDefinition();
-		private String name = "inventory";
-
-		public void setVariantName(String name) {
-			if (name != null && !name.isEmpty()) {
-				this.name = name;
-			}
-		}
 
 		@Override
 		public ModelResourceLocation getModelLocation(ItemStack stack) {
-			ModelResourceLocation location = new ModelResourceLocation(Reference.RESOURCE_PREFIX + "tracks/hyper_twister", name);
+			ItemTrack track = (ItemTrack) stack.getItem();
+			String loc = "tracks/" + track.getInfo().getCurrentStyle().getName();
+			String name = track.getInfo().getCurrentStyle().getCurrentPiece().getName();
+			name = name == null ? "inventory" : name;
+			ModelResourceLocation location = new ModelResourceLocation(Reference.RESOURCE_PREFIX + loc, name);
 			return location;
 		}
 	}

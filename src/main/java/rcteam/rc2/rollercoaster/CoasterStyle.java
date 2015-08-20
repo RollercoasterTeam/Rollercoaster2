@@ -1,6 +1,10 @@
 package rcteam.rc2.rollercoaster;
 
 import com.google.common.collect.Lists;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraft.util.ResourceLocation;
 import rcteam.rc2.RC2;
@@ -14,18 +18,20 @@ import java.util.List;
 
 public class CoasterStyle {
 	private final String name;
-	private final CategoryEnum category;
-	private final List<String> pieces = Lists.newArrayList();
+	private final List<TrackPiece> pieces = Lists.newArrayList();
 	private final List<String> trainCars = Lists.newArrayList();
-	private ResourceLocation jsonLocation;
-	private ResourceLocation modelLocation;
-	private OBJModel model;
+	private TrackPieceInfo parentInfo;
+	private TrackPiece currentPiece = null;
 
-	public CoasterStyle(String name, CategoryEnum category, List<String> pieces, List<String> trainCars) {
+	public CoasterStyle(String name, List<TrackPiece> pieces, List<String> trainCars) {
+		this(name, pieces, trainCars, null);
+	}
+
+	public CoasterStyle(String name, List<TrackPiece> pieces, List<String> trainCars, TrackPiece piece) {
 		this.name = name;
-		this.category = category;
 		this.pieces.addAll(pieces);
 		this.trainCars.addAll(trainCars);
+		this.currentPiece = piece;
 	}
 
 	public String getName() {
@@ -39,31 +45,21 @@ public class CoasterStyle {
 		return builder.toString();
 	}
 
-	public void setJsonLocation(ResourceLocation location) {
-		this.jsonLocation = jsonLocation;
+	public void setCurrentPiece(TrackPiece piece) {
+		this.currentPiece = piece;
 	}
 
-	public ResourceLocation getJsonLocation() {
-		return this.jsonLocation;
-//		return new ResourceLocation(Reference.RELATIVE_PACKS_DIR + "coasters/" + this.name + "/style.json");
-//		return new ResourceLocation(RC2.MODID.toLowerCase() + ":" + "coasters/" + this.name + "/style.json");
+	public TrackPiece getCurrentPiece() {
+		return this.currentPiece;
 	}
 
-	public void setModelLocation(ResourceLocation location) {
-		this.modelLocation = location;
+	public TrackPiece cycleCurrentPiece() {
+		if (this.currentPiece == null || this.pieces.indexOf(this.currentPiece) + 1 == this.pieces.size()) this.currentPiece = pieces.get(0);
+		else this.currentPiece = this.pieces.get(this.pieces.indexOf(this.currentPiece) + 1);
+		return this.currentPiece;
 	}
 
-	public ResourceLocation getModelLocation() {
-		return this.modelLocation;
-//		return new ResourceLocation(Reference.RELATIVE_PACKS_DIR + "coasters/" + this.name + "/model.obj");
-//		return new ResourceLocation(RC2.MODID.toLowerCase() + ":" + "coasters/" + this.name + "/model.obj");
-	}
-
-	public CategoryEnum getCategory() {
-		return this.category;
-	}
-
-	public List<String> getPieces() {
+	public List<TrackPiece> getPieces() {
 		return this.pieces;
 	}
 
@@ -71,56 +67,46 @@ public class CoasterStyle {
 		return this.trainCars;
 	}
 
-//	public Material getBlockMaterial() {
-//		switch (this.category) {
-//			case STEEL:
-//			case WATER: //TODO: custom material?
-//			case INVERTED: return Material.iron;
-//			case WOODEN: return Material.wood;
-//			case MISC:
-//			default: return Material.rock;
-//		}
-//	}
-
-	public void registerBlock() {
-//		RC2Blocks.trackMap.put(this.category, new BlockTrack(this));
-//		GameRegistry.registerBlock(RC2Blocks.trackMap.get(this.category), ItemTrack.class, RC2Blocks.trackMap.get(this.category).getUnlocalizedName());
-//		GameRegistry.registerTileEntity(TileEntityTrack.class, RC2Blocks.trackMap.get(this.category).getUnlocalizedName());
-
-//		switch (this.category) {
-//			case STEEL:
-//				RC2Blocks.track_steel = new BlockTrack(Material.iron, "steel");
-//				GameRegistry.registerBlock(RC2Blocks.track_steel, ItemTrack.class, RC2Blocks.track_steel.getUnlocalizedName());
-//				GameRegistry.registerTileEntity(TileEntityTrack.class, RC2Blocks.track_steel.getUnlocalizedName());
-//				break;
-//			case WOODEN:
-//				RC2Blocks.track_wood = new BlockTrack(Material.wood, "wooden");
-//				GameRegistry.registerBlock()
-//		}
+	public void setParentInfo(TrackPieceInfo info) {
+		this.parentInfo = info;
 	}
 
-//	public void registerBlocks() {
-//		for (String s : this.pieces) {
-//			BlockTrack track = new BlockTrack(this, s);
-////			track.setBlockTextureName(this.model.getMaterialLibrary().getGroups().get(s).get)
-//			GameRegistry.registerBlock(track, ItemTrack.class, track.getUnlocalizedName());
-//			GameRegistry.registerTileEntity(TileEntityTrack.class, track.getUnlocalizedName());
-//		}
-//	}
-
-//	public void registerItemTrackRenderer() {
-//		if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
-//			for (String s : this.pieces) {
-//				BlockTrack track = GameRegistry.findBlock()
-//			}
-//		}
-//	}
-
-	public void setModel(OBJModel model) {
-		this.model = model;
+	public TrackPieceInfo getParentInfo() {
+		return this.parentInfo;
 	}
 
-	public OBJModel getModel() {
-		return this.model;
+	public NBTTagCompound writeToNBT() {
+		NBTTagCompound compound = new NBTTagCompound();
+		compound.setString("name", this.name);
+
+		NBTTagList list = new NBTTagList();
+		for (TrackPiece piece : this.pieces) {
+			list.appendTag(piece.writeToNBT());
+		}
+		compound.setTag("pieces", list);
+		compound.setTag("current_piece", this.currentPiece.writeToNBT());
+		NBTTagList list1 = new NBTTagList();
+		for (String s : this.trainCars) {
+			list1.appendTag(new NBTTagString(s));
+		}
+		compound.setTag("trains", list1);
+		return compound;
+	}
+
+	public static CoasterStyle readFromNBT(NBTTagCompound compound) {
+		String name = compound.getString("name");
+		List<TrackPiece> pieces = Lists.newArrayList();
+		NBTTagList list = compound.getTagList("pieces", Constants.NBT.TAG_COMPOUND);
+		for (int i = 0; i < list.tagCount(); i++) {
+			NBTTagCompound pieceCompound = list.getCompoundTagAt(i);
+			pieces.add(TrackPiece.readFromNBT(pieceCompound));
+		}
+		TrackPiece current = TrackPiece.readFromNBT(compound.getCompoundTag("current_piece"));
+		List<String> trains = Lists.newArrayList();
+		NBTTagList list1 = compound.getTagList("trains", Constants.NBT.TAG_STRING);
+		for (int i = 0; i < list1.tagCount(); i++) {
+			trains.add(list1.getStringTagAt(i));
+		}
+		return new CoasterStyle(name, pieces, trains, current);
 	}
 }

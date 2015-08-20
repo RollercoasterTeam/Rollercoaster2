@@ -18,7 +18,7 @@ public enum CategoryEnum {
 
 	private final String name;
 	private final Material material;
-	private final TrackPieceInfo info;
+	private TrackPieceInfo info;
 	public final BlockTrack.TrackPieceProperty PIECE_PROPERTY;
 
 	CategoryEnum(String name, Material material) {
@@ -40,23 +40,29 @@ public enum CategoryEnum {
 		return this.material;
 	}
 
+	public void setInfo(TrackPieceInfo info) {
+		this.info = info;
+	}
+
 	public TrackPieceInfo getInfo() {
 		return this.info;
 	}
 
-	public TrackPieceInfo setValidPieces(List<TrackPiece> pieces) {
-		this.info.addPieces(pieces);
+//	public TrackPieceInfo setValidPieces(List<TrackPiece> pieces) {
+//		//TODO!!!
+////		this.info.addPieces(pieces);
+//		this.PIECE_PROPERTY.setAllowedValues(pieces);
+//		return this.info;
+//	}
+
+	public TrackPieceInfo setValidPieces() {
+		List<TrackPiece> pieces = Lists.newArrayList();
+		for (CoasterStyle style : this.info.getStyles()) {
+			pieces.addAll(style.getPieces());
+		}
 		this.PIECE_PROPERTY.setAllowedValues(pieces);
 		return this.info;
 	}
-
-//	public ResourceLocation getJsonLocation() {
-//		return new ResourceLocation(RC2.MODID.toLowerCase() + ":" + "coasters/" + this.name + "/");
-//	}
-//
-//	public ResourceLocation getModelLocation() {
-//		return new ResourceLocation(RC2.MODID.toLowerCase() + ":" + "models/" + this.name + "/");
-//	}
 
 	public static CategoryEnum getByName(String name) {
 		return Lists.newArrayList(CategoryEnum.values()).stream().filter(categoryEnum -> categoryEnum.getName().equals(name)).findAny().get();

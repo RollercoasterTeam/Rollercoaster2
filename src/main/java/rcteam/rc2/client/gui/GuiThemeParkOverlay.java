@@ -55,10 +55,10 @@ public class GuiThemeParkOverlay extends Gui {
 			if (this.mc.theWorld.getBlockState(this.mc.objectMouseOver.getBlockPos()).getBlock() instanceof BlockTrack) {
 				yPos -= 1;
 				TileEntityTrack tileEntityTrack = (TileEntityTrack) this.mc.theWorld.getTileEntity(this.mc.objectMouseOver.getBlockPos());
-				stringWidth = this.fontRenderer.getStringWidth(tileEntityTrack.info.getCurrentPiece().getDisplayName());
+				stringWidth = this.fontRenderer.getStringWidth(tileEntityTrack.info.getCurrentStyle().getCurrentPiece().getDisplayName());
 //				offset *= 2;
 				drawRect(xPos - 1, yPos - 1, xPos + stringWidth + 1, yPos + offset - 1, 0x90505050);
-				this.fontRenderer.drawString(tileEntityTrack.info.getCurrentPiece().getDisplayName(), xPos, yPos, 0xFFE0E0E0);
+				this.fontRenderer.drawString(tileEntityTrack.info.getCurrentStyle().getCurrentPiece().getDisplayName(), xPos, yPos, 0xFFE0E0E0);
 				yPos = offset + 2;
 			}
 		} else {
