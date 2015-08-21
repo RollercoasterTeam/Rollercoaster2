@@ -102,6 +102,7 @@ public class OBJModel implements IRetexturableModel, IModelCustomData
 	public IFlexibleBakedModel bake(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter)
 	{
 		ImmutableMap.Builder<String, TextureAtlasSprite> builder = ImmutableMap.builder();
+		builder.put(ModelLoader.White.loc.toString(), ModelLoader.White.instance);
 		TextureAtlasSprite missing = bakedTextureGetter.apply(new ResourceLocation("missingno"));
 		for (Map.Entry<String, Material> e : matLib.materials.entrySet())
 		{
@@ -117,8 +118,6 @@ public class OBJModel implements IRetexturableModel, IModelCustomData
 		}
 		builder.put("missingno", missing);
 		return new OBJBakedModel(this, state, format, builder.build(), ambientOcclusion, gui3d);
-//        OBJState newState = new OBJState(customVisibilities, true, state);
-//        return new OBJBakedModel(this, newState, format, builder.build(), ambientOcclusion, gui3d);
 	}
 
 	public TRSRTransformation getDefaultState()
@@ -511,11 +510,6 @@ public class OBJModel implements IRetexturableModel, IModelCustomData
 			if (!path.contains("/")) {
 				path = from.getResourcePath().substring(0, from.getResourcePath().lastIndexOf("/") + 1) + path;
 			}
-//			if (!path.contains("models/block/") && !path.contains("models/item/"))
-//			{
-//				if (from.getResourcePath().contains("models/block/")) path = "models/block/" + path;
-//				else if (from.getResourcePath().contains("models/item/")) path = "models/item/" + path;
-//			}
 			mtlStream = new InputStreamReader(manager.getResource(new ResourceLocation(domain, path)).getInputStream(), Charsets.UTF_8);
 			mtlReader = new BufferedReader(mtlStream);
 
@@ -546,7 +540,6 @@ public class OBJModel implements IRetexturableModel, IModelCustomData
 				}
 				else if (key.equalsIgnoreCase("Ka") || key.equalsIgnoreCase("Kd") || key.equalsIgnoreCase("Ks"))
 				{
-					//TODO make these colors not override each other, either by doing different things or by only accepting one
 					if (key.equalsIgnoreCase("Kd") || !hasSetColor)
 					{
 						String[] rgbStrings = data.split(" ", 3);
@@ -562,7 +555,6 @@ public class OBJModel implements IRetexturableModel, IModelCustomData
 				}
 				else if (key.equalsIgnoreCase("map_Ka") || key.equalsIgnoreCase("map_Kd") || key.equalsIgnoreCase("map_Ks"))
 				{
-					//TODO make these colors not override each other, either by doing different things or by only accepting one
 					if (key.equalsIgnoreCase("map_Kd") || !hasSetTexture)
 					{
 						if (data.contains(" "))
@@ -1036,7 +1028,7 @@ public class OBJModel implements IRetexturableModel, IModelCustomData
 			StringBuilder builder = new StringBuilder();
 			builder.append(String.format("v:%n"));
 			builder.append(String.format("    position: %s %s %s%n", position.x, position.y, position.z));
-			builder.append(String.format("    material: %s %s %s %s %s%n", material.getColor().x, material.getColor().y, material.getColor().z, material.getColor().w));
+			builder.append(String.format("    material: %s %s %s %s %s%n", material.getName(), material.getColor().x, material.getColor().y, material.getColor().z, material.getColor().w));
 			return builder.toString();
 		}
 	}
@@ -1287,8 +1279,8 @@ public class OBJModel implements IRetexturableModel, IModelCustomData
 		private Set<BakedQuad> quads;
 		private static final int BYTES_IN_INT = Integer.SIZE / Byte.SIZE;
 		private static final int VERTICES_IN_QUAD = 4;
-		private Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter;
 		private ImmutableMap<String, TextureAtlasSprite> textures;
+		private TextureAtlasSprite sprite = ModelLoader.White.instance;
 		private boolean ambientOcclusion = true;
 		private boolean gui3d = true;
 
@@ -1393,10 +1385,8 @@ public class OBJModel implements IRetexturableModel, IModelCustomData
 								v.setMaterial(this.model.getMatLib().getMaterial(v.getMaterial().getName()));
 							}
 						}
-					}
-					TextureAtlasSprite sprite = this.textures.get("missingno");
-					if (this.model.getMatLib().materials.get(f.getMaterialName()).isWhite()) sprite = ModelLoader.White.instance;
-					else sprite = this.textures.get(f.getMaterialName());
+						sprite = ModelLoader.White.instance;
+					} else sprite = this.textures.get(f.getMaterialName());
 
 					float minU = 0.0f;
 					float maxU = 1.0f;
@@ -1501,7 +1491,7 @@ public class OBJModel implements IRetexturableModel, IModelCustomData
 		@Override
 		public TextureAtlasSprite getTexture()
 		{
-			return this.textures.get(0);
+			return this.sprite;
 		}
 
 		@Override

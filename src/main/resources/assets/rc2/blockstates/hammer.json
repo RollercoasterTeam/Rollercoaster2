@@ -1,0 +1,14 @@
+{
+	"forge_marker": 1,
+	"defaults": {
+		"textures": {
+			"layer0": "rc2:items/hammer"
+		},
+		"model": "forge:item-layer"
+	},
+	"variants": {
+		"inventory": [{
+			"transform": "forge:default-tool"
+		}]
+	}
+}

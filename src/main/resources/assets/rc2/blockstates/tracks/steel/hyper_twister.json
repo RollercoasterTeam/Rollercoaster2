@@ -1,9 +1,7 @@
 {
 	"forge_marker": 1,
 	"defaults": {
-		"textures": {
-			"particle": "textures/builtin/white"
-		},
+		"textures": {},
 		"model": "rc2:tracks/steel/hyper_twister/straight.obj"
 	},
 	"variants": {

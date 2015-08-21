@@ -1,0 +1,24 @@
+{
+	"forge_marker": 1,
+	"defaults": {
+		"textures": {},
+		"model": "rc2:tracks/wooden/test/straight.obj"
+	},
+	"variants": {
+		"normal": [{}],
+		"inventory": [{
+			"transform": "forge:default-block"
+		}],
+		"facing": {
+			"north": {},
+			"south": {"y": 180},
+			"west": {"y": 270},
+			"east": {"y": 90}
+		},
+		"piece": {
+			"straight": {"model": "rc2:tracks/wooden/test/straight.obj"},
+			"large_corner_left": {"model": "rc2:tracks/wooden/test/large_corner_left.obj"},
+			"large_corner_right": {"model": "rc2:tracks/wooden/test/large_corner_right.obj"}
+		}
+	}
+}

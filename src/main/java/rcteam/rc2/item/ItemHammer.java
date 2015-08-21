@@ -52,6 +52,22 @@ public class ItemHammer extends Item {
 	}
 
 	@Override
+	public int getDamage(ItemStack stack) {
+		if (stack.getTagCompound().hasKey("mode")) {
+			return stack.getTagCompound().getInteger("mode");
+		}
+		return 0;
+	}
+
+	@Override
+	public boolean updateItemStackNBT(NBTTagCompound compound) {
+		if (compound.hasKey("mode")) {
+			this.mode = modes.get(compound.getInteger("mode"));
+		}
+		return true;
+	}
+
+	@Override
 	public boolean getShareTag() {
 		return true;
 	}
@@ -59,10 +75,8 @@ public class ItemHammer extends Item {
 	@Override
     public ItemStack getContainerItem(ItemStack itemStack) {
         ItemStack copiedStack = itemStack.copy();
-
         copiedStack.setItemDamage(copiedStack.getItemDamage() + 1);
         copiedStack.stackSize = 1;
-
         return copiedStack;
     }
 	

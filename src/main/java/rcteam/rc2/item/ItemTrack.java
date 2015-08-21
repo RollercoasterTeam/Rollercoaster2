@@ -22,6 +22,8 @@ import rcteam.rc2.rollercoaster.TrackPieceInfo;
 import rcteam.rc2.util.Reference;
 import rcteam.rc2.util.Utils;
 
+import javax.vecmath.Vector3f;
+import java.util.Iterator;
 import java.util.List;
 
 public class ItemTrack extends ItemBlock {
@@ -54,6 +56,8 @@ public class ItemTrack extends ItemBlock {
 			stack.setTagInfo("BlockEntityTag", new NBTTagCompound());
 			stack.setTagInfo("info", this.info.writeToNBT());
 			world.setBlockState(pos, newState.withProperty(this.info.getCategory().PIECE_PROPERTY, this.info.getCurrentStyle().getCurrentPiece()).withProperty(BlockTrack.FACING, Utils.getFacingFromEntity(world, pos, player, false, false)), 3);
+			Vector3f dimensions = this.info.getCurrentStyle().getCurrentPiece().getSize();
+//			Iterator iterator = BlockPos.getAllInBox()
 			setTileEntityNBT(world, pos, stack, player);
 			return true;
 		}
@@ -64,11 +68,14 @@ public class ItemTrack extends ItemBlock {
 	@Override
 	public void getSubItems(Item item, CreativeTabs tabs, List subItems) {
 		if (item instanceof ItemTrack) {
-			for (CategoryEnum categoryEnum : CategoryEnum.values()) {
-				ItemStack stack = new ItemStack(this.block, 1, categoryEnum.ordinal());
-				stack.setTagInfo("info", this.info.writeToNBT());
-				subItems.add(stack);
-			}
+			CategoryEnum categoryEnum = ((ItemTrack) item).getInfo().getCategory();
+//			for (CategoryEnum categoryEnum : CategoryEnum.values()) {
+				if (categoryEnum.PIECE_PROPERTY.getAllowedValues() != null && !categoryEnum.PIECE_PROPERTY.getAllowedValues().isEmpty()) {
+					ItemStack stack = new ItemStack(this.block, 1, categoryEnum.ordinal());
+					stack.setTagInfo("info", this.info.writeToNBT());
+					subItems.add(stack);
+				}
+//			}
 		}
 	}
 
@@ -94,9 +101,10 @@ public class ItemTrack extends ItemBlock {
 		@Override
 		public ModelResourceLocation getModelLocation(ItemStack stack) {
 			ItemTrack track = (ItemTrack) stack.getItem();
-			String loc = "tracks/" + track.getInfo().getCurrentStyle().getName();
-			String name = track.getInfo().getCurrentStyle().getCurrentPiece().getName();
-			name = name == null ? "inventory" : name;
+			String loc = "tracks/" + track.getInfo().getCategory().getName() + "/" + track.getInfo().getCurrentStyle().getName();
+//			String name = track.getInfo().getCurrentStyle().getCurrentPiece().getName();
+//			name = name == null ? "inventory" : name;
+			String name = "inventory";
 			ModelResourceLocation location = new ModelResourceLocation(Reference.RESOURCE_PREFIX + loc, name);
 			return location;
 		}

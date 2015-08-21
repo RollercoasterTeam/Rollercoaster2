@@ -1,13 +1,10 @@
 package rcteam.rc2.rollercoaster;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import net.minecraft.block.material.Material;
-import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.StringUtils;
-import rcteam.rc2.RC2;
 import rcteam.rc2.block.BlockTrack;
-
+import rcteam.rc2.util.Reference;
 import java.util.List;
 
 public enum CategoryEnum {
@@ -20,12 +17,14 @@ public enum CategoryEnum {
 	private final Material material;
 	private TrackPieceInfo info;
 	public final BlockTrack.TrackPieceProperty PIECE_PROPERTY;
+	public final String BLOCKSTATE_DIR;
 
 	CategoryEnum(String name, Material material) {
 		this.name = name;
 		this.material = material;
 		this.info = new TrackPieceInfo(this);
 		this.PIECE_PROPERTY = new BlockTrack.TrackPieceProperty("piece");
+		this.BLOCKSTATE_DIR = Reference.TRACK_STATE_DIR + name + "/";
 	}
 
 	public String getName() {

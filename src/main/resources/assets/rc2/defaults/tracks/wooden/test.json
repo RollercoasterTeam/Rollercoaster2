@@ -1,0 +1,13 @@
+{
+	"style_info": {
+		"category": "wooden",
+		"name": "test",
+		"display_name": "Test",
+		"pieces": {
+			"straight": [1, 0.75, 1],
+			"large_corner_left": [2, 0.75, 2],
+			"large_corner_right": [2, 0.75, 2]
+		},
+		"train_cars": ["default"]
+	}
+}

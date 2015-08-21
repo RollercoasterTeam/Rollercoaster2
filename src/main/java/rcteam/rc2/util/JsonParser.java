@@ -21,30 +21,33 @@ public class JsonParser {
 
 		@Override
 		public TrackPieceInfo deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-			JsonObject jsonObject = json.getAsJsonObject();
 			CategoryEnum categoryEnum;
 			String name;
 			List<String> pieces = Lists.newArrayList();
 			List<Vector3f> dimensions = Lists.newArrayList();
 			List<String> trainCars = Lists.newArrayList();
+			JsonObject jsonObject = json.getAsJsonObject();
+			JsonObject styleJson = jsonObject.getAsJsonObject("style_info");
 
-			categoryEnum = CategoryEnum.getByName(jsonObject.get("category").getAsString());
-			name = jsonObject.get("name").getAsString();
-			JsonObject pieceObj = jsonObject.getAsJsonObject("pieces");
+			categoryEnum = CategoryEnum.getByName(styleJson.get("category").getAsString());
+			name = styleJson.get("name").getAsString();
+			JsonObject pieceObj = styleJson.getAsJsonObject("pieces");
 			for (Map.Entry<String, JsonElement> entry : pieceObj.entrySet()) {
 				pieces.add(entry.getKey());
+//				JsonArray
 				JsonArray dims = entry.getValue().getAsJsonArray();
 				dimensions.add(new Vector3f(dims.get(0).getAsFloat(), dims.get(1).getAsFloat(), dims.get(2).getAsFloat()));
 			}
-			JsonArray carsArray = jsonObject.getAsJsonArray("train_cars");
+			JsonArray carsArray = styleJson.getAsJsonArray("train_cars");
 			carsArray.forEach(jsonElement -> trainCars.add(jsonElement.getAsString()));
 
-			TrackPieceInfo info = new TrackPieceInfo(categoryEnum);
 			List<TrackPiece> pieceList = Lists.newArrayList();
 			for (int i = 0; i < pieces.size(); i++) {
-				pieceList.add(new TrackPiece(pieces.get(i), dimensions.get(i), categoryEnum));
+				pieceList.add(new TrackPiece(pieces.get(i), dimensions.get(i)));
 			}
 			CoasterStyle style = new CoasterStyle(name, pieceList, trainCars, pieceList.get(0));
+			TrackPieceInfo info = new TrackPieceInfo(categoryEnum);
+			style.setParentInfo(info);
 			info.addStyleToMap(style);
 			return info;
 		}

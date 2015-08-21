@@ -22,7 +22,9 @@ public class TrackPieceInfo {
 
 	public TrackPieceInfo(CategoryEnum category, Map<String, CoasterStyle> styleMap, CoasterStyle currentStyle) {
 		this.category = category;
-		this.styleMap.putAll(styleMap);
+		if (styleMap != null) {
+			this.styleMap.putAll(styleMap);
+		}
 		this.currentStyle = currentStyle;
 		for (CoasterStyle style : this.styleMap.values()) {
 			style.setParentInfo(this);
@@ -74,6 +76,14 @@ public class TrackPieceInfo {
 		return Lists.newArrayList(this.styleMap.values());
 	}
 
+	public List<TrackPiece> getAllPieces() {
+		List<TrackPiece> pieces = Lists.newArrayList();
+		for (CoasterStyle style : this.getStyles()) {
+			pieces.addAll(style.getPieces());
+		}
+		return pieces;
+	}
+
 //	@Override
 //	public String toString() {
 //		StringBuilder builder = new StringBuilder(String.format("TrackPieceInfo: Category: %s, Total Styles: %d, Styles: [", this.category.getName(), this.styleMap.size()));
@@ -111,5 +121,26 @@ public class TrackPieceInfo {
 		}
 		CoasterStyle currentStyle = CoasterStyle.readFromNBT(compound.getCompoundTag("current_style"));
 		return new TrackPieceInfo(categoryEnum, styleMap, currentStyle);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		TrackPieceInfo info = (TrackPieceInfo) o;
+
+		if (category != info.category) return false;
+		if (styleMap != null ? !styleMap.equals(info.styleMap) : info.styleMap != null) return false;
+		return !(currentStyle != null ? !currentStyle.equals(info.currentStyle) : info.currentStyle != null);
+
+	}
+
+	@Override
+	public int hashCode() {
+		int result = category != null ? category.hashCode() : 0;
+		result = 31 * result + (styleMap != null ? styleMap.hashCode() : 0);
+		result = 31 * result + (currentStyle != null ? currentStyle.hashCode() : 0);
+		return result;
 	}
 }

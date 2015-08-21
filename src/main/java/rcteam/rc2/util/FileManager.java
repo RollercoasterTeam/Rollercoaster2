@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.zip.ZipFile;
 
 public class FileManager implements IResourceManagerReloadListener {
-	public static final String TRACKS_DIR = RC2.configDir + "/tracks/";
 	private static Map<String, CoasterPack> packRegistry = Maps.newHashMap();
 
 //	public static void makeInfoDirs() {
@@ -33,20 +32,22 @@ public class FileManager implements IResourceManagerReloadListener {
 
 	public static void readInfoFiles() throws FileNotFoundException {
 		for (int i = 0; i < CategoryEnum.values().length; i++) {
-			File file = new File(TRACKS_DIR + CategoryEnum.values()[i].getName());
-			if (file.listFiles() == null) break;
+			File file = new File(Reference.TRACKS_DIR + CategoryEnum.values()[i].getName());
+			if (file.listFiles() == null || file.listFiles().length == 0) continue;
 			List<File> styles = Lists.newArrayList(file.listFiles());
 			for (File style : styles) {
 				InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(style));
 				TrackPieceInfo info = JsonParser.GSON.fromJson(inputStreamReader, TrackPieceInfo.class);
+				info.setCurrentStyle(info.getStyleNames().get(0));
 				CategoryEnum.values()[i].setInfo(info);
 			}
+			CategoryEnum.values()[i].setValidPieces();
 		}
 	}
 
 	public static void copyDefaultsFromJar(Class<?> jarClass, File to) {
 		RC2.logger.info("Copying default packs from jar");
-		File defFolder = new File(jarClass.getResource("/assets/" + RC2.MODID.toLowerCase() + "/defaults/tracks").getFile());
+		File defFolder = new File(jarClass.getResource("/assets/" + RC2.MODID.toLowerCase() + "/defaults").getFile());
 
 		try {
 			FileUtils.copyDirectory(defFolder, to);

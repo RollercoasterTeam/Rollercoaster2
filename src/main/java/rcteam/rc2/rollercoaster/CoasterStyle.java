@@ -32,6 +32,16 @@ public class CoasterStyle {
 		this.pieces.addAll(pieces);
 		this.trainCars.addAll(trainCars);
 		this.currentPiece = piece;
+		this.setPiecesParent();
+	}
+
+	public void setPiecesParent() {
+		for (TrackPiece piece : this.pieces) {
+			piece.setParentStyle(this);
+		}
+		if (this.currentPiece != null) {
+			this.currentPiece.setParentStyle(this);
+		}
 	}
 
 	public String getName() {
@@ -99,7 +109,10 @@ public class CoasterStyle {
 		NBTTagList list = compound.getTagList("pieces", Constants.NBT.TAG_COMPOUND);
 		for (int i = 0; i < list.tagCount(); i++) {
 			NBTTagCompound pieceCompound = list.getCompoundTagAt(i);
-			pieces.add(TrackPiece.readFromNBT(pieceCompound));
+			TrackPiece piece = TrackPiece.readFromNBT(pieceCompound);
+//			pieces.add(TrackPiece.readFromNBT(pieceCompound));
+
+			pieces.add(piece);
 		}
 		TrackPiece current = TrackPiece.readFromNBT(compound.getCompoundTag("current_piece"));
 		List<String> trains = Lists.newArrayList();
@@ -108,5 +121,28 @@ public class CoasterStyle {
 			trains.add(list1.getStringTagAt(i));
 		}
 		return new CoasterStyle(name, pieces, trains, current);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		CoasterStyle style = (CoasterStyle) o;
+
+		if (name != null ? !name.equals(style.name) : style.name != null) return false;
+		if (pieces != null ? !pieces.equals(style.pieces) : style.pieces != null) return false;
+		if (trainCars != null ? !trainCars.equals(style.trainCars) : style.trainCars != null) return false;
+		return !(currentPiece != null ? !currentPiece.equals(style.currentPiece) : style.currentPiece != null);
+
+	}
+
+	@Override
+	public int hashCode() {
+		int result = name != null ? name.hashCode() : 0;
+		result = 31 * result + (pieces != null ? pieces.hashCode() : 0);
+		result = 31 * result + (trainCars != null ? trainCars.hashCode() : 0);
+		result = 31 * result + (currentPiece != null ? currentPiece.hashCode() : 0);
+		return result;
 	}
 }

@@ -26,6 +26,7 @@ import rcteam.rc2.command.GiveThemeParkCommand;
 import rcteam.rc2.item.RC2Items;
 import rcteam.rc2.network.packets.PacketPipeline;
 import rcteam.rc2.proxy.CommonProxy;
+import rcteam.rc2.rollercoaster.CategoryEnum;
 import rcteam.rc2.rollercoaster.TrackPieceRegistry;
 import rcteam.rc2.util.*;
 
@@ -63,14 +64,10 @@ public class RC2 {
 	public void preInit(FMLPreInitializationEvent event) {
 		proxy.preInit();
 		logger = LogManager.getLogger(NAME);
-
 		configDir = new File(event.getModConfigurationDirectory() + "/" + Reference.CONFIG_FOLDER_NAME);
-//		if (!configDir.exists() || configDir.list().length <= 1) {  //TODO: should this happen every time we launch?
-			configDir.mkdirs();
-			FileManager.copyDefaultsFromJar(getClass(), configDir);
-//		}
+		configDir.mkdirs();
+		FileManager.copyDefaultsFromJar(getClass(), configDir);
 		ConfigHandler.init(new File(configDir.getPath(), MODID.toLowerCase() + ".cfg"));
-
 
 		tab = new CreativeTabs(NAME) {
 			@Override
@@ -91,8 +88,6 @@ public class RC2 {
 				return new ItemStack(RC2Items.hammer);
 			}
 		};
-
-//		TrackPieceRegistry.INSTANCE.registerDefaultPieces();
 
 		try {
 			FileManager.readInfoFiles();

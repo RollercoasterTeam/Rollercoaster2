@@ -8,19 +8,20 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import org.apache.logging.log4j.Level;
 import rcteam.rc2.RC2;
 import rcteam.rc2.block.te.TileEntityTrack;
 import rcteam.rc2.rollercoaster.*;
 import rcteam.rc2.util.Reference;
 import rcteam.rc2.util.Utils;
 
+import javax.vecmath.Vector3f;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -28,13 +29,14 @@ import java.util.Map;
 
 public class BlockTrack extends Block {
 	public static final PropertyDirection FACING = PropertyDirection.create("facing", Lists.newArrayList(EnumFacing.HORIZONTALS));
-//	public static final TrackPieceProperty PIECE_PROPERTY = new TrackPieceProperty("piece");
-	//THIS ONLY EXISTS SO THAT THE PROPER INSTANCE OF TrackPieceProperty CAN BE RETURNED FROM createBlockState(), DO NOT USE OTHERWISE!
-	private TrackPieceProperty tempPieceProperty;
+//	public static final trackPieceProperty PIECE_PROPERTY = new trackPieceProperty("piece");
+	//THIS ONLY EXISTS SO THAT THE PROPER INSTANCE OF trackPieceProperty CAN BE RETURNED FROM createBlockState(), DO NOT USE OTHERWISE!
+	private TrackPieceProperty trackPieceProperty;
 	private static int index = 0;
 
 	public BlockTrack(TrackPieceInfo info) {
 		super(info.getCategory().getMaterial());
+//		this.trackPieceProperty = info.getCategory().PIECE_PROPERTY;
 		setCreativeTab(RC2.tab);
 		setBlockUnbreakable();
 		setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(info.getCategory().PIECE_PROPERTY, info.getCurrentStyle().getCurrentPiece()));
@@ -59,9 +61,9 @@ public class BlockTrack extends Block {
 
 	@Override
 	public BlockState createBlockState() {
-		this.tempPieceProperty = CategoryEnum.values()[index].PIECE_PROPERTY;
+		this.trackPieceProperty = CategoryEnum.values()[index].PIECE_PROPERTY;
 		index++;
-		return new BlockState(this, FACING, this.tempPieceProperty);
+		return new BlockState(this, FACING, this.trackPieceProperty);
 	}
 
 	@Override
@@ -108,7 +110,7 @@ public class BlockTrack extends Block {
 		for (Object object : state.getProperties().keySet()) {
 			if (object instanceof TrackPieceProperty) {
 				TrackPieceProperty property = (TrackPieceProperty) object;
-				tileEntityTrack = new TileEntityTrack(((TrackPiece)state.getValue(property)).getCategory().getInfo());
+				tileEntityTrack = new TileEntityTrack(((TrackPiece)state.getValue(property)).getParentStyle().getParentInfo());
 			}
 		}
 		if (tileEntityTrack.info == null) RC2.logger.error("BlockTrack: WARNING!!! createTileEntity() HAS RETURNED AN INSTANCE WITHOUT ITS INFO SET! WARNING!!!");
@@ -153,8 +155,16 @@ public class BlockTrack extends Block {
 
 		@Override
 		public ModelResourceLocation getModelResourceLocation(IBlockState state) {
-			return new ModelResourceLocation(Reference.RESOURCE_PREFIX + "tracks/hyper_twister", this.getPropertyString(state.getProperties()));
+			ModelResourceLocation ret = null;
+			for (Object o : state.getProperties().keySet()) {
+				if (o instanceof BlockTrack.TrackPieceProperty) {
+					TrackPieceProperty property = (TrackPieceProperty) o;
+					CategoryEnum categoryEnum = ((TrackPiece) state.getValue(property)).getParentStyle().getParentInfo().getCategory();
+					String location = categoryEnum.BLOCKSTATE_DIR + ((TrackPiece) state.getValue(property)).getParentStyle().getName();
+					ret = new ModelResourceLocation(location, this.getPropertyString(state.getProperties()));
+				}
+			}
+			return ret;
 		}
 	}
-
 }

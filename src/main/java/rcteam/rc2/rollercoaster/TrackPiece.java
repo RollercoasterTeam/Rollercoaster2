@@ -10,14 +10,21 @@ public class TrackPiece implements Comparable {
 	private String name = "default_name";
 	private String displayName = "Default Name";
 	private Vector3f size = new Vector3f(1, 1, 1);
-	private CategoryEnum categoryEnum;
+//	private CategoryEnum categoryEnum;
+	private CoasterStyle parentStyle;
 
-	public TrackPiece(String name, Vector3f size, CategoryEnum categoryEnum) {
+	public TrackPiece(String name, Vector3f size) {
 		this.name = name;
 		this.displayName = this.getDisplayName();
 		this.size = size;
-		this.categoryEnum = categoryEnum;
 	}
+
+//	public TrackPiece(String name, Vector3f size, CategoryEnum categoryEnum) {
+//		this.name = name;
+//		this.displayName = this.getDisplayName();
+//		this.size = size;
+//		this.categoryEnum = categoryEnum;
+//	}
 
 	public String getName() {
 		return this.name;
@@ -41,9 +48,17 @@ public class TrackPiece implements Comparable {
 		return this.size;
 	}
 
-	public CategoryEnum getCategory() {
-		return this.categoryEnum;
+	public void setParentStyle(CoasterStyle style) {
+		this.parentStyle = style;
 	}
+
+	public CoasterStyle getParentStyle() {
+		return this.parentStyle;
+	}
+
+//	public CategoryEnum getCategory() {
+//		return this.categoryEnum;
+//	}
 
 	public NBTTagCompound writeToNBT() {
 		NBTTagCompound compound = new NBTTagCompound();
@@ -51,22 +66,25 @@ public class TrackPiece implements Comparable {
 		compound.setFloat("size_x", this.size.x);
 		compound.setFloat("size_y", this.size.y);
 		compound.setFloat("size_z", this.size.z);
-		compound.setInteger("category", this.categoryEnum.ordinal());
+//		compound.setInteger("category", this.categoryEnum.ordinal());
 		return compound;
 	}
 
 	public static TrackPiece readFromNBT(NBTTagCompound compound) {
 		String name = compound.getString("name");
 		Vector3f size = new Vector3f(compound.getFloat("size_x"), compound.getFloat("size_y"), compound.getFloat("size_z"));
-		CategoryEnum categoryEnum = CategoryEnum.values()[compound.getInteger("category")];
-		return new TrackPiece(name, size, categoryEnum);
+//		CategoryEnum categoryEnum = CategoryEnum.values()[compound.getInteger("category")];
+//		return new TrackPiece(name, size, categoryEnum);
+		return new TrackPiece(name, size);
 	}
 
 	@Override
 	public int compareTo(Object o) {
 		if (!(o instanceof TrackPiece)) return 1;
 		TrackPiece input = (TrackPiece) o;
-		int catComp = input.getCategory().compareTo(this.categoryEnum);
+		//TODO: make CoasterStyle and TrackPieceInfo Comparables!!!
+		int catComp = input.getParentStyle().getParentInfo().getCategory().compareTo(this.parentStyle.getParentInfo().getCategory());
+//		int catComp = input.getCategory().compareTo(this.categoryEnum);
 		if (catComp == 0) {
 			Vector3f inputVec = input.getSize();
 			float inVolume = inputVec.x * inputVec.y * inputVec.z;
@@ -97,8 +115,7 @@ public class TrackPiece implements Comparable {
 
 		if (name != null ? !name.equals(piece.name) : piece.name != null) return false;
 		if (displayName != null ? !displayName.equals(piece.displayName) : piece.displayName != null) return false;
-		if (size != null ? !size.equals(piece.size) : piece.size != null) return false;
-		return categoryEnum == piece.categoryEnum;
+		return !(size != null ? !size.equals(piece.size) : piece.size != null);
 	}
 
 	@Override
@@ -106,7 +123,6 @@ public class TrackPiece implements Comparable {
 		int result = name != null ? name.hashCode() : 0;
 		result = 31 * result + (displayName != null ? displayName.hashCode() : 0);
 		result = 31 * result + (size != null ? size.hashCode() : 0);
-		result = 31 * result + (categoryEnum != null ? categoryEnum.hashCode() : 0);
 		return result;
 	}
 }
