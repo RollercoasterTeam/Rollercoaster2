@@ -12,12 +12,18 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import org.apache.commons.lang3.tuple.Pair;
 import rcteam.rc2.RC2;
 import rcteam.rc2.block.BlockTrack;
 import rcteam.rc2.block.te.TileEntityTrack;
+import rcteam.rc2.multiblock.MultiBlockManager;
+import rcteam.rc2.multiblock.MultiBlockTemplate;
+import rcteam.rc2.multiblock.structures.MultiBlockTest;
 import rcteam.rc2.util.HammerMode;
+import rcteam.rc2.util.Utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ItemHammer extends Item {
@@ -118,14 +124,22 @@ public class ItemHammer extends Item {
 		if (RC2.isRunningInDev) {
 			if (world.getTileEntity(pos) != null && world.getTileEntity(pos) instanceof TileEntityTrack) {
 				if (this.mode.name.equalsIgnoreCase("Rotate")) {
-					world.setBlockState(pos, world.getBlockState(pos).cycleProperty(BlockTrack.FACING), 3);
+					world.setBlockToAir(pos);
 				} else if (this.mode.name.equalsIgnoreCase("Adjustment")) {
 					TileEntityTrack tileEntityTrack = (TileEntityTrack) world.getTileEntity(pos);
 					tileEntityTrack.info.getCurrentStyle().cycleCurrentPiece();
 					world.markBlockForUpdate(pos);
-//					world.setBlockState(pos, world.getBlockState(pos).withProperty(BlockTrack.PIECE_PROPERTY, tileEntityTrack.info.getCurrentPiece()), 3);
 				}
 				return true;
+			} else {
+//				if (this.mode.name.equalsIgnoreCase("Change Type")) {
+//					List<Pair<EnumFacing, EnumFacing>> validOrients = Lists.newArrayList();
+//					Arrays.asList(EnumFacing.HORIZONTALS).forEach(facing -> validOrients.add(Pair.of(facing, EnumFacing.UP)));
+//					MultiBlockTest test = new MultiBlockTest(MultiBlockManager.templateMap.get("test"), validOrients);
+//					EnumFacing facing = Utils.getFacingFromEntity(world, pos, player, true, false);
+//					test.buildStructure(world, pos.offset(side).offset(facing), facing, EnumFacing.UP);
+//					return true;
+//				}
 			}
 		}
 		return false;

@@ -5,6 +5,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.Vec3i;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.TRSRTransformation;
@@ -44,5 +45,25 @@ public class Utils {
 			default: ret.setIdentity();
 		}
 		return ret;
+	}
+
+	public static Vec3i negate(Vec3i from) {
+		return new Vec3i(-from.getX(), -from.getY(), -from.getZ());
+	}
+
+	public static Vec3i add(Vec3i a, Vec3i b) {
+		return new Vec3i(a.getX() + b.getX(), a.getY() + b.getY(), a.getZ() + b.getZ());
+	}
+
+	public static Vec3i sub(Vec3i a, Vec3i b) {
+		return new Vec3i(a.getX() - b.getX(), a.getY() - b.getY(), a.getZ() - b.getZ());
+	}
+
+	public static Vec3i mul(Vec3i a, Vec3i b) {
+		return new Vec3i(a.getX() * b.getX(), a.getY() * b.getY(), a.getZ() * b.getZ());
+	}
+
+	public static Vec3i div(Vec3i a, Vec3i b) {
+		return new Vec3i(a.getX() / b.getX(), a.getY() / b.getY(), a.getZ() / b.getZ());
 	}
 }

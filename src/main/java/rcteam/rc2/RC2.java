@@ -26,8 +26,6 @@ import rcteam.rc2.command.GiveThemeParkCommand;
 import rcteam.rc2.item.RC2Items;
 import rcteam.rc2.network.packets.PacketPipeline;
 import rcteam.rc2.proxy.CommonProxy;
-import rcteam.rc2.rollercoaster.CategoryEnum;
-import rcteam.rc2.rollercoaster.TrackPieceRegistry;
 import rcteam.rc2.util.*;
 
 import java.io.File;
@@ -90,6 +88,8 @@ public class RC2 {
 		};
 
 		try {
+//			CategoryEnum.values();
+//			TrackPieceEnum.values();
 			FileManager.readInfoFiles();
 		} catch (IOException e) {
 			throw new RuntimeException(e);

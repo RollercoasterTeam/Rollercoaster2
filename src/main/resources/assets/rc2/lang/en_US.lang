@@ -1,4 +1,4 @@
-itemGroup.rc2=Rollercoaster 2
+itemGroup.rc2=Roller Coaster 2
 
 item.hammer.name=Hammer
 
@@ -10,3 +10,14 @@ item.goldenScoop.name=Golden Ice Cream Scoop
 item.cone.name=Ice Cream Cone
 
 tile.entrance.name=Park Entrance
+
+tile.track_steel.name=Steel Track
+tile.track_wooden.name=Wooden Track
+tile.track_inverted.name=Inverted Track
+tile.track_water.name=Water Track
+
+piece.straight=Straight
+piece.small_corner=Small Corner
+piece.medium_corner=Medium Corner
+piece.large_corner_left=Large Corner Left
+piece.large_corner_right=Large Corner Right

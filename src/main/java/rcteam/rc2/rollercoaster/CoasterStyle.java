@@ -5,43 +5,26 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraft.util.ResourceLocation;
-import rcteam.rc2.RC2;
-import rcteam.rc2.block.BlockTrack;
-import rcteam.rc2.block.RC2Blocks;
-import rcteam.rc2.item.ItemTrack;
-import rcteam.rc2.util.OBJModel;
-import rcteam.rc2.util.Reference;
 
 import java.util.List;
 
-public class CoasterStyle {
-	private final String name;
-	private final List<TrackPiece> pieces = Lists.newArrayList();
-	private final List<String> trainCars = Lists.newArrayList();
+public class CoasterStyle implements Comparable {
 	private TrackPieceInfo parentInfo;
-	private TrackPiece currentPiece = null;
+	private TrackPiece currentPiece;
+	private final String name;
+	private final List<String> trainCars = Lists.newArrayList();
+	private final List<TrackPiece> validPieces = Lists.newArrayList();
 
-	public CoasterStyle(String name, List<TrackPiece> pieces, List<String> trainCars) {
-		this(name, pieces, trainCars, null);
+	protected CoasterStyle(String name, List<TrackPiece> validPieces, List<String> trainCars, TrackPieceInfo parentInfo) {
+		this(name, validPieces, trainCars, parentInfo, validPieces.get(0));
 	}
 
-	public CoasterStyle(String name, List<TrackPiece> pieces, List<String> trainCars, TrackPiece piece) {
+	protected CoasterStyle(String name, List<TrackPiece> validPieces, List<String> trainCars, TrackPieceInfo parentInfo, TrackPiece currentPiece) {
 		this.name = name;
-		this.pieces.addAll(pieces);
+		this.validPieces.addAll(validPieces);
 		this.trainCars.addAll(trainCars);
-		this.currentPiece = piece;
-		this.setPiecesParent();
-	}
-
-	public void setPiecesParent() {
-		for (TrackPiece piece : this.pieces) {
-			piece.setParentStyle(this);
-		}
-		if (this.currentPiece != null) {
-			this.currentPiece.setParentStyle(this);
-		}
+		this.parentInfo = parentInfo;
+		if (this.validPieces.contains(currentPiece)) this.currentPiece = currentPiece;
 	}
 
 	public String getName() {
@@ -56,21 +39,26 @@ public class CoasterStyle {
 	}
 
 	public void setCurrentPiece(TrackPiece piece) {
-		this.currentPiece = piece;
+		if (this.validPieces.contains(piece)) {
+			this.currentPiece = piece;
+		}
+	}
+
+	public void cycleCurrentPiece() {
+		int index = this.validPieces.indexOf(this.currentPiece);
+		if (index + 1 == this.validPieces.size()) {
+			this.currentPiece = this.validPieces.get(0);
+		} else {
+			this.currentPiece = this.validPieces.get(index + 1);
+		}
 	}
 
 	public TrackPiece getCurrentPiece() {
 		return this.currentPiece;
 	}
 
-	public TrackPiece cycleCurrentPiece() {
-		if (this.currentPiece == null || this.pieces.indexOf(this.currentPiece) + 1 == this.pieces.size()) this.currentPiece = pieces.get(0);
-		else this.currentPiece = this.pieces.get(this.pieces.indexOf(this.currentPiece) + 1);
-		return this.currentPiece;
-	}
-
-	public List<TrackPiece> getPieces() {
-		return this.pieces;
+	public List<TrackPiece> getValidPieces() {
+		return Lists.newArrayList(this.validPieces);
 	}
 
 	public List<String> getTrainCars() {
@@ -88,61 +76,53 @@ public class CoasterStyle {
 	public NBTTagCompound writeToNBT() {
 		NBTTagCompound compound = new NBTTagCompound();
 		compound.setString("name", this.name);
-
+		int[] pieces = new int[this.validPieces.size()];
+		for (int i = 0; i < pieces.length; i++) {
+			pieces[i] = this.validPieces.get(i).ordinal();
+		}
+		compound.setIntArray("pieces", pieces);
+		if (this.currentPiece != null) compound.setInteger("current_piece", this.currentPiece.ordinal());
 		NBTTagList list = new NBTTagList();
-		for (TrackPiece piece : this.pieces) {
-			list.appendTag(piece.writeToNBT());
-		}
-		compound.setTag("pieces", list);
-		compound.setTag("current_piece", this.currentPiece.writeToNBT());
-		NBTTagList list1 = new NBTTagList();
 		for (String s : this.trainCars) {
-			list1.appendTag(new NBTTagString(s));
+			list.appendTag(new NBTTagString(s));
 		}
-		compound.setTag("trains", list1);
+		compound.setTag("trains", list);
 		return compound;
 	}
 
 	public static CoasterStyle readFromNBT(NBTTagCompound compound) {
 		String name = compound.getString("name");
-		List<TrackPiece> pieces = Lists.newArrayList();
-		NBTTagList list = compound.getTagList("pieces", Constants.NBT.TAG_COMPOUND);
-		for (int i = 0; i < list.tagCount(); i++) {
-			NBTTagCompound pieceCompound = list.getCompoundTagAt(i);
-			TrackPiece piece = TrackPiece.readFromNBT(pieceCompound);
-//			pieces.add(TrackPiece.readFromNBT(pieceCompound));
-
-			pieces.add(piece);
+		List<TrackPiece> validPieces = Lists.newArrayList();
+		int[] indices = compound.getIntArray("pieces");
+		for (int i : indices) {
+			validPieces.add(TrackPiece.values()[i]);
 		}
-		TrackPiece current = TrackPiece.readFromNBT(compound.getCompoundTag("current_piece"));
+		TrackPiece currentPiece = null;
+		if (compound.hasKey("current_piece")) {
+			currentPiece = TrackPiece.values()[compound.getInteger("current_piece")];
+		}
 		List<String> trains = Lists.newArrayList();
-		NBTTagList list1 = compound.getTagList("trains", Constants.NBT.TAG_STRING);
-		for (int i = 0; i < list1.tagCount(); i++) {
-			trains.add(list1.getStringTagAt(i));
+		NBTTagList list = compound.getTagList("trains", Constants.NBT.TAG_STRING);
+		for (int i = 0; i < list.tagCount(); i++) {
+			trains.add(list.getStringTagAt(i));
 		}
-		return new CoasterStyle(name, pieces, trains, current);
+		return new CoasterStyle(name, validPieces, trains, null, currentPiece);
 	}
 
 	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-
-		CoasterStyle style = (CoasterStyle) o;
-
-		if (name != null ? !name.equals(style.name) : style.name != null) return false;
-		if (pieces != null ? !pieces.equals(style.pieces) : style.pieces != null) return false;
-		if (trainCars != null ? !trainCars.equals(style.trainCars) : style.trainCars != null) return false;
-		return !(currentPiece != null ? !currentPiece.equals(style.currentPiece) : style.currentPiece != null);
-
-	}
-
-	@Override
-	public int hashCode() {
-		int result = name != null ? name.hashCode() : 0;
-		result = 31 * result + (pieces != null ? pieces.hashCode() : 0);
-		result = 31 * result + (trainCars != null ? trainCars.hashCode() : 0);
-		result = 31 * result + (currentPiece != null ? currentPiece.hashCode() : 0);
-		return result;
+	public int compareTo(Object o) {
+		if (o == null || !(o instanceof CoasterStyle)) return 1;
+		CoasterStyle input = (CoasterStyle) o;
+		int nameComp = this.name.compareTo(input.getName());
+		if (nameComp == 0) {
+			if (!this.trainCars.equals(input.getTrainCars())) {
+				if (!this.validPieces.equals(input.getValidPieces())) {
+					int sizeComp = Integer.compare(this.validPieces.size(), input.getValidPieces().size());
+					if (sizeComp == 0) {
+						return this.currentPiece.compareTo(input.currentPiece);
+					} else return sizeComp;
+				} else return 0;
+			} else return 0;
+		} else return nameComp;
 	}
 }

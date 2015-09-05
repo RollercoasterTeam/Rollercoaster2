@@ -2,16 +2,10 @@ package rcteam.rc2.util;
 
 import com.google.common.collect.Lists;
 import com.google.gson.*;
-import rcteam.rc2.rollercoaster.CategoryEnum;
-import rcteam.rc2.rollercoaster.CoasterStyle;
-import rcteam.rc2.rollercoaster.TrackPiece;
-import rcteam.rc2.rollercoaster.TrackPieceInfo;
+import rcteam.rc2.rollercoaster.*;
 
-import javax.vecmath.Vector3f;
 import java.lang.reflect.Type;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class JsonParser {
 	public static final Gson GSON = new GsonBuilder().registerTypeAdapter(TrackPieceInfo.class, JsonParser.Deserializer.INSTANCE).create();
@@ -24,32 +18,42 @@ public class JsonParser {
 			CategoryEnum categoryEnum;
 			String name;
 			List<String> pieces = Lists.newArrayList();
-			List<Vector3f> dimensions = Lists.newArrayList();
 			List<String> trainCars = Lists.newArrayList();
 			JsonObject jsonObject = json.getAsJsonObject();
 			JsonObject styleJson = jsonObject.getAsJsonObject("style_info");
 
 			categoryEnum = CategoryEnum.getByName(styleJson.get("category").getAsString());
 			name = styleJson.get("name").getAsString();
-			JsonObject pieceObj = styleJson.getAsJsonObject("pieces");
-			for (Map.Entry<String, JsonElement> entry : pieceObj.entrySet()) {
-				pieces.add(entry.getKey());
-//				JsonArray
-				JsonArray dims = entry.getValue().getAsJsonArray();
-				dimensions.add(new Vector3f(dims.get(0).getAsFloat(), dims.get(1).getAsFloat(), dims.get(2).getAsFloat()));
+			JsonArray pieceArray = styleJson.getAsJsonArray("pieces");
+			for (JsonElement element : pieceArray) {
+				pieces.add(element.getAsString());
 			}
-			JsonArray carsArray = styleJson.getAsJsonArray("train_cars");
-			carsArray.forEach(jsonElement -> trainCars.add(jsonElement.getAsString()));
+			JsonArray carArray = styleJson.getAsJsonArray("train_cars");
+			for (JsonElement element : carArray) {
+				trainCars.add(element.getAsString());
+			}
 
 			List<TrackPiece> pieceList = Lists.newArrayList();
-			for (int i = 0; i < pieces.size(); i++) {
-				pieceList.add(new TrackPiece(pieces.get(i), dimensions.get(i)));
+			pieces.forEach(s -> pieceList.add(TrackPiece.getByName(s)));
+
+			if (categoryEnum.getInfo() != null) {
+				categoryEnum.getInfo().buildStyle(name, pieceList, trainCars);
+//				CoasterStyle style = new CoasterStyle(name, pieceList, trainCars, new TrackPiece(pieceList.get(0)));
+//				info.addStyleToMap(style);
+//				style.setParentInfo(info);
+//				categoryEnum.setInfo(info);
+			} else {
+				TrackPieceInfo info = new TrackPieceInfo(categoryEnum);
+				info.buildStyle(name, pieceList, trainCars);
+				categoryEnum.setInfo(info);
+//				Map<String, CoasterStyle> styleMap = Maps.newHashMap();
+//				CoasterStyle style = new CoasterStyle(name, pieceList, trainCars, new TrackPiece(pieceList.get(0)));
+//				styleMap.put(style.getName(), style);
+//				TrackPieceInfo info = new TrackPieceInfo(categoryEnum, styleMap);
+//				style.setParentInfo(info);
+//				categoryEnum.setInfo(info);
 			}
-			CoasterStyle style = new CoasterStyle(name, pieceList, trainCars, pieceList.get(0));
-			TrackPieceInfo info = new TrackPieceInfo(categoryEnum);
-			style.setParentInfo(info);
-			info.addStyleToMap(style);
-			return info;
+			return categoryEnum.getInfo();
 		}
 	}
 }

@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import com.google.gson.stream.JsonReader;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import org.apache.commons.io.FileUtils;
 import rcteam.rc2.RC2;
@@ -18,10 +19,11 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.zip.ZipFile;
 
 public class FileManager implements IResourceManagerReloadListener {
-	private static Map<String, CoasterPack> packRegistry = Maps.newHashMap();
+//	private static Map<String, CoasterPack> packRegistry = Maps.newHashMap();
 
 //	public static void makeInfoDirs() {
 //		for (int i = 0; i < CategoryEnum.values().length; i++) {
@@ -31,18 +33,28 @@ public class FileManager implements IResourceManagerReloadListener {
 //	}
 
 	public static void readInfoFiles() throws FileNotFoundException {
-		for (int i = 0; i < CategoryEnum.values().length; i++) {
-			File file = new File(Reference.TRACKS_DIR + CategoryEnum.values()[i].getName());
+		for (CategoryEnum categoryEnum : CategoryEnum.values()) {
+			File file = new File(Reference.TRACKS_DIR + categoryEnum.getName());
 			if (file.listFiles() == null || file.listFiles().length == 0) continue;
 			List<File> styles = Lists.newArrayList(file.listFiles());
 			for (File style : styles) {
 				InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(style));
-				TrackPieceInfo info = JsonParser.GSON.fromJson(inputStreamReader, TrackPieceInfo.class);
-				info.setCurrentStyle(info.getStyleNames().get(0));
-				CategoryEnum.values()[i].setInfo(info);
+				JsonParser.GSON.fromJson(inputStreamReader, TrackPieceInfo.class);
 			}
-			CategoryEnum.values()[i].setValidPieces();
+			categoryEnum.getInfo().setCurrentStyle(categoryEnum.getInfo().getStyleNames().get(0));
 		}
+//		for (int i = 0; i < CategoryEnum.values().length; i++) {
+//			File file = new File(Reference.TRACKS_DIR + CategoryEnum.values()[i].getName());
+//			if (file.listFiles() == null || file.listFiles().length == 0) continue;
+//			List<File> styles = Lists.newArrayList(file.listFiles());
+//			for (File style : styles) {
+//				InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(style));
+//				TrackPieceInfo info = JsonParser.GSON.fromJson(inputStreamReader, TrackPieceInfo.class);
+//				info.setCurrentStyle(info.getStyleNames().get(0));
+//				CategoryEnum.values()[i].setInfo(info);
+//			}
+//			CategoryEnum.values()[i].setValidPieces();
+//		}
 	}
 
 	public static void copyDefaultsFromJar(Class<?> jarClass, File to) {
@@ -61,38 +73,42 @@ public class FileManager implements IResourceManagerReloadListener {
 //		String zipPath = zip.getParent() + "";
 //	}
 
-	public static CoasterPack readPack(File file) {
-		CoasterPack.Type type;
-		String name;
-		ZipFile zipFile = null;
+//	public static CoasterPack readPack(File file) {
+//		CoasterPack.Type type;
+//		String name;
+//		ZipFile zipFile = null;
+//
+//		if (file.isDirectory()) {
+//			name = file.getName();
+//			type = CoasterPack.Type.FOLDER;
+//		} else if (file.getName().endsWith(".zip")) {
+//			name = file.getName().substring(0, file.getName().length() - 4);
+//			type = CoasterPack.Type.ZIP;
+//			try {
+//				zipFile = new ZipFile(file);
+//			} catch (IOException e) {
+//				RC2.logger.error("Could not read zip file {} :\n", file.getName(), e);
+//			}
+//		} else {
+//			RC2.logger.error("Skipping {}, not a valid coaster pack file.", file.getName());
+//			return null;
+//		}
+//		CoasterPack pack = new CoasterPack(type, name, zipFile);
+//		packRegistry.put(name, pack);
+//		return pack;
+//	}
 
-		if (file.isDirectory()) {
-			name = file.getName();
-			type = CoasterPack.Type.FOLDER;
-		} else if (file.getName().endsWith(".zip")) {
-			name = file.getName().substring(0, file.getName().length() - 4);
-			type = CoasterPack.Type.ZIP;
-			try {
-				zipFile = new ZipFile(file);
-			} catch (IOException e) {
-				RC2.logger.error("Could not read zip file {} :\n", file.getName(), e);
-			}
-		} else {
-			RC2.logger.error("Skipping {}, not a valid coaster pack file.", file.getName());
-			return null;
-		}
-		CoasterPack pack = new CoasterPack(type, name, zipFile);
-		packRegistry.put(name, pack);
-		return pack;
-	}
+//	public static Map<String, CoasterPack> getPackRegistry() {
+//		return packRegistry;
+//	}
 
-	public static Map<String, CoasterPack> getPackRegistry() {
-		return packRegistry;
-	}
-
+	@SuppressWarnings("unchecked")
 	@Override
 	public void onResourceManagerReload(IResourceManager resourceManager) {
-		//TODO!
-//		FMLClientHandler.instance().getResourcePackFor(RC2.MODID)
+		//TODO: re-parse styles!
+//		FMLClientHandler.instance().getResourcePackFor(RC2.MODID);
+//		for (String s : (Set<String>) resourceManager.getResourceDomains()) {
+//
+//		}
 	}
 }

@@ -800,6 +800,7 @@ public class OBJModel implements IRetexturableModel, IModelCustomData
 		{
 			return this.materialName;
 		}
+
 		public boolean setVertices(Vertex[] verts)
 		{
 			if (verts == null) return false;
@@ -1316,9 +1317,7 @@ public class OBJModel implements IRetexturableModel, IModelCustomData
 		{
 			if (quads == null)
 			{
-//				quads = new LinkedHashSet<BakedQuad>();
 				quads = Collections.synchronizedSet(new LinkedHashSet<BakedQuad>());
-//				LinkedHashSet<Face> faces = new LinkedHashSet<Face>();
 				Set<Face> faces = Collections.synchronizedSet(new LinkedHashSet<Face>());
 				TRSRTransformation transform = TRSRTransformation.identity();
 				for (Group e : this.model.getMatLib().getGroups().values())

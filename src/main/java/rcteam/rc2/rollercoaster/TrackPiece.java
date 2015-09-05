@@ -1,128 +1,57 @@
 package rcteam.rc2.rollercoaster;
 
-import net.minecraft.nbt.NBTTagCompound;
-import org.apache.commons.lang3.StringUtils;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import net.minecraftforge.fml.common.registry.LanguageRegistry;
 
-import javax.sound.midi.Track;
 import javax.vecmath.Vector3f;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
-public class TrackPiece implements Comparable {
-	private String name = "default_name";
-	private String displayName = "Default Name";
-	private Vector3f size = new Vector3f(1, 1, 1);
-//	private CategoryEnum categoryEnum;
-	private CoasterStyle parentStyle;
+public enum TrackPiece {
+	STRAIGHT("straight", new Vector3f(1f, 1f, 1f), null),
+	SMALL_CORNER("small_corner", new Vector3f(2f, 1f, 2f), null),
+	MEDIUM_CORNER("medium_corner", new Vector3f(3f, 1f, 3f), null),
+	LARGE_CORNER_LEFT("large_corner_left", new Vector3f(2f, 1f, 2f), new Vector3f(0f, 0f, -1f)),
+	LARGE_CORNER_RIGHT("large_corner_right", new Vector3f(2f, 1f, 2f), null);
 
-	public TrackPiece(String name, Vector3f size) {
+	public final String name;
+	public final Vector3f size;
+	public final Vector3f offset;
+	private final Map<String, CoasterStyle> styleMap = Maps.newHashMap();
+
+	TrackPiece(String name, Vector3f size, Vector3f offset) {
 		this.name = name;
-		this.displayName = this.getDisplayName();
-		this.size = size;
-	}
-
-//	public TrackPiece(String name, Vector3f size, CategoryEnum categoryEnum) {
-//		this.name = name;
-//		this.displayName = this.getDisplayName();
-//		this.size = size;
-//		this.categoryEnum = categoryEnum;
-//	}
-
-	public String getName() {
-		return this.name;
+		if (size.x >= 0.5f && size.y >= 0.5f && size.z >= 0.5f) this.size = size;
+		else this.size = new Vector3f(1f, 1f, 1f);
+		if (offset != null && offset.x >= 0f && offset.y >= 0f && offset.z >= 0f) this.offset = offset;
+		else this.offset = new Vector3f(0f, 0f, 0f);
 	}
 
 	public String getDisplayName() {
-//		if (this.displayName != null) return this.displayName;
-		String[] split = this.name.split("_");
-//		String ret = this.name.replaceAll("_", " ");
-		String ret = "";
-		for (String s : split) {
-			ret += StringUtils.capitalize(s) + " ";
+		return LanguageRegistry.instance().getStringLocalization("piece." + this.name);
+	}
+
+	public static TrackPiece getByName(String name) {
+		return Arrays.asList(values()).stream().filter(trackPiece -> trackPiece.name.equals(name)).findFirst().get();
+	}
+
+	public void addStyle(CoasterStyle style) {
+		if (style != null) {
+			this.styleMap.put(style.getName(), style);
 		}
-		ret = ret.substring(0, ret.length() - 1);
-//		StringUtils.capitalize(ret);
-		this.displayName = ret;
-		return ret;
 	}
 
-	public Vector3f getSize() {
-		return this.size;
+	public CoasterStyle getStyle(String name) {
+		return this.styleMap.get(name);
 	}
 
-	public void setParentStyle(CoasterStyle style) {
-		this.parentStyle = style;
+	public List<String> getStyleNames() {
+		return Lists.newArrayList(this.styleMap.keySet());
 	}
 
-	public CoasterStyle getParentStyle() {
-		return this.parentStyle;
-	}
-
-//	public CategoryEnum getCategory() {
-//		return this.categoryEnum;
-//	}
-
-	public NBTTagCompound writeToNBT() {
-		NBTTagCompound compound = new NBTTagCompound();
-		compound.setString("name", this.name);
-		compound.setFloat("size_x", this.size.x);
-		compound.setFloat("size_y", this.size.y);
-		compound.setFloat("size_z", this.size.z);
-//		compound.setInteger("category", this.categoryEnum.ordinal());
-		return compound;
-	}
-
-	public static TrackPiece readFromNBT(NBTTagCompound compound) {
-		String name = compound.getString("name");
-		Vector3f size = new Vector3f(compound.getFloat("size_x"), compound.getFloat("size_y"), compound.getFloat("size_z"));
-//		CategoryEnum categoryEnum = CategoryEnum.values()[compound.getInteger("category")];
-//		return new TrackPiece(name, size, categoryEnum);
-		return new TrackPiece(name, size);
-	}
-
-	@Override
-	public int compareTo(Object o) {
-		if (!(o instanceof TrackPiece)) return 1;
-		TrackPiece input = (TrackPiece) o;
-		//TODO: make CoasterStyle and TrackPieceInfo Comparables!!!
-		int catComp = input.getParentStyle().getParentInfo().getCategory().compareTo(this.parentStyle.getParentInfo().getCategory());
-//		int catComp = input.getCategory().compareTo(this.categoryEnum);
-		if (catComp == 0) {
-			Vector3f inputVec = input.getSize();
-			float inVolume = inputVec.x * inputVec.y * inputVec.z;
-			float myVolume = this.size.x * this.size.y * this.size.z;
-			if (inVolume == myVolume) {
-				int nameComp = input.getName().compareTo(this.name);
-				if (nameComp == 0) {
-					int displayNameComp = input.getDisplayName().compareTo(this.getDisplayName());
-					return displayNameComp;
-				}
-				return nameComp;
-			} else if (inVolume > myVolume) return -1;
-			else return 1;
-		} else return catComp;
-	}
-
-	@Override
-	public String toString() {
-		return this.name;
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-
-		TrackPiece piece = (TrackPiece) o;
-
-		if (name != null ? !name.equals(piece.name) : piece.name != null) return false;
-		if (displayName != null ? !displayName.equals(piece.displayName) : piece.displayName != null) return false;
-		return !(size != null ? !size.equals(piece.size) : piece.size != null);
-	}
-
-	@Override
-	public int hashCode() {
-		int result = name != null ? name.hashCode() : 0;
-		result = 31 * result + (displayName != null ? displayName.hashCode() : 0);
-		result = 31 * result + (size != null ? size.hashCode() : 0);
-		return result;
+	public List<CoasterStyle> getStyles() {
+		return Lists.newArrayList(this.styleMap.values());
 	}
 }

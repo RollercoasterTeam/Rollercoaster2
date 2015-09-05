@@ -1,20 +1,24 @@
 package rcteam.rc2.block.te;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
-import rcteam.rc2.RC2;
-import rcteam.rc2.block.BlockTrack;
-import rcteam.rc2.network.packets.PacketThemeParkEntrance;
+import net.minecraft.util.BlockPos;
 import rcteam.rc2.rollercoaster.*;
+
+import java.util.LinkedHashSet;
+import java.util.List;
 
 public class TileEntityTrack extends TileEntity {
 	public TrackPieceInfo info;
+	private List<BlockPos> dummies = Lists.newArrayList();
+	private LinkedHashSet<BlockPos> parentPositions = Sets.newLinkedHashSet();
+	private boolean isDummy = false;
+	//TODO: make dummies have multiple parents if they are "placed" by multiple tracks
 
 	public TileEntityTrack() {}
 
@@ -24,6 +28,44 @@ public class TileEntityTrack extends TileEntity {
 
 	public TrackPieceInfo getInfo() {
 		return this.info;
+	}
+
+	public TileEntityTrack setDummy(boolean isDummy) {
+		this.isDummy = isDummy;
+		return this;
+	}
+
+	public boolean isDummy() {
+		return this.isDummy;
+	}
+
+	public boolean addDummyPos(BlockPos pos) {
+		return !this.isDummy && this.dummies.add(pos);
+	}
+
+	public boolean addDummyPositions(List<BlockPos> list) {
+		return !this.isDummy && this.dummies.addAll(list);
+	}
+
+	public List<BlockPos> getDummyPositions() {
+		return this.dummies;
+	}
+
+	public int getNumberOfParents() {
+		return this.parentPositions.size();
+	}
+
+	public boolean addParentPos(BlockPos pos) {
+		if (!this.isDummy) return false;
+		return this.parentPositions.add(pos);
+	}
+
+	public boolean removeParentPos(BlockPos pos) {
+		return this.parentPositions.remove(pos);
+	}
+
+	public LinkedHashSet<BlockPos> getParentPositions() {
+		return this.parentPositions;
 	}
 
 	@Override

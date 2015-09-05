@@ -3,13 +3,20 @@
 		"category": "steel",
 		"name": "hyper_twister",
 		"display_name": "Hyper Twister Coaster",
-		"pieces": {
+		/*"pieces": {
 			"straight": [1, 0.75, 1],
 			"small_corner": [2, 0.75, 2],
 			"medium_corner": [3, 0.75, 3],
 			"large_corner_left": [2, 0.75, 2],
-			"large_corner_right": /*[*/[2, 0.75, 2]/*, [0, 0, 1]]*/ //first array is size, second is the "entrance" location, where the car would enter the bounding box relative to the origin, if omitted origin is assumed
-		},
+			"large_corner_right": [[2, 0.75, 2], [0, 0, 1]] //first array is size, second is the "entrance" location, where the car would enter the bounding box relative to the origin, if omitted origin is assumed
+		},*/
+		"pieces": [
+			"straight",
+			"small_corner",
+			"medium_corner",
+			"large_corner_left",
+			"large_corner_right"
+		],
 		"train_cars": ["default"]
 	}
 }
