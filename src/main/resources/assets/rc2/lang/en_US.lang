@@ -21,3 +21,7 @@ piece.small_corner=Small Corner
 piece.medium_corner=Medium Corner
 piece.large_corner_left=Large Corner Left
 piece.large_corner_right=Large Corner Right
+
+hammer.mode.rotate=Rotate Mode
+hammer.mode.change_type=Change Type Mode
+hammer.mode.adjustment=Adjustment Mode

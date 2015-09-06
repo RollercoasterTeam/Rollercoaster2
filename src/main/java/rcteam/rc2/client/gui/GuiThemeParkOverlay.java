@@ -15,6 +15,7 @@ import org.lwjgl.opengl.GL11;
 import rcteam.rc2.block.BlockTrack;
 import rcteam.rc2.block.te.TileEntityTrack;
 import rcteam.rc2.item.ItemHammer;
+import rcteam.rc2.util.HammerMode;
 
 public class GuiThemeParkOverlay extends Gui {
 	private Minecraft mc;
@@ -32,9 +33,7 @@ public class GuiThemeParkOverlay extends Gui {
 
 	@SubscribeEvent(priority = EventPriority.NORMAL)
 	public void onRenderExperienceBar(RenderGameOverlayEvent event) {
-		if (this.mc.gameSettings.showDebugInfo || (event.isCancelable() || event.type != ElementType.ALL)) {
-			return;
-		}
+		if (this.mc.gameSettings.showDebugInfo || (event.isCancelable() || event.type != ElementType.ALL)) return;
 
 		int drawingTexture = 0;
 		boolean shouldDrawIcons = true;
@@ -45,11 +44,12 @@ public class GuiThemeParkOverlay extends Gui {
 			xPos = 2;
 			yPos = 2;
 			ItemHammer hammer = (ItemHammer) stack.getItem();
+//			hammer.mode = HammerMode.ROTATE;
 			int fontHeight = this.fontRenderer.FONT_HEIGHT;
-			int stringWidth = this.fontRenderer.getStringWidth(hammer.mode.name);
+			int stringWidth = this.fontRenderer.getStringWidth(hammer.mode.getDisplayName());
 			int offset = 1 + fontHeight;
 			drawRect(xPos - 1, yPos - 1, xPos + stringWidth + 1, yPos + offset - 2, 0x90505050);
-			this.fontRenderer.drawString(hammer.mode.name, xPos, yPos, 0xFFE0E0E0);
+			this.fontRenderer.drawString(hammer.mode.getDisplayName(), xPos, yPos, 0xFFE0E0E0);
 			yPos = offset + 2;
 			shouldDrawIcons = false;
 			if (this.mc.theWorld.getBlockState(this.mc.objectMouseOver.getBlockPos()).getBlock() instanceof BlockTrack) {

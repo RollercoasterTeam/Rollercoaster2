@@ -1,18 +1,11 @@
 package rcteam.rc2.item;
 
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraftforge.fml.common.asm.transformers.ItemStackTransformer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import rcteam.rc2.RC2;
-import rcteam.rc2.util.HammerMode;
 
 import java.util.List;
 
