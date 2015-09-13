@@ -74,7 +74,7 @@ public class GuiEntrancePaneLogo extends GuiEntrancePane {
 			} else {
 				logo.bgColour++;
 			}
-			NetworkHandler.updateThemeParkEntrance(PacketThemeParkEntrance.Packet.LOGO_BG_COLOUR, gui.pos, logo.bgColour, null);
+			NetworkHandler.updateThemeParkEntrance(PacketThemeParkEntrance.Packet.LOGO_BG_COLOR, gui.pos, logo.bgColour, null);
 		} else if(button.id == 3) {
 			
 		} else if(button.id == 4) {
@@ -92,6 +92,7 @@ public class GuiEntrancePaneLogo extends GuiEntrancePane {
 		} else if(button.id == 10) {
 	
 		} else if(button.id == 11) {
+			//TODO: close the gui properly!
 			Minecraft.getMinecraft().currentScreen = null;
 		}
 	}

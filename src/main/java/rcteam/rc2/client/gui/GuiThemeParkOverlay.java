@@ -12,10 +12,14 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import org.lwjgl.opengl.GL11;
+import rcteam.rc2.block.BlockSupport;
 import rcteam.rc2.block.BlockTrack;
+import rcteam.rc2.block.te.TileEntitySupport;
 import rcteam.rc2.block.te.TileEntityTrack;
 import rcteam.rc2.item.ItemHammer;
 import rcteam.rc2.util.HammerMode;
+
+import java.util.List;
 
 public class GuiThemeParkOverlay extends Gui {
 	private Minecraft mc;
@@ -40,10 +44,14 @@ public class GuiThemeParkOverlay extends Gui {
 
 		GL11.glPushMatrix();
 		ItemStack stack = this.mc.thePlayer.getCurrentEquippedItem();
+		//TODO: make this its own gui?
 		if (stack != null && stack.getItem() != null && stack.getItem() instanceof ItemHammer) {
 			xPos = 2;
 			yPos = 2;
 			ItemHammer hammer = (ItemHammer) stack.getItem();
+//			if (hammer.mode == null) {
+//				hammer.setDamage(stack, 0);
+//			}
 //			hammer.mode = HammerMode.ROTATE;
 			int fontHeight = this.fontRenderer.FONT_HEIGHT;
 			int stringWidth = this.fontRenderer.getStringWidth(hammer.mode.getDisplayName());
@@ -60,6 +68,19 @@ public class GuiThemeParkOverlay extends Gui {
 				drawRect(xPos - 1, yPos - 1, xPos + stringWidth + 1, yPos + offset - 1, 0x90505050);
 				this.fontRenderer.drawString(tileEntityTrack.info.getCurrentStyle().getCurrentPiece().getDisplayName(), xPos, yPos, 0xFFE0E0E0);
 				yPos = offset + 2;
+			} else if (this.mc.theWorld.getBlockState(this.mc.objectMouseOver.getBlockPos()).getBlock() instanceof BlockSupport) {
+				yPos -= 1;
+				TileEntitySupport tileEntitySupport = (TileEntitySupport) this.mc.theWorld.getTileEntity(this.mc.objectMouseOver.getBlockPos());
+				List<String> strings = tileEntitySupport.info.getInfoStrings();
+				stringWidth = this.fontRenderer.getStringWidth(strings.get(0));
+				drawRect(xPos - 1, yPos - 1, xPos + stringWidth + 1, yPos + offset - 2, 0x90505050);
+				this.fontRenderer.drawString(strings.get(0), xPos, yPos, 0xFFE0E0E0);
+//				offset *= 2;
+//				yPos = offset * 2;
+//				stringWidth = this.fontRenderer.getStringWidth(strings.get(1));
+//				drawRect(xPos - 1, yPos - 1, xPos + stringWidth + 1, yPos + offset - 2, 0x90505050);
+//				this.fontRenderer.drawString(strings.get(1), xPos, yPos, 0xFFE0E0E0);
+//				yPos = offset + 2;
 			}
 		} else {
 			xPos = 2;

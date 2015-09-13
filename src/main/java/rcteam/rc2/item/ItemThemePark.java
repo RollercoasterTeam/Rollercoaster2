@@ -23,7 +23,7 @@ public class ItemThemePark extends Item {
 		if(!world.isRemote) {
 			world.setBlockState(pos, RC2Blocks.entrance.getDefaultState());
 			TileEntityEntrance entrance = (TileEntityEntrance) world.getTileEntity(pos);
-			entrance.themePark = new ThemePark(Utils.getFacingFromEntity(world, pos, player, true, false), stack.getDisplayName(), 25, -1).place(world, pos);
+			entrance.themePark = new ThemePark(Utils.getFacingFromEntity(pos, player, true, false), stack.getDisplayName(), 25, -1).place(world, pos);
 			return true;
 		}
 		return false;

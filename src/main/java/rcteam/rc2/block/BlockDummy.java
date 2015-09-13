@@ -11,6 +11,7 @@ import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import rcteam.rc2.RC2;
@@ -23,7 +24,7 @@ import java.util.Collections;
 public class BlockDummy extends Block {
 	public BlockDummy() {
 		super(Material.barrier);
-		setBlockUnbreakable();
+		if (!RC2.isRunningInDev) setBlockUnbreakable();
 		setBlockBounds(0f, 0f, 0f, 1f, 0.75f, 1f);
 		setUnlocalizedName("track_dummy");
 	}
@@ -50,10 +51,10 @@ public class BlockDummy extends Block {
 
 	@Override
 	public void onBlockHarvested(World world, BlockPos pos, IBlockState state, EntityPlayer player) {
-		TileEntityTrack tileEntityTrack = (TileEntityTrack) world.getTileEntity(pos);
-		for (int i = 0; i < tileEntityTrack.getNumberOfParents(); i++) {
-			BlockPos parentPos = Lists.newArrayList(tileEntityTrack.getParentPositions()).get(i);
-			MultiBlockManager.structureMap.get(parentPos).destroyStructure(world, parentPos);
+		if (RC2.isRunningInDev && player.isSneaking()) this.breakBlock(world, pos, state);
+		else {
+			TileEntityTrack tileEntityTrack = (TileEntityTrack) world.getTileEntity(pos);
+			MultiBlockManager.instance.destroyStructures(world, Lists.newArrayList(tileEntityTrack.getParentPositions()));
 		}
 	}
 

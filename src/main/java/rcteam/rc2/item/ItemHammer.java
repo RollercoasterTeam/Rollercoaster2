@@ -1,6 +1,10 @@
 package rcteam.rc2.item;
 
 import com.google.common.collect.Maps;
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagInt;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
@@ -10,42 +14,60 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.tuple.MutableTriple;
+import org.apache.commons.lang3.tuple.Triple;
 import rcteam.rc2.RC2;
+import rcteam.rc2.block.BlockSupport;
+import rcteam.rc2.block.RC2Blocks;
+import rcteam.rc2.block.te.TileEntitySupport;
 import rcteam.rc2.block.te.TileEntityTrack;
+import rcteam.rc2.network.NetworkHandler;
+import rcteam.rc2.rollercoaster.SupportUtils;
 import rcteam.rc2.util.HammerMode;
 
 import java.util.List;
 import java.util.Map;
 
 public class ItemHammer extends Item {
-	private static Map<String, HammerMode> modes = Maps.newHashMap();
 	public HammerMode mode = HammerMode.ROTATE;
 
 	public ItemHammer() {
-		if (modes.isEmpty()) {
-			for (HammerMode hammerMode : HammerMode.values()) {
-				modes.put(hammerMode.getInternalName(), hammerMode);
-			}
-		}
 		this.mode = HammerMode.ROTATE;
 		setMaxStackSize(1);
-		setMaxDamage(100);
+		setMaxDamage(HammerMode.values().length);
 		setUnlocalizedName("hammer");
 		setCreativeTab(RC2.tab);
 	}
 
 	@Override
-	public int getDamage(ItemStack stack) {
-		if (stack.getTagCompound().hasKey("mode")) {
-			return modes.get(stack.getTagCompound().getString("mode")).ordinal();
+	public void setDamage(ItemStack stack, int damage) {
+		if (damage >= 0 && damage < HammerMode.values().length) {
+			super.setDamage(stack, damage);
+			this.mode = HammerMode.values()[damage];
 		}
-		return 0;
+	}
+
+	@Override
+	public int getDamage(ItemStack stack) {
+		if (this.mode != null) return this.mode.ordinal();
+		return stack.getItemDamage();
+	}
+
+	@Override
+	public boolean showDurabilityBar(ItemStack stack) {
+		return false;
+	}
+
+	private void writeNBT(NBTTagCompound compound) {
+		compound.setByte("mode", (byte) this.mode.ordinal());
 	}
 
 	@Override
 	public boolean updateItemStackNBT(NBTTagCompound compound) {
 		if (compound.hasKey("mode")) {
-			this.mode = modes.get(compound.getString("mode"));
+			this.mode = HammerMode.values()[compound.getByte("mode")];
+		} else {
+			this.writeNBT(compound);
 		}
 		return true;
 	}
@@ -55,42 +77,26 @@ public class ItemHammer extends Item {
 		return true;
 	}
 	
-	@Override
-    public ItemStack getContainerItem(ItemStack itemStack) {
-        ItemStack copiedStack = itemStack.copy();
-        copiedStack.setItemDamage(copiedStack.getItemDamage() + 1);
-        copiedStack.stackSize = 1;
-        return copiedStack;
-    }
-	
-	@Override
-	public boolean hasContainerItem(ItemStack stack) {
-		return true;
-	}
-	
-	@Override
-	public void onCreated(ItemStack stack, World world, EntityPlayer player) {
-		if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
-		stack.getTagCompound().setString("mode", this.mode.getInternalName());
-	}
-	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean val) {
-		onCreated(stack, player.getEntityWorld(), player);
-		list.add(modes.get(stack.getTagCompound().getString("mode")).getDisplayName());
+		list.add(HammerMode.values()[stack.getItemDamage()].getDisplayName());
 	}
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-		if (!world.isRemote && player.isSneaking()) {
-			RC2.logger.info("changing mode");
+		if (world.isRemote && player.isSneaking()) {
+//			RC2.logger.info("changing mode");
 			int index = this.mode.ordinal();
 			if (index + 1 == HammerMode.values().length) {
 				this.mode = HammerMode.ROTATE;
+				this.setDamage(stack, 0);
+				NetworkHandler.updateHammerDamage(0);
 			} else {
 				this.mode = HammerMode.values()[index + 1];
+				this.setDamage(stack, index + 1);
+				NetworkHandler.updateHammerDamage(index + 1);
 			}
 		}
 		return stack;
@@ -100,13 +106,13 @@ public class ItemHammer extends Item {
 	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (RC2.isRunningInDev) {
 			if (world.getTileEntity(pos) != null && world.getTileEntity(pos) instanceof TileEntityTrack) {
+				if (this.mode == null) this.mode = HammerMode.values()[stack.getItemDamage()];
 				switch (this.mode) {
 					case ROTATE:
 						//TODO!
 //						world.setBlockToAir(pos);
 						break;
-					case CHANGE_TYPE:
-						break;
+					case CHANGE_TYPE: break;
 					case ADJUSTMENT:
 						TileEntityTrack tileEntityTrack = (TileEntityTrack) world.getTileEntity(pos);
 						tileEntityTrack.info.getCurrentStyle().cycleCurrentPiece();
@@ -121,7 +127,25 @@ public class ItemHammer extends Item {
 //					world.markBlockForUpdate(pos);
 //				}
 				return true;
-			} else {
+			} else if (world.getTileEntity(pos) != null && world.getTileEntity(pos) instanceof TileEntitySupport) {
+				TileEntitySupport tileEntitySupport = (TileEntitySupport) world.getTileEntity(pos);
+				if (this.mode == HammerMode.ADJUSTMENT) {
+//					tileEntitySupport.info.setVisibility(SupportUtils.SupportSlot.CENTER, !tileEntitySupport.info.getVisibility(SupportUtils.SupportSlot.CENTER));
+//					tileEntitySupport.info.setBasePlateVisibility(SupportUtils.SupportSlot.CENTER, !tileEntitySupport.info.getBasePlateVisibility(SupportUtils.SupportSlot.CENTER));
+//					tileEntitySupport.info.setTopVisibility(SupportUtils.SupportSlot.SOUTH_EAST, true);
+					world.markBlockRangeForRenderUpdate(pos, pos);
+				} else if (this.mode == HammerMode.CHANGE_TYPE) {
+//					tileEntitySupport.info.setBasePlateVisibility(SupportUtils.SupportSlot.CENTER, !tileEntitySupport.info.getBasePlateVisibility(SupportUtils.SupportSlot.CENTER));
+//					tileEntitySupport.info.setBasePlateVisibility(SupportUtils.SupportSlot.NORTH_WEST, !tileEntitySupport.info.getBasePlateVisibility(SupportUtils.SupportSlot.NORTH_WEST));
+//					tileEntitySupport.info.setTopVisibility(SupportUtils.SupportSlot.SOUTH_EAST, true);
+					world.markBlockRangeForRenderUpdate(pos, pos);
+				} else if (this.mode == HammerMode.ROTATE) {
+					tileEntitySupport.info.setTopVisibility(SupportUtils.SupportSlot.WEST, !tileEntitySupport.info.getTopVisibility(SupportUtils.SupportSlot.WEST));
+//					tileEntitySupport.info.setVisibility(SupportUtils.SupportSlot.NORTH_WEST, !tileEntitySupport.info.getVisibility(SupportUtils.SupportSlot.NORTH_WEST));
+//					tileEntitySupport.info.setBasePlateVisibility(SupportUtils.SupportSlot.NORTH_WEST, !tileEntitySupport.info.getBasePlateVisibility(SupportUtils.SupportSlot.NORTH_WEST));
+//					tileEntitySupport.info.setTopVisibility(SupportUtils.SupportSlot.SOUTH_EAST, true);
+					world.markBlockRangeForRenderUpdate(pos, pos);
+				}
 //				if (this.mode.name.equalsIgnoreCase("Change Type")) {
 //					List<Pair<EnumFacing, EnumFacing>> validOrients = Lists.newArrayList();
 //					Arrays.asList(EnumFacing.HORIZONTALS).forEach(facing -> validOrients.add(Pair.of(facing, EnumFacing.UP)));

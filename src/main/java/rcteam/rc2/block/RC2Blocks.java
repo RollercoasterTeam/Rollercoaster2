@@ -17,6 +17,7 @@ import rcteam.rc2.item.ItemTrack;
 import rcteam.rc2.multiblock.MultiBlockManager;
 import rcteam.rc2.rollercoaster.CategoryEnum;
 import rcteam.rc2.rollercoaster.CoasterStyle;
+import rcteam.rc2.rollercoaster.SupportUtils;
 import rcteam.rc2.util.Reference;
 
 import java.util.List;
@@ -27,10 +28,7 @@ public class RC2Blocks {
 	public static Map<CategoryEnum, Block> trackMap = Maps.newEnumMap(CategoryEnum.class);
 	public static Block entrance;
 	public static Block dummy;
-//	public static Block track_steel;
-//	public static Block track_wooden;
-//	public static Block track_inverted;
-//	public static Block track_water;
+	public static Block steel_support;
 	
 	public static void preInit(Side side) {
 		entrance = new BlockEntrance();
@@ -40,6 +38,10 @@ public class RC2Blocks {
 		dummy = new BlockDummy();
 		registerBlock(dummy, "track_dummy");
 		registerTE(TileEntityTrack.class, dummy);
+
+		steel_support = new BlockSupport(new SupportUtils.SupportInfo(SupportUtils.SupportType.STEEL));
+		registerBlock(steel_support, "support_steel");
+		registerTE(TileEntitySupport.class, steel_support);
 
 		registerTracks(side);
 		MultiBlockManager.instance.registerTrackTemplates();
@@ -64,6 +66,7 @@ public class RC2Blocks {
 			ModelResourceLocation location = new ModelResourceLocation(Reference.RESOURCE_PREFIX + modelMap.get(block).getLeft(), "inventory");
 			modelMap.put(block, Pair.of(modelMap.get(block).getLeft(), location));
 			if (side == Side.CLIENT && !(block instanceof BlockTrack)) {
+//				ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0, location);
 				Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(Item.getItemFromBlock(block), 0, location);
 			}
 		}

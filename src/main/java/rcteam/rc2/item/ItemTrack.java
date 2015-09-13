@@ -76,8 +76,8 @@ public class ItemTrack extends ItemBlock {
 			List<Pair<EnumFacing, EnumFacing>> validOrients = Lists.newArrayList();
 			for (EnumFacing facing : EnumFacing.HORIZONTALS) validOrients.add(Pair.of(facing, EnumFacing.UP));
 			MultiBlockTracks structure = new MultiBlockTracks(MultiBlockManager.templateMap.get(this.info.getCurrentStyle().getCurrentPiece().name), validOrients);
-			newState = newState.withProperty(this.info.getCategory().getProperty(), this.info.getCurrentStyle().getCurrentPiece()).withProperty(BlockTrack.FACING, Utils.getFacingFromEntity(world, pos, player, false, false));
-			EnumFacing facing = Utils.getFacingFromEntity(world, pos, player, false, false);
+			EnumFacing facing = Utils.getFacingFromEntity(pos, player, false, false);
+			newState = newState.withProperty(this.info.getCategory().getProperty(), this.info.getCurrentStyle().getCurrentPiece()).withProperty(BlockTrack.FACING, facing);
 			structure.buildTrack(world, pos, newState, facing);
 			MultiBlockManager.structureMap.put(pos, structure);
 			setTileEntityNBT(world, pos, stack, player);

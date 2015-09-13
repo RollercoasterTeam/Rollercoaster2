@@ -4,15 +4,21 @@ import com.google.common.collect.AbstractIterator;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
+import net.minecraft.nbt.NBTTagByteArray;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagLong;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3i;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
+import scala.tools.nsc.backend.icode.Primitives;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public abstract class MultiBlockStructure {
 	protected Pair<EnumFacing, EnumFacing> currentOrientation = Pair.of(EnumFacing.NORTH, EnumFacing.UP);
@@ -26,8 +32,7 @@ public abstract class MultiBlockStructure {
 
 	public MultiBlockStructure(MultiBlockTemplate template, List<Pair<EnumFacing, EnumFacing>> validOrients) {
 		this.template = template;
-		initializeOrients(validOrients);
-//		this.template.rotateTo(this.validOrients.get(0).getLeft(), this.validOrients.get(0).getRight());
+		if (validOrients != null) initializeOrients(validOrients);
 	}
 
 	private void initializeOrients(List<Pair<EnumFacing, EnumFacing>> validOrients) {
@@ -51,7 +56,6 @@ public abstract class MultiBlockStructure {
 		if (top == front || top == front.getOpposite()) return false;
 		if (!this.validFrontToTops.containsKey(front) || !this.validFrontToTops.get(front).contains(top)) return false;
 		if (!this.validTopToFronts.containsKey(top) || !this.validTopToFronts.get(top).contains(front)) return false;
-//		this.currentOrientation = Pair.of(front, top);
 		this.template = this.template.setOrientation(Pair.of(front, top));
 		this.currentOrientation = Pair.of(front, top);
 		return true;
@@ -60,20 +64,6 @@ public abstract class MultiBlockStructure {
 	public Pair<EnumFacing, EnumFacing> getOrientation() {
 		return this.currentOrientation;
 	}
-
-//	public MultiBlockStructure(Block block, BlockPos pos, MultiBlockTemplate template) {
-//		this.block = block;
-//		this.pos = pos;
-//		this.template = template;
-//	}
-
-//	public Block getBlock() {
-//		return this.block;
-//	}
-//
-//	public BlockPos getPos() {
-//		return this.pos;
-//	}
 
 	protected void setTemplate(MultiBlockTemplate template) {
 		this.template = template;
@@ -155,6 +145,69 @@ public abstract class MultiBlockStructure {
 
 	public static List<BlockPos> getAllInBoxList(BlockPos from, BlockPos to) {
 		return Lists.newArrayList(getAllInBox(from, to));
+	}
+
+	private NBTTagCompound writeTemplateToNBT() {
+		NBTTagCompound compound = new NBTTagCompound();
+		compound.setString("name", this.template.getName());
+		compound.setByte("front", (byte) this.template.getOrientation().getLeft().getIndex());
+		compound.setByte("top", (byte) this.template.getOrientation().getRight().getIndex());
+		return compound;
+	}
+
+	private void readTemplateFromNBT(NBTTagCompound compound) {
+		if (compound.hasKey("name")) this.template = MultiBlockManager.templateMap.get(compound.getString("name"));
+		if (this.template != null && compound.hasKey("front") && compound.hasKey("top")) this.template.setOrientation(Pair.of(EnumFacing.getFront(compound.getByte("front")), EnumFacing.getFront(compound.getByte("top"))));
+	}
+
+	public NBTTagCompound writeToNBT() {
+		NBTTagCompound compound = new NBTTagCompound();
+		compound.setByte("front", (byte) this.getFront().getIndex());
+		compound.setByte("top", (byte) this.getTop().getIndex());
+		NBTTagCompound frontToTopCompound = new NBTTagCompound();
+		NBTTagCompound topToFrontCompound = new NBTTagCompound();
+		for (Map.Entry<EnumFacing, List<EnumFacing>> entry : this.validFrontToTops.entrySet()) {
+			byte[] topBytes = new byte[entry.getValue().size()];
+			for (int i = 0; i < topBytes.length; i++) topBytes[i] = (byte) entry.getValue().get(i).getIndex();
+			frontToTopCompound.setByteArray(entry.getKey().getName(), topBytes);
+		}
+		for (Map.Entry<EnumFacing, List<EnumFacing>> entry : this.validTopToFronts.entrySet()) {
+			byte[] frontBytes = new byte[entry.getValue().size()];
+			for (int i = 0; i < frontBytes.length; i++) frontBytes[i] = (byte) entry.getValue().get(i).getIndex();
+			topToFrontCompound.setByteArray(entry.getKey().getName(), frontBytes);
+		}
+		compound.setTag("f2t", frontToTopCompound);
+		compound.setTag("t2f", topToFrontCompound);
+		compound.setTag("template", this.writeTemplateToNBT());
+		return compound;
+	}
+
+	@SuppressWarnings("unchecked")
+	public void readFromNBT(NBTTagCompound compound) {
+		if (compound.hasKey("front") && compound.hasKey("top")) this.setOrientation(EnumFacing.getFront(compound.getByte("front")), EnumFacing.getFront(compound.getByte("top")));
+		if (compound.hasKey("f2t")) {
+			NBTTagCompound frontToTopCompound = compound.getCompoundTag("f2t");
+			Set<String> keys = frontToTopCompound.getKeySet();
+			for (String s : keys) {
+				EnumFacing front = EnumFacing.byName(s);
+				byte[] topBytes = frontToTopCompound.getByteArray(s);
+				List<EnumFacing> tops = Lists.newArrayList();
+				for (byte b : topBytes) tops.add(EnumFacing.getFront(b));
+				this.validFrontToTops.put(front, tops);
+			}
+		}
+		if (compound.hasKey("t2f")) {
+			NBTTagCompound topToFrontCompound = compound.getCompoundTag("t2f");
+			Set<String> keys = topToFrontCompound.getKeySet();
+			for (String s : keys) {
+				EnumFacing top = EnumFacing.byName(s);
+				byte[] frontBytes = topToFrontCompound.getByteArray(s);
+				List<EnumFacing> fronts = Lists.newArrayList();
+				for (byte b : frontBytes) fronts.add(EnumFacing.getFront(b));
+				this.validTopToFronts.put(top, fronts);
+			}
+		}
+		if (compound.hasKey("template")) this.readTemplateFromNBT(compound.getCompoundTag("template"));
 	}
 
 	public abstract boolean buildStructure(World world, BlockPos pos, EnumFacing front, EnumFacing top);

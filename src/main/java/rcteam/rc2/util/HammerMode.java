@@ -24,8 +24,4 @@ public enum HammerMode {
 	public String getDisplayName() {
 		return LanguageRegistry.instance().getStringLocalization(this.unlocalizedName);
 	}
-
-	public void onRightClick(TileEntity tileEntity, PlayerInteractEvent event) {
-
-	}
 }

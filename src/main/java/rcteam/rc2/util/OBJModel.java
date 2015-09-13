@@ -20,7 +20,7 @@ import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.*;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -57,8 +57,6 @@ import org.lwjgl.BufferUtils;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Function;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -269,8 +267,7 @@ public class OBJModel implements IRetexturableModel, IModelCustomData
 					float[] floatSplitData = new float[splitData.length];
 					for (int i = 0; i < splitData.length; i++)
 						floatSplitData[i] = Float.parseFloat(splitData[i]);
-					TextureCoordinate texCoord = new TextureCoordinate(new Vector3f(floatSplitData[0], floatSplitData[1],
-					                                                                floatSplitData.length == 3 ? floatSplitData[2] : 1));
+					TextureCoordinate texCoord = new TextureCoordinate(new Vector3f(floatSplitData[0], floatSplitData[1], floatSplitData.length == 3 ? floatSplitData[2] : 1));
 					if (floatSplitData[0] < this.minU)
 					{
 						this.minU = floatSplitData[0];
@@ -1185,19 +1182,18 @@ public class OBJModel implements IRetexturableModel, IModelCustomData
 			this.operation = operation;
 			if (names.get(0).equals(Group.ALL))
 			{
-				this.visibilityMap.clear();
-				this.visibilityMap.put(Group.ALL, true);
+				for (String s : this.visibilityMap.keySet())
+				{
+					this.visibilityMap.put(s, this.operation.performOperation(this.visibilityMap.get(s)));
+				}
 			}
 			else if (names.get(0).equals(Group.ALL_EXCEPT))
 			{
-				List exceptList = names.subList(1, names.size());
-				this.visibilityMap.clear();
 				for (String s : this.visibilityMap.keySet())
 				{
-					if (!exceptList.contains(s))
+					if (!names.subList(1, names.size()).contains(s))
 					{
-						this.operation = operation;
-						this.visibilityMap.put(s, operation.performOperation(this.visibilityMap.get(s)));
+						this.visibilityMap.put(s, this.operation.performOperation(this.visibilityMap.get(s)));
 					}
 				}
 			}
@@ -1205,7 +1201,7 @@ public class OBJModel implements IRetexturableModel, IModelCustomData
 			{
 				for (String s : names)
 				{
-					this.visibilityMap.put(s, operation.performOperation(this.visibilityMap.get(s)));
+					this.visibilityMap.put(s, this.operation.performOperation(this.visibilityMap.get(s)));
 				}
 			}
 		}
@@ -1223,13 +1219,13 @@ public class OBJModel implements IRetexturableModel, IModelCustomData
 			return builder.toString();
 		}
 
-		public static enum Operation
+		public enum Operation
 		{
 			SET_TRUE,
 			SET_FALSE,
 			TOGGLE;
 
-			private Operation(){}
+			Operation(){}
 
 			public boolean performOperation(boolean valueToToggle)
 			{
@@ -1294,6 +1290,8 @@ public class OBJModel implements IRetexturableModel, IModelCustomData
 		{
 			this.model = model;
 			this.state = state;
+			if (this.state instanceof OBJState) this.updateStateVisibilityMap((OBJState) this.state);
+//			this.initStateVisibilityMap(model, state);
 			this.format = format;
 			this.textures = textures;
 			this.ambientOcclusion = ambientOcclusion;
@@ -1320,7 +1318,7 @@ public class OBJModel implements IRetexturableModel, IModelCustomData
 				quads = Collections.synchronizedSet(new LinkedHashSet<BakedQuad>());
 				Set<Face> faces = Collections.synchronizedSet(new LinkedHashSet<Face>());
 				TRSRTransformation transform = TRSRTransformation.identity();
-				for (Group e : this.model.getMatLib().getGroups().values())
+				for (Group g : this.model.getMatLib().getGroups().values())
 				{
 					if (this.state instanceof OBJState)
 					{
@@ -1329,47 +1327,20 @@ public class OBJModel implements IRetexturableModel, IModelCustomData
 						{
 							transform = (TRSRTransformation) state.parent;
 						}
-						if (state.getGroupNamesFromMap().contains(Group.ALL))
+						if (state.getGroupsWithVisibility(true).contains(g.getName()))
 						{
-							state.visibilityMap.clear();
-							for (String s : this.model.getMatLib().getGroups().keySet())
-							{
-								state.visibilityMap.put(s, state.operation.performOperation(true));
-							}
-						}
-						else if (state.getGroupNamesFromMap().contains(Group.ALL_EXCEPT))
-						{
-							List<String> exceptList = state.getGroupNamesFromMap().subList(1, state.getGroupNamesFromMap().size());
-							state.visibilityMap.clear();
-							for (String s : this.model.getMatLib().getGroups().keySet())
-							{
-								if (!exceptList.contains(s))
-								{
-									state.visibilityMap.put(s, state.operation.performOperation(true));
-								}
-							}
-						}
-						else
-						{
-							for (String s : state.visibilityMap.keySet())
-							{
-								state.visibilityMap.put(s, state.operation.performOperation(state.visibilityMap.get(s)));
-							}
-						}
-						if (state.getGroupsWithVisibility(true).contains(e.getName()))
-						{
-							faces.addAll(e.applyTransform(transform));
+							faces.addAll(g.applyTransform(transform));
 						}
 					}
 					else if (this.state instanceof TRSRTransformation)
 					{
 						transform = (TRSRTransformation) this.state;
-						faces.addAll(e.applyTransform(transform));
+						faces.addAll(g.applyTransform(transform));
 					}
 					else
 					{
 						transform = TRSRTransformation.identity();
-						faces.addAll(e.applyTransform(transform));
+						faces.addAll(g.applyTransform(transform));
 					}
 				}
 				for (Face f : faces)
@@ -1426,9 +1397,7 @@ public class OBJModel implements IRetexturableModel, IModelCustomData
 					quads.add(new ColoredBakedQuad(data, -1, EnumFacing.getFacingFromVector(f.getNormal().normal.x, f.getNormal().normal.y, f.getNormal().normal.z)));
 				}
 			}
-//			List<BakedQuad> quadList = new ArrayList<BakedQuad>();
 			List<BakedQuad> quadList = Collections.synchronizedList(Lists.newArrayList(quads));
-//			quadList.addAll(quads);
 			return quadList;
 		}
 
@@ -1522,12 +1491,48 @@ public class OBJModel implements IRetexturableModel, IModelCustomData
 					OBJState s = exState.getValue(OBJProperty.instance);
 					if (s != null)
 					{
-						if (s.getGroupNamesFromMap().contains(Group.ALL)) return getCachedModel(s.parent);
+//						if (s.getGroupNamesFromMap().contains(Group.ALL)) return getCachedModel(s.parent);
+						if (s.getGroupNamesFromMap().contains(Group.ALL) || s.getGroupNamesFromMap().contains(Group.ALL_EXCEPT))
+						{
+							this.updateStateVisibilityMap(s);
+						}
 						return getCachedModel(s);
 					}
 				}
 			}
 			return this;
+		}
+
+		private void updateStateVisibilityMap(OBJState state)
+		{
+			if (state.getGroupNamesFromMap().contains(Group.ALL))
+			{
+				boolean operation = state.getVisibilityMap().get(Group.ALL);
+				state.visibilityMap.clear();
+				for (String s : this.model.getMatLib().getGroups().keySet())
+				{
+					state.visibilityMap.put(s, state.operation.performOperation(operation));
+				}
+			}
+			else if (state.getGroupNamesFromMap().contains(Group.ALL_EXCEPT))
+			{
+				List<String> exceptList = state.getGroupNamesFromMap().subList(1, state.getGroupNamesFromMap().size());
+				state.visibilityMap.remove(Group.ALL_EXCEPT);
+				for (String s : this.model.getMatLib().getGroups().keySet())
+				{
+					if (!exceptList.contains(s))
+					{
+						state.visibilityMap.put(s, state.operation.performOperation(state.visibilityMap.get(s)));
+					}
+				}
+			}
+			else
+			{
+				for (String s : state.visibilityMap.keySet())
+				{
+					state.visibilityMap.put(s, state.operation.performOperation(state.visibilityMap.get(s)));
+				}
+			}
 		}
 
 		private final Map<IModelState, OBJBakedModel> cache = new HashMap<IModelState, OBJBakedModel>();
