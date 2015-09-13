@@ -23,6 +23,7 @@ import org.apache.logging.log4j.Logger;
 import rcteam.rc2.block.RC2Blocks;
 import rcteam.rc2.client.gui.GuiHandler;
 import rcteam.rc2.command.GiveThemeParkCommand;
+import rcteam.rc2.command.TestSupportRenderCommand;
 import rcteam.rc2.item.RC2Items;
 import rcteam.rc2.network.packets.PacketPipeline;
 import rcteam.rc2.proxy.CommonProxy;
@@ -88,8 +89,6 @@ public class RC2 {
 		};
 
 		try {
-//			CategoryEnum.values();
-//			TrackPieceEnum.values();
 			FileManager.readInfoFiles();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -105,14 +104,14 @@ public class RC2 {
 
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
-		packetPipeline.initalise();
+		packetPipeline.initialize();
 		proxy.init();
 		NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
 	}
 
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
-		packetPipeline.postInitialise();
+		packetPipeline.postInitialize();
 	}
 
 	@EventHandler

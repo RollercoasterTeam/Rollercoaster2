@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Table;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3i;
 import org.apache.commons.lang3.StringUtils;
@@ -28,7 +29,6 @@ public class MultiBlockTemplate {
 	private String name;
 	private EnumFacing front = EnumFacing.NORTH;
 	private EnumFacing top = EnumFacing.UP;
-//	private Matrix blockMatrix;
 
 	public MultiBlockTemplate(String name) {
 		this.name = name;
@@ -52,53 +52,42 @@ public class MultiBlockTemplate {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void addLayer(Block master, Object... objs) {
-		//TODO: add support for defining variant of blocks (ie. stone v andesite)
+	public void addLayer(Block master, Object... args) {
 		this.dimensions.y++;
 		this.dimensions.z = 0;
-		String s = "";
-		int i, j, k;
-		i = k = j = 0;
+		List<String> strings = Lists.newArrayList();
+		int i = 0;
 
 		/* Parse Template Strings */
-		if (objs[1] instanceof String[]) {
-			String[] strings = (String[]) objs[1];
-			this.dimensions.z = strings.length;
-			for (int l = 0; l < strings.length; l++) {
-				String s1 = strings[l];
-				this.dimensions.x = s1.length();
-				++k;
-				j = s1.length();
-				s = s + s1;
+		if (args[0] instanceof String[]) {
+			String[] argStrings = (String[]) args[0];
+			this.dimensions.z = argStrings.length;
+			for (String s : argStrings) {
+				this.dimensions.x = s.length();
+				strings.add(s);
 			}
 		} else {
-			while (objs[i] instanceof String) {
+			while (args[i] instanceof String) {
 				this.dimensions.z++;
-				String s2 = (String) objs[i++];
-				this.dimensions.x = s2.length();
-				++k;
-				j = s2.length();
-				s = s + s2;
+				String s = (String) args[i++];
+				this.dimensions.x = s.length();
+				strings.add(s);
 			}
 		}
 
-		/* Parse and Assign Characters With Block Instances */
+		/* Parse and Assign Characters with Block Instances */
 		HashMap map;
-		Block block = null;
-		MultiBlockAlias alias = null;
-		Character masterChar = '\0'; //unicode 0
+		Block block;
+		MultiBlockAlias alias;
+		char masterChar = '\0'; //unicode 0
 
-		for (map = new HashMap(); i < objs.length; i += 2) {
+		for (map = new HashMap(); i < args.length; i += 2) {
 			block = null;
 			alias = null;
-			Character character = (Character) objs[i];
-			if (objs[i + 1] instanceof Block) {
-				block = (Block) objs[i + 1];
-			} else if (objs[i + 1] instanceof Block[]) {
-				alias = new MultiBlockAlias((Block[]) objs[i + 1]);
-			} else if (objs[i + 1] instanceof MultiBlockAlias) {
-				alias = (MultiBlockAlias) objs[i + 1];
-			}
+			char character = (char) args[i];
+			if (args[i + 1] instanceof Block) block = (Block) args[i + 1];
+			else if (args[i + 1] instanceof Block[]) alias = new MultiBlockAlias((Block[]) args[i + 1]);
+			else if (args[i + 1] instanceof MultiBlockAlias) alias = (MultiBlockAlias) args[i + 1];
 			if (master != null) {
 				if (this.master == null) {
 					this.hasMaster = false;
@@ -109,44 +98,24 @@ public class MultiBlockTemplate {
 					}
 				} else this.hasMaster = false;
 			}
-			if (StringUtils.contains(s, ' ')) map.put(' ', Blocks.air);
-//			if (Character.isSpaceChar(character)) block = Blocks.air;
 			map.put(character, block != null ? block : alias);
 		}
 
 		/* Create Layer Using Block from HashMap */
-		Object[] entries = new Object[j * k];
-		char dummyChar = '\0'; //unicode 0
+		char wildCard = '?';
+		i = 0;
+		int l = this.dimensions.y - 1;
+		this.template = this.template != null ? this.template : Lists.newArrayListWithCapacity(this.dimensions.y);
 
-		for (int i1 = 0; i1 < j * k; i1++) {
-			char c0 = s.charAt(i1);
-			if (c0 == '?') dummyChar = c0;
-			if (map.containsKey(Character.valueOf(c0))) {
-				if (map.get(Character.valueOf(c0)) instanceof Block) {
-					block = (Block) map.get(Character.valueOf(c0));
-					if (block != null && Block.isEqualTo(block, this.master) && c0 == masterChar && c0 != dummyChar) {
-						this.masterLocation.x = i1 % j;
-						this.masterLocation.y = this.dimensions.y - 1;
-						this.masterLocation.z = i1 / k;
-					}
-				}
-				entries[i1] = c0 == dummyChar ? null : (map.get(Character.valueOf(c0)) instanceof Block ? (Block) map.get(Character.valueOf(c0)) : (MultiBlockAlias) map.get(Character.valueOf(c0)));
-			} else entries[i1] = Blocks.air;
-		}
-
-		int index = 0;
-		this.template = this.template != null ? this.template : Lists.newArrayList();
-		this.template.add(this.dimensions.y - 1, Lists.newArrayList());
-		for (int row = 0; row < this.dimensions.z; row++) {
-			this.template.get(this.dimensions.y - 1).add(row, Lists.newArrayList());
-			for (int col = 0; col < this.dimensions.x; col++) {
-				if (this.template.get(this.dimensions.y - 1).get(row).isEmpty()) {
-					this.template.get(this.dimensions.y - 1).get(row).add(entries[index]);
-				} else {
-					((ArrayList) this.template.get(this.dimensions.y - 1).get(row)).ensureCapacity(col);
-					this.template.get(this.dimensions.y - 1).get(row).add(col, entries[index]);
-				}
-				index++;
+		this.template.add(l, Lists.newArrayListWithCapacity(this.dimensions.z));
+		for (int r = 0; r < this.dimensions.z; r++) {
+			this.template.get(l).add(r, Lists.newArrayListWithCapacity(this.dimensions.x));
+			for (int c = 0; c < this.dimensions.x; c++) {
+				char c0 = strings.get(r).charAt(c);
+				if (c0 == masterChar && c0 != wildCard) this.masterLocation = new Vector3i(c, l, r);
+				if (c0 == ' ') this.template.get(l).get(r).add(c, Blocks.air);
+				else if (map.containsKey(c0)) this.template.get(l).get(r).add(c, c0 == wildCard ? null : map.get(c0));
+				i++;
 			}
 		}
 	}
@@ -209,15 +178,13 @@ public class MultiBlockTemplate {
 
 	public MultiBlockTemplate rotateTo(EnumFacing front, EnumFacing top) {
 		List<Vector2f> matrixVectors = Lists.newArrayList();
-//		if (this.blockMatrix == null) {
-			for (int l = 0; l < this.dimensions.y; l++) {
-				for (int r = 0; r < this.dimensions.z; r++) {
-					for (int c = 0; c < this.dimensions.x; c++) {
-						matrixVectors.add(new Vector2f(r, c));
-					}
+		for (int l = 0; l < this.dimensions.y; l++) {
+			for (int r = 0; r < this.dimensions.z; r++) {
+				for (int c = 0; c < this.dimensions.x; c++) {
+					matrixVectors.add(new Vector2f(r, c));
 				}
 			}
-//		}
+		}
 		int times;
 		boolean clockwise;
 		if (top == EnumFacing.UP) {

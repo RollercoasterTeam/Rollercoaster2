@@ -48,8 +48,8 @@ public class BlockTrack extends Block {
 
 	public BlockTrack(TrackPieceInfo info) {
 		super(info.getCategory().getMaterial());
-		setCreativeTab(RC2.tab);
-		setBlockUnbreakable();
+		if (RC2.isRunningInDev) setCreativeTab(RC2.tab);
+		if (!RC2.isRunningInDev) setBlockUnbreakable();
 		setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(info.getCategory().getProperty(), info.getCurrentStyle().getCurrentPiece()));
 		setBlockBounds(0f, 0f, 0f, 1f, 0.75f, 1f);
 		setUnlocalizedName("track_" + info.getCategory().getName());
@@ -62,7 +62,7 @@ public class BlockTrack extends Block {
 
 	@Override
 	public boolean isFullCube() {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -100,12 +100,7 @@ public class BlockTrack extends Block {
 
 	@Override
 	public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
-		return this.getDefaultState().withProperty(FACING, Utils.getFacingFromEntity(worldIn, pos, placer, false, false));
-	}
-
-	@Override
-	public int getRenderType() {
-		return 3;
+		return this.getDefaultState().withProperty(FACING, Utils.getFacingFromEntity(pos, placer, false, false));
 	}
 
 	@Override
@@ -128,7 +123,8 @@ public class BlockTrack extends Block {
 
 	@Override
 	public void onBlockHarvested(World world, BlockPos pos, IBlockState state, EntityPlayer player) {
-		MultiBlockManager.structureMap.get(pos).destroyStructure(world, pos);
+		if (RC2.isRunningInDev && player.isSneaking()) this.breakBlock(world, pos, state);
+		else MultiBlockManager.instance.destroyStructures(world, Lists.newArrayList(pos));
 	}
 
 	@Override

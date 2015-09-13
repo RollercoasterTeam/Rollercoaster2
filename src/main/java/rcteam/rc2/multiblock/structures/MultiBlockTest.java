@@ -43,7 +43,7 @@ public class MultiBlockTest extends MultiBlockStructure {
 						case POSITIVE: masterLocationOffset = Utils.mul(masterLocationOffset, new Vec3i(-1, 1, -1)); break;
 						case NEGATIVE: masterLocationOffset = Utils.mul(masterLocationOffset, new Vec3i(1, 1, 1)); break;
 					}
-					Vec3i location = Utils.add(new Vec3i(pos.getX(), pos.getY(), pos.getZ()), masterLocationOffset);
+					Vec3i location = Utils.add(pos, masterLocationOffset);
 					BlockPos dummyPos = new BlockPos(location);
 					world.setBlockState(dummyPos, block.getDefaultState(), 3);
 				}

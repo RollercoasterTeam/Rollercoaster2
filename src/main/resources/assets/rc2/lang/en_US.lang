@@ -16,6 +16,8 @@ tile.track_wooden.name=Wooden Track
 tile.track_inverted.name=Inverted Track
 tile.track_water.name=Water Track
 
+tile.support_steel.name=Steel Support
+
 piece.straight=Straight
 piece.small_corner=Small Corner
 piece.medium_corner=Medium Corner
