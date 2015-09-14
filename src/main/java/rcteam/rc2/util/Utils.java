@@ -43,23 +43,23 @@ public class Utils {
 		return ret;
 	}
 
-	public static Vec3i negate(Vec3i from) {
+	public static <V extends Vec3i> Vec3i negate(V from) {
 		return new Vec3i(-from.getX(), -from.getY(), -from.getZ());
 	}
 
-	public static Vec3i add(Vec3i a, Vec3i b) {
+	public static <V extends Vec3i> Vec3i add(V a, V b) {
 		return new Vec3i(a.getX() + b.getX(), a.getY() + b.getY(), a.getZ() + b.getZ());
 	}
 
-	public static Vec3i sub(Vec3i a, Vec3i b) {
+	public static <V extends Vec3i> Vec3i sub(V a, V b) {
 		return new Vec3i(a.getX() - b.getX(), a.getY() - b.getY(), a.getZ() - b.getZ());
 	}
 
-	public static Vec3i mul(Vec3i a, Vec3i b) {
+	public static <V extends Vec3i> Vec3i mul(V a, V b) {
 		return new Vec3i(a.getX() * b.getX(), a.getY() * b.getY(), a.getZ() * b.getZ());
 	}
 
-	public static Vec3i div(Vec3i a, Vec3i b) {
+	public static <V extends Vec3i> Vec3i div(V a, V b) {
 		return new Vec3i(a.getX() / b.getX(), a.getY() / b.getY(), a.getZ() / b.getZ());
 	}
 }
